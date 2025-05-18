@@ -11,12 +11,31 @@ const styles = StyleSheet.create({
   wrapperContainer: {
     justifyContent: "center",
     alignItems: "center",
+    height: height * 1,
   },
   ImageContainer: {
     justifyContent: "center",
     alignSelf: "center",
-    height: height * 0.2,
-    width: width * 0.55,
+    height: height * 0.25,
+    width: width * 0.65,
+  },
+  textContainer: {
+    marginTop: 10,
+  },
+  title: {
+    fontSize: 35,
+    fontWeight: "500",
+    textAlign: "center",
+    color: "#000000",
+  },
+  subtitle: {
+    fontSize: 18,
+    textAlign: "center",
+    color: "#6F6F6F",
+  },
+  buttonContainer: {
+    width: width * 1,
+    alignItems: "center",
   },
 });
 export default styles;

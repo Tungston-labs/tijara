@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {View, TextInput} from 'react-native';
+import React, { useState } from "react";
+import { View, TextInput, Text } from "react-native";
 
-import styles from './styles';
+import styles from "./styles";
 
 const TextInputField = ({
   placeholder,
@@ -10,9 +10,9 @@ const TextInputField = ({
   value,
   ...props
 }) => {
-  const [text, setText] = useState(value || '');
+  const [text, setText] = useState(value || "");
 
-  const handleTextChange = newText => {
+  const handleTextChange = (newText) => {
     setText(newText);
     if (onChangeText) {
       onChangeText(newText);
@@ -20,14 +20,17 @@ const TextInputField = ({
   };
 
   return (
-    <View style={[styles.container, customStyle]}>
-      <TextInput
-        style={styles.placeholder}
-        placeholder={placeholder}
-        onChangeText={handleTextChange}
-        value={text}
-        {...props}
-      />
+    <View>
+      <Text style={styles.subText}>{placeholder}</Text>
+      <View style={[styles.container, customStyle]}>
+        <TextInput
+          style={styles.placeholder}
+          placeholder={placeholder}
+          onChangeText={handleTextChange}
+          value={text}
+          {...props}
+        />
+      </View>
     </View>
   );
 };

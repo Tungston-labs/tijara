@@ -1,17 +1,17 @@
-import React, {useEffect} from 'react';
-import {View, Image, Text} from 'react-native';
-import BackgroundWrapper from '../../componets/BackgroundWrapper';
+import React, { useEffect } from "react";
+import { View, Image, Text } from "react-native";
+import BackgroundWrapper from "../../componets/BackgroundWrapper";
 
-import styles from './styles';
-import Button from '../../componets/Button';
-import Header from '../../componets/Header';
+import styles from "./styles";
+import Button from "../../componets/Button";
+import Header from "../../componets/Header";
 
-const RoleSelectionScreen = ({navigation}) => {
+const RoleSelectionScreen = ({ navigation }) => {
   const handleButtonClick = () => {
-    navigation.navigate('LoginScreen');
+    navigation.navigate("LoginScreen");
   };
   const handleIconPress = () => {
-    navigation.navigate('CreateAccountScreen');
+    navigation.navigate("CreateAccountScreen");
   };
 
   return (
@@ -22,9 +22,9 @@ const RoleSelectionScreen = ({navigation}) => {
           <View style={styles.textContainer}>
             <Text style={styles.textStyle}>Who Are You?</Text>
           </View>
-          <Button label={'Buyer'} handleButtonPress={handleButtonClick} />
+          <Button label={"Buyer"} handleButtonPress={handleButtonClick} />
           <Button
-            label={'Seller'}
+            label={"Seller"}
             handleButtonPress={handleButtonClick}
             customStyle={styles.buttonStyle}
           />

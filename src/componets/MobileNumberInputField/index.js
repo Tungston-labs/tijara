@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {View, TextInput} from 'react-native';
+import React, { useState } from "react";
+import { View, TextInput } from "react-native";
 
-import styles from './styles';
+import styles from "./styles";
 
 const MobileNumberInputField = ({
   placeholder,
@@ -10,9 +10,9 @@ const MobileNumberInputField = ({
   value,
   ...props
 }) => {
-  const [text, setText] = useState(value || '');
+  const [text, setText] = useState(value || "");
 
-  const handleTextChange = newText => {
+  const handleTextChange = (newText) => {
     setText(newText);
     if (onChangeText) {
       onChangeText(newText);

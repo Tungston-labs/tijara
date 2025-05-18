@@ -1,13 +1,13 @@
-import React from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
-import styles from './styles';
-import BackgroundWrapper from '../../componets/BackgroundWrapper';
-import Button from '../../componets/Button';
-import Header from '../../componets/Header';
+import React from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import styles from "./styles";
+import BackgroundWrapper from "../../componets/BackgroundWrapper";
+import Button from "../../componets/Button";
+import Header from "../../componets/Header";
 
-const CreateAccountScreen = ({navigation}) => {
+const CreateAccountScreen = ({ navigation }) => {
   const handleButtonClick = () => {
-    navigation.navigate('RoleSelectionScreen');
+    navigation.navigate("RoleSelectionScreen");
   };
   return (
     <View style={styles.container}>
@@ -15,7 +15,7 @@ const CreateAccountScreen = ({navigation}) => {
         <Header />
         <View style={styles.contentContainer}>
           <Image
-            source={require('../../resources/images/tijara-logo.png')}
+            source={require("../../resources/images/tijara-logo.png")}
             style={styles.ImageContainer}
             resizeMode="contain"
           />
@@ -30,7 +30,7 @@ const CreateAccountScreen = ({navigation}) => {
           </View>
           <View style={styles.buttonContainer}>
             <Button
-              label={'Sign Up'}
+              label={"Sign Up"}
               icon={true}
               handleButtonPress={handleButtonClick}
               customStyle={styles.buttonStyle}

@@ -1,13 +1,14 @@
-import React from 'react';
-import {ImageBackground} from 'react-native';
-import styles from './styles';
+import React from "react";
+import { ImageBackground } from "react-native";
+import styles from "./styles";
 
-const BackgroundWrapper = ({children, customStyle}) => {
+const BackgroundWrapper = ({ children, customStyle }) => {
   return (
     <ImageBackground
-      source={require('../../resources/images/theme.png')} // This image is temporary replace with orginal image
+      source={require("../../resources/images/theme.png")} // This image is temporary replace with orginal image
       style={[styles.backgroundConatiner, customStyle]}
-      resizeMode="cover">
+      resizeMode="cover"
+    >
       {children}
     </ImageBackground>
   );

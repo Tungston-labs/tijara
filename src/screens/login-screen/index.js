@@ -1,17 +1,17 @@
-import React from 'react';
-import {View, Text, TouchableOpacity, Image} from 'react-native';
-import styles from './styles';
-import BackgroundWrapper from '../../componets/BackgroundWrapper';
-import Button from '../../componets/Button';
-import Header from '../../componets/Header';
-import MobileNumberInputField from '../../componets/MobileNumberInputField';
+import React from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import styles from "./styles";
+import BackgroundWrapper from "../../componets/BackgroundWrapper";
+import Button from "../../componets/Button";
+import Header from "../../componets/Header";
+import MobileNumberInputField from "../../componets/MobileNumberInputField";
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   const handleButtonClick = () => {
-    navigation.navigate('RoleSelectionScreen');
+    navigation.navigate("RegistrationScreen");
   };
   const handleIconPress = () => {
-    navigation.navigate('RoleSelectionScreen');
+    navigation.navigate("RoleSelectionScreen");
   };
   return (
     <View style={styles.container}>
@@ -21,7 +21,7 @@ const LoginScreen = ({navigation}) => {
           <View style={styles.wrapperContainer}>
             <View>
               <Image
-                source={require('../../resources/images/tijara-logo.png')}
+                source={require("../../resources/images/tijara-logo.png")}
                 style={styles.ImageContainer}
                 resizeMode="contain"
               />
@@ -35,7 +35,7 @@ const LoginScreen = ({navigation}) => {
               </View>
               <MobileNumberInputField
                 customStyle={styles.inputContainer}
-                placeholder={'Mobile Number'}
+                placeholder={"Mobile Number"}
               />
               {/* <View style={styles.inputContainer}>
                 <Text style={styles.placeholder}>Location</Text>
@@ -44,7 +44,7 @@ const LoginScreen = ({navigation}) => {
             </View>
             <View style={styles.buttonContainer}>
               <Button
-                label={'Log In'}
+                label={"Log In"}
                 handleButtonPress={handleButtonClick}
                 customStyle={styles.buttonStyle}
               />

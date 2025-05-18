@@ -1,29 +1,57 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { StyleSheet, Dimensions } from "react-native";
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
-    color: 'red',
-    backgroundColor: 'blue',
-    fontSize: 50,
-    height: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    backgroundColor: "#ffff",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  textStyle: {
-    fontSize: 50,
+  textInputcontainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: width * 1,
+  },
+  inputBoxStyle: {
+    width: width * 1,
+  },
+  wrapperContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  inputContainer: {
+    width: width * 0.9,
+  },
+  loginContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+    marginBottom: 25,
+  },
+  loginText: {
+    color: "#000000",
+  },
+  loginLink: {
+    color: "#94D82D",
+    fontWeight: "600",
+  },
+  buttonContainer: {
+    width: width * 1,
+    alignItems: "center",
+    marginBlockStart: "auto",
   },
   buttonStyle: {
-    backgroundColor: 'red',
-    borderRadius: width * 0.2,
-    width: 0.4 * width,
-    height: 0.055 * height,
-    alignSelf: 'center',
-    justifyContent: 'center',
-    elevation: 5,
-    flexDirection: 'row',
-    marginTop: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 20,
+  },
+  ImageContainer: {
+    alignSelf: "center",
+    width: width * 0.4,
+    height: height * 0.1,
   },
 });
 export default styles;
