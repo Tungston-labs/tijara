@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-import MainNavigation from './src/navigation/navigation';
-import {enableScreens} from 'react-native-screens';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import MainNavigation from "./src/navigation/navigation";
+import { enableScreens } from "react-native-screens";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 enableScreens();
 

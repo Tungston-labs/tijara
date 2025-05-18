@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
-import {TouchableOpacity, View, Text} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import PropTypes from 'prop-types';
-import Tooltip from 'react-native-walkthrough-tooltip';
+import React, { useState } from "react";
+import { TouchableOpacity, View, Text } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome5";
+import PropTypes from "prop-types";
+import Tooltip from "react-native-walkthrough-tooltip";
 
-import styles from './styles';
+import styles from "./styles";
 
-const CustomToolTip = ({message}) => {
+const CustomToolTip = ({ message }) => {
   const [toolTipVisible, setToolTipVisiblity] = useState(false);
   return (
     <Tooltip
@@ -17,10 +17,12 @@ const CustomToolTip = ({message}) => {
         </View>
       }
       placement="top"
-      onClose={() => setToolTipVisiblity(false)}>
+      onClose={() => setToolTipVisiblity(false)}
+    >
       <TouchableOpacity
         onPress={() => setToolTipVisiblity(true)}
-        style={styles.iconButton}>
+        style={styles.iconButton}
+      >
         <Icon name="info-circle" color="red" size={15} />
       </TouchableOpacity>
     </Tooltip>

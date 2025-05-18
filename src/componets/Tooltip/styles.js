@@ -1,16 +1,16 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import { StyleSheet, Dimensions } from "react-native";
 
-const {height, width} = Dimensions.get('window');
+const { height, width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   card: {
-    padding: '1%',
-    backgroundColor: 'white',
+    padding: "1%",
+    backgroundColor: "white",
     borderRadius: 5,
   },
   label: {
-    color: '#223263',
+    color: "#223263",
     fontSize: 0.017 * height,
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: "Montserrat-Regular",
   },
   iconButton: {
     marginLeft: width * 0.01,
