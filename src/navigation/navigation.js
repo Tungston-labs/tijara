@@ -8,6 +8,9 @@ import SplashScreen from "../screens/splash-screen";
 import CreateAccountScreen from "../screens/create-account-screen";
 import RoleSelectionScreen from "../screens/role-selection-screen";
 import RequestSentScreen from "../screens/request-sent-screen";
+import RequestSuccessScreen from "../screens/request-success-screen";
+import RequestNotVerifiedScreen from "../screens/request-not-verified-screen";
+import SuccessScreen from "../screens/success-screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -32,7 +35,18 @@ export default function MainNavigation() {
           name="RoleSelectionScreen"
           component={RoleSelectionScreen}
         />
-        <Stack.Screen name="RequestSentScreen" component={RequestSentScreen} />
+        <Stack.Screen name="RequestSentScreen" 
+        component={RequestSentScreen} 
+        />
+        <Stack.Screen name="RequestSuccessScreen" 
+        component={RequestSuccessScreen} 
+        />
+        <Stack.Screen name="RequestNotVerifiedScreen" 
+        component={RequestNotVerifiedScreen} 
+        />
+        <Stack.Screen name="SuccessScreen" 
+        component={SuccessScreen} 
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

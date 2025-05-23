@@ -6,7 +6,7 @@ import Button from "../../componets/Button";
 
 const RequestSentScreen = ({ navigation }) => {
   const handleButtonClick = () => {
-    navigation.navigate("LoginScreen");
+    navigation.navigate("RequestSuccessScreen");
   };
 
   return (
