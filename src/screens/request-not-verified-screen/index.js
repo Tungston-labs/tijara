@@ -4,32 +4,37 @@ import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 
-const RequestSentScreen = ({navigation}) => {
+const RequestNotVerifiedScreen = ({navigation}) => {
   const handleButtonClick = () => {
-    navigation.navigate("RequestSuccessScreen");
+    navigation.navigate("SuccessScreen");
   };
   return (
     <View style={styles.container}>
       <BackgroundWrapper>
         <View style={styles.wrapperContainer}>
           <Image
-            source={require("../../resources/images/Tick@2.png")}
+            source={require("../../resources/images/DeclainedUser.png")}
             style={styles.ImageContainer}
             resizeMode="contain"
           />
           <View style={styles.textContainer}>
-            <Text style={styles.title}>Thank you!</Text>
+            <Text style={styles.title}>Not Verified!</Text>
             <Text style={styles.subtitle}>
-              Your account is under review and
+              We're sorry, but your account could
             </Text>
             <Text style={styles.subtitle}>
-              willBe verified within 24 hours. Please
+              not be verified at this time. Please
             </Text>
-            <Text style={styles.subtitle}>check back later. </Text>
+            <Text style={styles.subtitle}>
+                review your details and try again or 
+            </Text>
+            <Text style={styles.subtitle}>
+                contact support for assistance.
+            </Text>
           </View>
           <View style={styles.buttonContainer}>
             <Button
-              label={"Submit For Verification Up"}
+              label={"Subscribe to our annual plan"}
               handleButtonPress={handleButtonClick}
             />
           </View>
@@ -39,4 +44,4 @@ const RequestSentScreen = ({navigation}) => {
   );
 };
 
-export default RequestSentScreen;
+export default RequestNotVerifiedScreen;
