@@ -4,14 +4,15 @@ import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 
-const RequestSentScreen = () => {
+const RequestSentScreen = ({ navigation }) => {
   const handleButtonClick = () => {
     navigation.navigate("LoginScreen");
   };
+
   return (
     <View style={styles.container}>
       <BackgroundWrapper>
-        <View style={styles.wrapperContainer}>
+        <View style={styles.contentContainer}>
           <Image
             source={require("../../resources/images/Tick@2.png")}
             style={styles.ImageContainer}
@@ -23,16 +24,17 @@ const RequestSentScreen = () => {
               Your account is under review and
             </Text>
             <Text style={styles.subtitle}>
-              willBe verified within 24 hours. Please
+              will be verified within 24 hours. Please
             </Text>
-            <Text style={styles.subtitle}>check back later. </Text>
+            <Text style={styles.subtitle}>check back later.</Text>
           </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              label={"Submit For Verification Up"}
-              handleButtonPress={handleButtonClick}
-            />
-          </View>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <Button
+            label={"Submit For Verification Up"}
+            handleButtonPress={handleButtonClick}
+          />
         </View>
       </BackgroundWrapper>
     </View>

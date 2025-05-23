@@ -5,7 +5,6 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   placeholder: {
     fontSize: 16,
-    color: "#999",
     marginLeft: 2,
   },
   subText: {
@@ -20,7 +19,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: "90%",
     paddingHorizontal: 16,
-    paddingVertical: 12,
   },
 });
 export default styles;
