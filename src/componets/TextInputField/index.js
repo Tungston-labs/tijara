@@ -26,6 +26,7 @@ const TextInputField = ({
         <TextInput
           style={styles.placeholder}
           placeholder={placeholder}
+          placeholderTextColor="#A9A9A9"
           onChangeText={handleTextChange}
           value={text}
           {...props}
