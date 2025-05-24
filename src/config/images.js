@@ -4,6 +4,7 @@ const images = {
   verifiedUser: require("../resources/images/VerifiedUser@3.png"),
   declainedUser: require("../resources/images/DeclainedUser.png"),
   success : require("../resources/images/Success.png"),
+  empty : require("../resources/images/Empty.png"),
 };
 
 export default images;
