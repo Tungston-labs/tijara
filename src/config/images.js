@@ -15,6 +15,8 @@ const images = {
   fruit4: require("../resources/images/fruit3.jpeg"),
   fruit5: require("../resources/images/fruit4.jpg"),
   verify: require("../resources/images/verify.png"),
+  success: require("../resources/images/Success.png"),
+  empty: require("../resources/images/Empty.png"),
 };
 
 export default images;
