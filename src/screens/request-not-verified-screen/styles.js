@@ -5,13 +5,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffff",
+  },
+  contentContainer: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
   wrapperContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    height: height * 1,
+    flex: 1,
   },
   ImageContainer: {
     justifyContent: "center",
@@ -21,6 +22,7 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     marginTop: 10,
+    alignItems: "center",
   },
   title: {
     fontSize: 35,
@@ -34,9 +36,9 @@ const styles = StyleSheet.create({
     color: "#6F6F6F",
   },
   buttonContainer: {
-    width: width * 1,
+    paddingBottom: 20,
+    width: "100%",
     alignItems: "center",
   },
-  
 });
 export default styles;

@@ -4,10 +4,7 @@ import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 
-const SuccessScreen = ({navigation}) => {
-  const handleButtonClick = () => {
-    navigation.navigate("LoginScreen");
-  };
+const SuccessScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <BackgroundWrapper>

@@ -4,14 +4,15 @@ import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 
-const RequestNotVerifiedScreen = ({navigation}) => {
+const RequestNotVerifiedScreen = ({ navigation }) => {
   const handleButtonClick = () => {
     navigation.navigate("SuccessScreen");
   };
+
   return (
     <View style={styles.container}>
       <BackgroundWrapper>
-        <View style={styles.wrapperContainer}>
+        <View style={styles.contentContainer}>
           <Image
             source={require("../../resources/images/DeclainedUser.png")}
             style={styles.ImageContainer}
@@ -20,24 +21,23 @@ const RequestNotVerifiedScreen = ({navigation}) => {
           <View style={styles.textContainer}>
             <Text style={styles.title}>Not Verified!</Text>
             <Text style={styles.subtitle}>
-              We're sorry, but your account could
+              We’re sorry, but your account could
             </Text>
             <Text style={styles.subtitle}>
-              not be verified at this time. Please
+              not be verified at this time. Please{" "}
             </Text>
             <Text style={styles.subtitle}>
-                review your details and try again or 
+              review your details and try again or
             </Text>
-            <Text style={styles.subtitle}>
-                contact support for assistance.
-            </Text>
+            <Text style={styles.subtitle}>contact support for assistance.</Text>
           </View>
-          <View style={styles.buttonContainer}>
-            <Button
-              label={"Subscribe to our annual plan"}
-              handleButtonPress={handleButtonClick}
-            />
-          </View>
+        </View>
+
+        <View style={styles.buttonContainer}>
+          <Button
+            label={"Subscribe to our annual plan"}
+            handleButtonPress={handleButtonClick}
+          />
         </View>
       </BackgroundWrapper>
     </View>

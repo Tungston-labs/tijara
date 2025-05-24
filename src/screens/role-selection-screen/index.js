@@ -13,7 +13,9 @@ const RoleSelectionScreen = ({ navigation }) => {
   const handleIconPress = () => {
     navigation.navigate("CreateAccountScreen");
   };
-
+  const handleBuyerButtonClick = () => {
+    navigation.navigate("BuyerHomeScreen");
+  };
   return (
     <View style={styles.container}>
       <BackgroundWrapper>
@@ -22,7 +24,7 @@ const RoleSelectionScreen = ({ navigation }) => {
           <View style={styles.textContainer}>
             <Text style={styles.textStyle}>Who Are You?</Text>
           </View>
-          <Button label={"Buyer"} handleButtonPress={handleButtonClick} />
+          <Button label={"Buyer"} handleButtonPress={handleBuyerButtonClick} />
           <Button
             label={"Seller"}
             handleButtonPress={handleButtonClick}

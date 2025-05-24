@@ -11,6 +11,8 @@ import RequestSentScreen from "../screens/request-sent-screen";
 import RequestSuccessScreen from "../screens/request-success-screen";
 import RequestNotVerifiedScreen from "../screens/request-not-verified-screen";
 import SuccessScreen from "../screens/success-screen";
+import BuyerHomeScreen from "../screens/buyer-home-screen";
+import ItemDetailsScreen from "../screens/item-details-screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,18 +37,18 @@ export default function MainNavigation() {
           name="RoleSelectionScreen"
           component={RoleSelectionScreen}
         />
-        <Stack.Screen name="RequestSentScreen" 
-        component={RequestSentScreen} 
+        <Stack.Screen name="RequestSentScreen" component={RequestSentScreen} />
+        <Stack.Screen
+          name="RequestSuccessScreen"
+          component={RequestSuccessScreen}
         />
-        <Stack.Screen name="RequestSuccessScreen" 
-        component={RequestSuccessScreen} 
+        <Stack.Screen
+          name="RequestNotVerifiedScreen"
+          component={RequestNotVerifiedScreen}
         />
-        <Stack.Screen name="RequestNotVerifiedScreen" 
-        component={RequestNotVerifiedScreen} 
-        />
-        <Stack.Screen name="SuccessScreen" 
-        component={SuccessScreen} 
-        />
+        <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
+        <Stack.Screen name="BuyerHomeScreen" component={BuyerHomeScreen} />
+        <Stack.Screen name="ItemDetailsScreen" component={ItemDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

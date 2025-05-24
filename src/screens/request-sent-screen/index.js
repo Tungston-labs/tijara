@@ -32,7 +32,7 @@ const RequestSentScreen = ({ navigation }) => {
 
         <View style={styles.buttonContainer}>
           <Button
-            label={"Submit For Verification Up"}
+            label={"Submit For Verification"}
             handleButtonPress={handleButtonClick}
           />
         </View>

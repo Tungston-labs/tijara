@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     color: "#000000",
     textAlign: "center",
     fontSize: 18,
-    fontWeight: "400",
+    fontWeight: "600",
   },
 });
 export default styles;
