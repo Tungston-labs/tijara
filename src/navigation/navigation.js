@@ -11,6 +11,9 @@ import RequestSentScreen from "../screens/request-sent-screen";
 import RequestSuccessScreen from "../screens/request-success-screen";
 import RequestNotVerifiedScreen from "../screens/request-not-verified-screen";
 import SuccessScreen from "../screens/success-screen";
+import SellerRegistrationScreen from "../screens/seller-registration-screen";
+import SellerHomeScreen from "../screens/seller-home-screen";
+import BuyerPaymentInfoScreen from "../screens/buyer-payment-info-screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -46,6 +49,15 @@ export default function MainNavigation() {
         />
         <Stack.Screen name="SuccessScreen" 
         component={SuccessScreen} 
+        />
+        <Stack.Screen name="SellerRegistrationScreen" 
+        component={SellerRegistrationScreen} 
+        />
+        <Stack.Screen name="SellerHomeScreen" 
+        component={SellerHomeScreen} 
+        />
+        <Stack.Screen name="BuyerPaymentInfoScreen" 
+        component={BuyerPaymentInfoScreen} 
         />
       </Stack.Navigator>
     </NavigationContainer>

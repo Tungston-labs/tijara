@@ -4,19 +4,19 @@ import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 
 
-const SuccessScreen = () => {
+const SellerHomeScreen = () => {
   return (
     <View style={styles.container}>
       <BackgroundWrapper>
         <View style={styles.wrapperContainer}>
           <Image
-            source={require("../../resources/images/Success.png")}
+            source={require("../../resources/images/Empty.png")}
             style={styles.ImageContainer}
             resizeMode="contain"
           />
           <View style={styles.textContainer}>
-            <Text style={styles.title}>Request sent</Text>
-            <Text style={styles.subtitle}>success</Text>
+            <Text style={styles.title}>No items yet -start by adding</Text>
+            <Text style={styles.title}>one to see them here!</Text>
           </View>
         </View>
       </BackgroundWrapper>
@@ -24,4 +24,4 @@ const SuccessScreen = () => {
   );
 };
 
-export default SuccessScreen;
+export default SellerHomeScreen;
