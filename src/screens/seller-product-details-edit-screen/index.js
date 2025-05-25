@@ -9,6 +9,9 @@ const SellerProductDetailsEditScreen = ({ navigation }) => {
   const handleIconPress = () => {
     navigation.navigate("BuyerHomeScreen");
   };
+  const handleEditPress = () => {
+    navigation.navigate("AddItemScreen");
+  };
 
   return (
     <View style={styles.container}>
@@ -18,6 +21,8 @@ const SellerProductDetailsEditScreen = ({ navigation }) => {
             handleIconPress={handleIconPress}
             icon={true}
             Title={"Cabbage"}
+            editIcon={true}
+            handleEditIconPress={handleEditPress}
           />
 
           <View style={styles.imageContainer}>
@@ -55,10 +60,10 @@ const SellerProductDetailsEditScreen = ({ navigation }) => {
           <View style={styles.descriptionBox}>
             <Text style={styles.descriptionTitle}>Discription</Text>
             <Text style={styles.descriptionText}>
-              Lorem ipsum dolor sit amet consectetur. Lacus sed auctor 
-              ut mauris in mi tellus diam volutpat. Parturient in integer
-              congue volutpat.Sit mi dolor cursus eu. Egestas aliquet
-              dui mi consectetur.
+              Lorem ipsum dolor sit amet consectetur. Lacus sed auctor ut mauris
+              in mi tellus diam volutpat. Parturient in integer congue
+              volutpat.Sit mi dolor cursus eu. Egestas aliquet dui mi
+              consectetur.
             </Text>
           </View>
         </BackgroundWrapper>

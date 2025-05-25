@@ -76,20 +76,21 @@ const ItemDetailsScreen = ({ navigation }) => {
           <View style={styles.buttonContainer}>
             <Button label={"Request"} handleButtonPress={handleButtonClick} />
           </View>
-          <View style={styles.imageContainer}>
-            <View style={styles.sellerBox}>
-              <Image source={images.profile} style={styles.sellerImage} />
-              <View style={styles.textContainer}>
-                <View style={styles.rowContainer}>
-                  <Text style={styles.sellerName}>Sold by Ajay Kumar </Text>
-                  <Image source={images.verify} style={styles.verifyImage} />
+          <View style={styles.alignContent}>
+            <View style={styles.dataContainer}>
+              <View style={styles.sellerBox}>
+                <Image source={images.profile} style={styles.sellerImage} />
+                <View style={styles.textContainer}>
+                  <View style={styles.rowContainer}>
+                    <Text style={styles.sellerName}>Sold by Ajay Kumar </Text>
+                    <Image source={images.verify} style={styles.verifyImage} />
+                  </View>
+                  <Text style={styles.sellerStats}>Sold over 2K+ Tons</Text>
                 </View>
-                <Text style={styles.sellerStats}>Sold over 2K+ Tons</Text>
               </View>
               <Text style={styles.sellerRating}>⭐ 4.8</Text>
             </View>
           </View>
-
           <View style={styles.descriptionBox}>
             <Text style={styles.descriptionTitle}>Discription</Text>
             <Text style={styles.descriptionText}>

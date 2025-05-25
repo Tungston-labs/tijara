@@ -1,6 +1,6 @@
 import { StyleSheet, Dimensions } from "react-native";
 
-const { width, height } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -8,12 +8,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
   title: {
-    fontSize: 20,
-    fontWeight: "600",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 4,
     textAlign: "center",
-    marginVertical: 10,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#777",
+    marginBottom: 20,
+    textAlign: "center",
   },
   mainImage: {
     width: "90%",
@@ -38,15 +43,14 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 8,
-    marginRight: 15,
-    marginLeft: 15,
+    marginHorizontal: 15,
   },
   infoSection: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
     paddingVertical: 10,
-    width: width * 1,
+    width: "100%",
     padding: 10,
     marginBottom: 10,
   },
@@ -62,15 +66,50 @@ const styles = StyleSheet.create({
     marginTop: 4,
     color: "#444",
     fontSize: 13,
-    justifyContent: "flex-end",
   },
   priceContainer: {
     alignItems: "flex-end",
   },
+
+  rowContainer: {
+    flexDirection: "row",
+    width: "90%",
+  },
+  alignContent: {
+    width: width * 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   imageContainer: {
     justifyContent: "center",
-    width: "100%",
     alignItems: "center",
+    width: "100%",
+    backgroundColor: "red",
+  },
+  dataContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 10,
+    width: width * 0.9,
+    marginBottom: 20,
+    borderRadius: 10,
+  },
+
+  sellerBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+
+  textContainer: {
+    flex: 1,
+  },
+
+  sellerRating: {
+    fontSize: 14,
+    color: "#000",
   },
   price: {
     fontSize: 20,
@@ -86,15 +125,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
-  sellerBox: {
-    flexDirection: "row",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    width: "90%",
-    alignItems: "center",
-    padding: 10,
-    marginBottom: 15,
-  },
+
   sellerImage: {
     width: 50,
     height: 50,
@@ -112,12 +143,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
   },
-  sellerRating: {
-    marginLeft: "auto",
-    fontWeight: "600",
-    fontSize: 14,
-    marginRight: 10,
-  },
+
   descriptionBox: {
     backgroundColor: "#fff",
     padding: 10,
@@ -137,39 +163,49 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     margin: 10,
   },
-  rowContainer: {
-    flexDirection: "row",
-  },
-  textContainer: {
-    textAlign: "left",
-  },
   modalBackground: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.6)",
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "center",
     alignItems: "center",
   },
   modalContent: {
-    width: "85%",
     backgroundColor: "#fff",
     borderRadius: 12,
     padding: 20,
     alignItems: "center",
+    width: width * 0.85,
+    marginBottom: 10,
   },
-  title: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 4,
+  modalText: {
+    fontSize: 16,
+    marginBottom: 15,
+    width: width * 0.9,
+    textAlign: "center",
   },
-  subtitle: {
-    fontSize: 14,
-    color: "#777",
-    marginBottom: 20,
+  editButtonStyle: {
+    backgroundColor: "#fff",
+    color: "black",
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000000",
+    marginRight: 8,
   },
   quantityContainer: {
+    flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#f5f5f5",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderRadius: 12,
+  },
+  quantityDataContainer: {
+    width: width * 0.6,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
   },
   adjustButton: {
     backgroundColor: "#B3DB48",
@@ -216,68 +252,11 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "bold",
   },
-  modalBackground: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "rgba(0,0,0,0.5)", //change if it is not needed
-  },
-  modalContent: {
-    margin: 20,
-    backgroundColor: "#E8E8ED",
-    padding: 15,
-    alignItems: "center",
-  },
-  modalText: {
-    fontSize: 16,
-    marginBottom: 15,
-    width: width * 0.9,
-    textAlign: "center",
-  },
-  editButtonStyle: {
-    backgroundColor: "#fff",
-    color: "black",
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#000000",
-    marginRight: 8,
-  },
-  rowContainer: {
-    width: "90%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  title: {
-    fontSize: 18,
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#777",
-    marginBottom: 20,
-  },
-  quantityContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#f5f5f5",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-  },
-  quantityDataContainer: {
-    width: width * 0.6,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 20,
-  },
   modalContentContainer: {
     backgroundColor: "#fff",
     width: width * 0.85,
     borderRadius: 10,
     justifyContent: "center",
-    textAlign: "center",
     alignItems: "center",
     marginBottom: 10,
   },
