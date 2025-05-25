@@ -16,6 +16,7 @@ import ItemDetailsScreen from "../screens/item-details-screen";
 import SellerRegistrationScreen from "../screens/seller-registration-screen";
 import SellerHomeScreen from "../screens/seller-home-screen";
 import BuyerPaymentInfoScreen from "../screens/buyer-payment-info-screen";
+import SellerProductDetailsEditScreen from "../screens/seller-product-details-edit-screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +61,10 @@ export default function MainNavigation() {
         <Stack.Screen
           name="BuyerPaymentInfoScreen"
           component={BuyerPaymentInfoScreen}
+        />
+        <Stack.Screen
+          name="SellerProductDetailsEditScreen"
+          component={SellerProductDetailsEditScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>
