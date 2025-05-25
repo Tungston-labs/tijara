@@ -1,19 +1,39 @@
-import React from "react";
-import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
+import { React, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+} from "react-native";
 import styles from "./styles";
 import Header from "../../componets/Header";
 import images from "../../config/images";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
+import ModalButton from "../../componets/ModalButton";
 
 const ItemDetailsScreen = ({ navigation }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [quantity, setQuantity] = useState(100);
+
+  const decrease = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  const increase = () => setQuantity((prev) => prev + 1);
+
   const handleIconPress = () => {
     navigation.navigate("BuyerHomeScreen");
   };
   const handleButtonClick = () => {
-    navigation.navigate("BuyerHomeScreen");
+    setModalVisible(true);
   };
 
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+  const submitModal = () => {
+    navigation.navigate("SuccessScreen");
+  };
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -69,7 +89,7 @@ const ItemDetailsScreen = ({ navigation }) => {
               <Text style={styles.sellerRating}>⭐ 4.8</Text>
             </View>
           </View>
-          {/* Description */}
+
           <View style={styles.descriptionBox}>
             <Text style={styles.descriptionTitle}>Discription</Text>
             <Text style={styles.descriptionText}>
@@ -78,6 +98,52 @@ const ItemDetailsScreen = ({ navigation }) => {
               Sit mi dolor cursus eu. Egestas aliquet dui mi consectetur.
             </Text>
           </View>
+          <Modal
+            visible={modalVisible}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={closeModal}
+          >
+            <View style={styles.modalBackground}>
+              <View style={styles.modalContent}>
+                <View style={styles.modalContentContainer}>
+                  <Text style={styles.title}>Enter Required Quantity</Text>
+                  <Text style={styles.subtitle}>in kilograms</Text>
+                  <View style={styles.quantityDataContainer}>
+                    <View style={styles.rowContainer}>
+                      <TouchableOpacity
+                        onPress={decrease}
+                        style={styles.adjustButton}
+                      >
+                        <Text style={styles.adjustButtonText}>−</Text>
+                      </TouchableOpacity>
+                      <View style={styles.quantityContainer}>
+                        <Text style={styles.quantityText}>{quantity} Kg</Text>
+                      </View>
+                      <TouchableOpacity
+                        onPress={increase}
+                        style={styles.adjustButton}
+                      >
+                        <Text style={styles.adjustButtonText}>+</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+                <View style={styles.rowContainer}>
+                  <ModalButton
+                    label={"Cancel"}
+                    handleButtonPress={closeModal}
+                    customStyle={styles.editButtonStyle}
+                    customLabelStyle={styles.label}
+                  />
+                  <ModalButton
+                    label={"Submit"}
+                    handleButtonPress={submitModal}
+                  />
+                </View>
+              </View>
+            </View>
+          </Modal>
         </BackgroundWrapper>
       </ScrollView>
     </View>

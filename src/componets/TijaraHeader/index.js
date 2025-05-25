@@ -5,7 +5,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 const TijaraHeader = ({ navigation }) => {
   const handleIconPress = () => {
-    navigation.navigate("LoginScreen");
+    navigation.navigate("ProfileScreen");
   };
 
   return (

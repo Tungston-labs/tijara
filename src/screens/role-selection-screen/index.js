@@ -8,7 +8,7 @@ import Header from "../../componets/Header";
 
 const RoleSelectionScreen = ({ navigation }) => {
   const handleButtonClick = () => {
-    navigation.navigate("LoginScreen");
+    navigation.navigate("SellerHomeScreen");
   };
   const handleIconPress = () => {
     navigation.navigate("CreateAccountScreen");

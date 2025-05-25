@@ -1,27 +1,105 @@
-import { View, Text, Image } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 import styles from "./styles";
+import TijaraHeader from "../../componets/TijaraHeader";
+import SearchBar from "../../componets/SearchBar";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import ListItemScreen from "../list-item-screen";
+import RequestReceiveScreen from "../request-receive-screen";
+import Icon from "react-native-vector-icons/Ionicons";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
+import UserListItemScreen from "../user-list-item-screen";
 
+const Tab = createBottomTabNavigator();
 
-const SellerHomeScreen = () => {
+const TabScreens = ({ onTabChange }) => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: "#B3DB48",
+        tabBarInactiveTintColor: "#000000",
+      }}
+    >
+      <Tab.Screen
+        name="Home"
+        component={UserListItemScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="home-outline" size={25} color={color} />
+          ),
+        }}
+        listeners={{
+          focus: () => onTabChange("Home"),
+        }}
+      />
+      <Tab.Screen
+        name="Buy"
+        component={ListItemScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="cart" size={25} color={color} />
+          ),
+        }}
+        listeners={{
+          focus: () => onTabChange("Buy"),
+        }}
+      />
+      <Tab.Screen
+        name="Request"
+        component={RequestReceiveScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="person-add-sharp" size={25} color={color} />
+          ),
+        }}
+        listeners={{
+          focus: () => onTabChange("Request"),
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+const BuyerHomeScreen = ({ navigation }) => {
+  const [activeTab, setActiveTab] = useState("Home");
+  const handleAddItem = () => {
+    navigation.navigate("AddItemScreen");
+  };
   return (
     <View style={styles.container}>
       <BackgroundWrapper>
-        <View style={styles.wrapperContainer}>
-          <Image
-            source={require("../../resources/images/Empty.png")}
-            style={styles.ImageContainer}
-            resizeMode="contain"
-          />
-          <View style={styles.textContainer}>
-            <Text style={styles.title}>No items yet -start by adding</Text>
-            <Text style={styles.title}>one to see them here!</Text>
+        {activeTab !== "Request" && activeTab !== "Buy" && (
+          <View style={styles.firstContainer}>
+            <View style={styles.wrapperContainer}>
+              <TijaraHeader navigation={navigation} />
+            </View>
+            <View style={styles.rowContainer}>
+              <View style={styles.searchbarContainer}>
+                <SearchBar style={styles.searchbar} />
+              </View>
+              <TouchableOpacity onPress={handleAddItem}>
+                <View style={styles.addItemContainer}>
+                  <Text style={styles.addIconStyle}>+</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
+        )}
+
+        {activeTab === "Buy" && (
+          <View style={styles.firstContainer}>
+            <TijaraHeader navigation={navigation} />
+            <SearchBar />
+          </View>
+        )}
+
+        <View style={{ flex: 1 }}>
+          <TabScreens onTabChange={setActiveTab} />
         </View>
       </BackgroundWrapper>
     </View>
   );
 };
 
-export default SellerHomeScreen;
+export default BuyerHomeScreen;
