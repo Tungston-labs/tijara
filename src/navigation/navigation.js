@@ -21,6 +21,7 @@ import ProfileScreen from "../screens/profile-screen";
 import SellerHomeScreenEmptybox from "../screens/seller-home-screen-emptybox";
 import RequestReceiveScreen from "../screens/request-receive-screen";
 import AddItemScreen from "../screens/add-item-screen";
+import SellerProductDetailsEditScreen from "../screens/seller-product-details-edit-screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -80,6 +81,10 @@ export default function MainNavigation() {
           component={RequestReceiveScreen}
         />
         <Stack.Screen name="AddItemScreen" component={AddItemScreen} />
+        <Stack.Screen
+          name="SellerProductDetailsEditScreen"
+          component={SellerProductDetailsEditScreen}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
