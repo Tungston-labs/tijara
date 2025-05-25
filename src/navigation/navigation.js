@@ -16,6 +16,11 @@ import ItemDetailsScreen from "../screens/item-details-screen";
 import SellerRegistrationScreen from "../screens/seller-registration-screen";
 import SellerHomeScreen from "../screens/seller-home-screen";
 import BuyerPaymentInfoScreen from "../screens/buyer-payment-info-screen";
+import SubscriptionDetailsScreen from "../screens/subscription-details-screen";
+import ProfileScreen from "../screens/profile-screen";
+import SellerHomeScreenEmptybox from "../screens/seller-home-screen-emptybox";
+import RequestReceiveScreen from "../screens/request-receive-screen";
+import AddItemScreen from "../screens/add-item-screen";
 import SellerProductDetailsEditScreen from "../screens/seller-product-details-edit-screen";
 
 const Stack = createNativeStackNavigator();
@@ -62,6 +67,20 @@ export default function MainNavigation() {
           name="BuyerPaymentInfoScreen"
           component={BuyerPaymentInfoScreen}
         />
+        <Stack.Screen
+          name="SubscriptionDetailsScreen"
+          component={SubscriptionDetailsScreen}
+        />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Stack.Screen
+          name="SellerHomeScreenEmptybox"
+          component={SellerHomeScreenEmptybox}
+        />
+        <Stack.Screen
+          name="RequestReceiveScreen"
+          component={RequestReceiveScreen}
+        />
+        <Stack.Screen name="AddItemScreen" component={AddItemScreen} />
         <Stack.Screen
           name="SellerProductDetailsEditScreen"
           component={SellerProductDetailsEditScreen}

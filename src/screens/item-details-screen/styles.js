@@ -143,6 +143,144 @@ const styles = StyleSheet.create({
   textContainer: {
     textAlign: "left",
   },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: "85%",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 20,
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#777",
+    marginBottom: 20,
+  },
+  quantityContainer: {
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 12,
+  },
+  adjustButton: {
+    backgroundColor: "#B3DB48",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  adjustButtonText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  quantityText: {
+    fontSize: 20,
+    fontWeight: "400",
+    color: "#757575",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  cancelButton: {
+    flex: 1,
+    marginRight: 8,
+    backgroundColor: "#f0f0f0",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  submitButton: {
+    flex: 1,
+    marginLeft: 8,
+    backgroundColor: "#C9E769",
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  cancelText: {
+    color: "#000",
+    fontWeight: "bold",
+  },
+  submitText: {
+    color: "#000",
+    fontWeight: "bold",
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.5)", //change if it is not needed
+  },
+  modalContent: {
+    margin: 20,
+    backgroundColor: "#E8E8ED",
+    padding: 15,
+    alignItems: "center",
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 15,
+    width: width * 0.9,
+    textAlign: "center",
+  },
+  editButtonStyle: {
+    backgroundColor: "#fff",
+    color: "black",
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#000000",
+    marginRight: 8,
+  },
+  rowContainer: {
+    width: "90%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 18,
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#777",
+    marginBottom: 20,
+  },
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  quantityDataContainer: {
+    width: width * 0.6,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  modalContentContainer: {
+    backgroundColor: "#fff",
+    width: width * 0.85,
+    borderRadius: 10,
+    justifyContent: "center",
+    textAlign: "center",
+    alignItems: "center",
+    marginBottom: 10,
+  },
 });
 
 export default styles;

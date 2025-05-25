@@ -2,19 +2,18 @@ import React from "react";
 import { TouchableOpacity, Text } from "react-native";
 import PropTypes from "prop-types";
 import Icon from "react-native-vector-icons/Ionicons";
-//import ToolTip from '../Tooltip';
+
 import styles from "./styles";
 
-const Button = ({
+const ModalButton = ({
   label,
   handleButtonPress,
   customStyle,
   showToolTip,
   toolTipMessage,
-  customLabelStyle,
   disabled,
+  customLabelStyle,
   icon,
-  IconColor,
 }) => {
   return (
     <TouchableOpacity
@@ -23,14 +22,12 @@ const Button = ({
       style={[styles.button, customStyle]}
     >
       <Text style={[styles.label, customLabelStyle]}>{label}</Text>
-      {/* {showToolTip && <ToolTip message={toolTipMessage} />} */}
-      {icon && <Icon name="chevron-forward" size={20} color={IconColor} />}
     </TouchableOpacity>
   );
 };
-export default Button;
+export default ModalButton;
 
-Button.propTypes = {
+ModalButton.propTypes = {
   label: PropTypes.string.isRequired,
   handleButtonPress: PropTypes.func,
 };

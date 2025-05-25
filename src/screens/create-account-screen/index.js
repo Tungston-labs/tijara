@@ -34,6 +34,7 @@ const CreateAccountScreen = ({ navigation }) => {
               icon={true}
               handleButtonPress={handleButtonClick}
               customStyle={styles.buttonStyle}
+              IconColor={"#fff"}
             />
           </View>
           <View style={styles.loginContainer}>
