@@ -14,6 +14,14 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     width: width * 0.2,
   },
+  editIconContainerStyle: {
+    paddingTop: 50,
+    width: width * 0.2,
+  },
+  editText: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
   textContainer: {
     alignItems: "center",
     width: width * 0.6,

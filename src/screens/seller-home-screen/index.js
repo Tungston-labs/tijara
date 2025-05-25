@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 import styles from "./styles";
 import TijaraHeader from "../../componets/TijaraHeader";
 import SearchBar from "../../componets/SearchBar";
@@ -64,7 +64,7 @@ const TabScreens = ({ onTabChange }) => {
 const BuyerHomeScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("Home");
   const handleAddItem = () => {
-    navigation.navigate("AddItemScreen");
+    navigation.navigate("SellerProductDetailsEditScreen");
   };
   return (
     <View style={styles.container}>
@@ -78,11 +78,11 @@ const BuyerHomeScreen = ({ navigation }) => {
               <View style={styles.searchbarContainer}>
                 <SearchBar style={styles.searchbar} />
               </View>
-              <TouchableOpacity onPress={handleAddItem}>
+              <Pressable onPress={handleAddItem}>
                 <View style={styles.addItemContainer}>
                   <Text style={styles.addIconStyle}>+</Text>
                 </View>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
         )}
