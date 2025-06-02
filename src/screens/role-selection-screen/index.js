@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, Image, Text } from "react-native";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 
@@ -10,11 +10,13 @@ const RoleSelectionScreen = ({ navigation }) => {
   const handleButtonClick = () => {
     navigation.navigate("SellerHomeScreen");
   };
+
   const handleIconPress = () => {
     navigation.navigate("CreateAccountScreen");
   };
+
   const handleBuyerButtonClick = () => {
-    navigation.navigate("BuyerHomeScreen");
+    navigation.navigate("RegistrationScreen");
   };
   return (
     <View style={styles.container}>
