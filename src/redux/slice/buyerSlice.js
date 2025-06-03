@@ -1,8 +1,8 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { buyerSignUp } from '../../services/buyer-service';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { buyerSignUp } from "../../services/buyer-service";
 
 export const buyerSignUpThunk = createAsyncThunk(
-  'buyer/signUp',
+  "buyer/signUp",
   async (payload, { rejectWithValue }) => {
     try {
       const res = await buyerSignUp(payload);
@@ -13,18 +13,17 @@ export const buyerSignUpThunk = createAsyncThunk(
   }
 );
 
-
 const buyerSlice = createSlice({
-  name: 'buyer',
+  name: "buyer",
   initialState: {
     user: null,
     loading: false,
     error: null,
   },
   reducers: {},
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      .addCase(buyerSignUpThunk.pending, state => {
+      .addCase(buyerSignUpThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })

@@ -1,10 +1,22 @@
+// api.js
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const API = axios.create({
   withCredentials: true,
-  baseURL: "http://178.248.112.16:8080",
+  baseURL: "http:178.248.112.16:8081", 
   headers: {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
   },
 });
+
+// Add token dynamically via request interceptor
+API.interceptors.request.use(async (config) => {
+  const token = await AsyncStorage.getItem("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 export default API;

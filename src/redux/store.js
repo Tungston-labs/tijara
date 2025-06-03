@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import buyerReducer from './slices/buyerSlice'; 
-import sellerReducer from "./slice/sellerSlice.js"
+import buyerReducer from './slice/buyerSlice';
+import sellerReducer from './slice/sellerSlice'
 export const store = configureStore({
   reducer: {
     buyer: buyerReducer, 

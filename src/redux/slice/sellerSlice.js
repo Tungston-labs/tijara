@@ -14,7 +14,7 @@ export const sellerSignUpThunk = createAsyncThunk(
 );
 
 
-const buyerSlice = createSlice({
+const sellerSlice = createSlice({
   name: 'seller',
   initialState: {
     user: null,

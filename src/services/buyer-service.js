@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import API from "./config";
 
 API.interceptors.request.use(async (config) => {
