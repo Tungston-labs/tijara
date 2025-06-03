@@ -1,19 +1,62 @@
-import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "./styles";
 import Button from "../../componets/Button";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Header from "../../componets/Header";
-import MobileNumberInputField from "../../componets/MobileNumberInputField";
 import TextInputField from "../../componets/TextInputField";
+import { buyerSignUpThunk } from "../../redux/slice/buyerSlice";
 
-const RegistrationScreen = ({ navigation }) => {
+const RegistrationScreen = () => {
+  const dispatch = useDispatch();
+ // const { loading, error } = useSelector((state) => state.buyer);
+
+  const [form, setForm] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handleChange = (field, value) => {
+    setForm({ ...form, [field]: value });
+  };
+
   const handleIconPress = () => {
     navigation.navigate("LoginScreen");
   };
+
   const handleButtonClick = () => {
-    navigation.navigate("RequestSentScreen");
+    if (form.password !== form.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
+    const payload = {
+      name: form.fullName,
+      phone: form.phone,
+      email: form.email,
+      password: form.password,
+    };
+
+    dispatch(buyerSignUpThunk(payload))
+      .unwrap()
+      .then(() => {
+        navigation.navigate("RequestSentScreen");
+      })
+      .catch((err) => {
+        alert(err);
+      });
   };
+
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -33,24 +76,36 @@ const RegistrationScreen = ({ navigation }) => {
 
           <View style={styles.textInputcontainer}>
             <TextInputField
-              placeholder={"Full Name"}
+              placeholder="Full Name"
               customStyle={styles.inputContainer}
+              value={form.fullName}
+              onChangeText={(text) => handleChange("fullName", text)}
             />
             <TextInputField
-              placeholder={"Phone Number"}
+              placeholder="Phone Number"
               customStyle={styles.inputContainer}
+              value={form.phone}
+              onChangeText={(text) => handleChange("phone", text)}
             />
             <TextInputField
-              placeholder={"Email"}
+              placeholder="Email"
               customStyle={styles.inputContainer}
+              value={form.email}
+              onChangeText={(text) => handleChange("email", text)}
             />
             <TextInputField
-              placeholder={"Password"}
+              placeholder="Password"
               customStyle={styles.inputContainer}
+              value={form.password}
+              secureTextEntry
+              onChangeText={(text) => handleChange("password", text)}
             />
             <TextInputField
-              placeholder={"Confirm Password"}
+              placeholder="Confirm Password"
               customStyle={styles.inputContainer}
+              value={form.confirmPassword}
+              secureTextEntry
+              onChangeText={(text) => handleChange("confirmPassword", text)}
             />
           </View>
           <View style={styles.buttonContainer}>
