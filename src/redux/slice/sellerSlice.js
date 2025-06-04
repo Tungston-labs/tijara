@@ -3,9 +3,9 @@ import { sellerSignUp } from '../../services/seller-services';
 
 export const sellerSignUpThunk = createAsyncThunk(
   'seller/signUp',
-  async (payload, { rejectWithValue }) => {
+  async (formData, { rejectWithValue }) => {
     try {
-      const res = await sellerSignUp(payload);
+      const res = await sellerSignUp(formData);
       return res;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

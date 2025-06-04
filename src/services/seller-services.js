@@ -8,7 +8,7 @@ API.interceptors.request.use(async (config) => {
   return config;
 });
 
-export const sellerSignUp = async (payload) => {
-  const response = await API.post("/seller/seller-register", payload);
+export const sellerSignUp = async (formData) => {
+  const response = await API.post("/seller/seller-register", formData);
   return response.data; 
 };
