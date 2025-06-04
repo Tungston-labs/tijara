@@ -1,29 +1,30 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  Image,
-} from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
+import { useDispatch } from "react-redux";
 import styles from "./styles";
 import Button from "../../componets/Button";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Header from "../../componets/Header";
 import TextInputField from "../../componets/TextInputField";
 import { buyerSignUpThunk } from "../../redux/slice/buyerSlice";
+import { useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 
 const RegistrationScreen = () => {
   const dispatch = useDispatch();
- // const { loading, error } = useSelector((state) => state.buyer);
-
+  const navigation = useNavigation();
+  const route = useRoute();
+  const { location, role } = route.params || {};
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
     email: "",
     password: "",
     confirmPassword: "",
+    location: JSON.stringify({
+      latitude: 17.9156,
+      longitude: 77.365,
+    }),
   });
 
   const handleChange = (field, value) => {
@@ -45,6 +46,10 @@ const RegistrationScreen = () => {
       phone: form.phone,
       email: form.email,
       password: form.password,
+      location: JSON.stringify({
+        latitude: 17.9156,
+        longitude: 77.365,
+      }),
     };
 
     dispatch(buyerSignUpThunk(payload))
@@ -53,7 +58,9 @@ const RegistrationScreen = () => {
         navigation.navigate("RequestSentScreen");
       })
       .catch((err) => {
-        alert(err);
+        const message =
+          err?.message || (typeof err === "string" ? err : "An error occurred");
+        alert(message);
       });
   };
 
@@ -67,13 +74,11 @@ const RegistrationScreen = () => {
             Title={"Complete your"}
             Subtitle={"Account Creation"}
           />
-
           <Image
             source={require("../../resources/images/profile.png")}
             resizeMode="contain"
             style={styles.ImageContainer}
           />
-
           <View style={styles.textInputcontainer}>
             <TextInputField
               placeholder="Full Name"
@@ -116,7 +121,7 @@ const RegistrationScreen = () => {
           </View>
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account? </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleIconPress}>
               <Text style={styles.loginLink}> Login</Text>
             </TouchableOpacity>
           </View>

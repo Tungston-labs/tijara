@@ -8,16 +8,19 @@ import Header from "../../componets/Header";
 
 const RoleSelectionScreen = ({ navigation }) => {
   const handleButtonClick = () => {
-    navigation.navigate("SellerHomeScreen");
+    navigation.navigate("SellerHomeScreen",{ role: "seller" });
   };
 
   const handleIconPress = () => {
     navigation.navigate("CreateAccountScreen");
   };
 
-  const handleBuyerButtonClick = () => {
-    navigation.navigate("RegistrationScreen");
-  };
+const handleBuyerButtonClick = () => {
+  navigation.navigate("RegistrationScreen", { role: "buyer" });
+};
+
+
+
   return (
     <View style={styles.container}>
       <BackgroundWrapper>

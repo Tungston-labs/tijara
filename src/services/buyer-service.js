@@ -9,8 +9,8 @@ import API from "./config";
 //   return config;
 // });
 
-export const buyerSignUp = async (payload) => {
-  const response = await API.post("/buyer/buyer-sign-up", payload);
+export const buyerSignUp = async (formData) => {
+  const response = await API.post("/buyer/buyer-sign-up", formData);
   return response.data; 
 };
 

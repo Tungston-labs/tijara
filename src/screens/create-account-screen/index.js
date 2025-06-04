@@ -4,10 +4,19 @@ import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 import Header from "../../componets/Header";
+import { useRoute } from "@react-navigation/native";
 
 const CreateAccountScreen = ({ navigation }) => {
+  const route = useRoute();
+
   const handleButtonClick = () => {
-    navigation.navigate("RoleSelectionScreen");
+    navigation.navigate("RoleSelectionScreen", {
+      location: {
+        latitude: 25.276987,
+        longitude: 55.296249,
+      },
+      role: route.params?.role || "buyer",
+    });
   };
   return (
     <View style={styles.container}>
