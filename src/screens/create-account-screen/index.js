@@ -1,63 +1,44 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  TextInput,
-  Keyboard,
-} from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
 import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 import Header from "../../componets/Header";
-import { useRoute } from "@react-navigation/native";
-import { fetchLocationThunk } from "../../redux/slice/locationSlice";
-import { useDispatch } from "react-redux";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { getUserLocation } from "../../utils/geoLocation";
+import { Alert } from "react-native";
 
-const CreateAccountScreen = ({ navigation }) => {
+const CreateAccountScreen = ({  }) => {
   const route = useRoute();
-  const [searchText, setSearchText] = useState("");
-  const [location, setLocation] = useState(null);
+  const navigation=useNavigation();
+  const [loading, setLoading] = useState(false);
 
-  const dispatch = useDispatch();
-  const handleSearch = async () => {
-    console.log("Searching for location:", searchText);
+const handleButtonClick = async () => {
+    setLoading(true);
     try {
-      const resultAction = await dispatch(fetchLocationThunk(searchText));
-      console.log("Thunk result action:", resultAction);
-
-      if (fetchLocationThunk.fulfilled.match(resultAction)) {
-        const locations = resultAction.payload;
-        console.log("Locations found:", locations);
-        if (locations.length > 0) {
-          setLocation(locations[0]);
-        } else {
-          setLocation(null);
-        }
-      } else {
-        console.log("Thunk rejected or something else happened");
-        setLocation(null);
-      }
+      const coords = await getUserLocation();
+      // Pass actual coordinates to next screen
+      navigation.navigate("RoleSelectionScreen", {
+        location: coords,
+        role: route.params?.role || "buyer",
+      });
     } catch (error) {
-      console.error("Location search error:", error);
-      setLocation(null);
+      Alert.alert(
+        "Location Error",
+        "Could not fetch your location. Using default location.",
+        [{ text: "OK" }]
+      );
+      // Fallback to default coordinates if permission denied or error
+      navigation.navigate("RoleSelectionScreen", {
+        location: {
+          latitude: 25.276987,
+          longitude: 55.296249,
+        },
+        role: route.params?.role || "buyer",
+      });
+    } finally {
+      setLoading(false);
     }
-    Keyboard.dismiss();
-  };
-
-  const handleButtonClick = () => {
-    if (!location) {
-      alert("Please search and select a valid location");
-      return;
-    }
-    navigation.navigate("RoleSelectionScreen", {
-      location: {
-        latitude: location.coordinates.coordinates[1],
-        longitude: location.coordinates.coordinates[0],
-      },
-      role: route.params?.role || "buyer",
-    });
   };
 
   return (
@@ -75,25 +56,10 @@ const CreateAccountScreen = ({ navigation }) => {
             <Text style={styles.title}>Create Your Account</Text>
             <Text style={styles.subtitle}>for a Personalized Experience</Text>
           </View>
-
           <View style={styles.inputContainer}>
             <Text style={styles.placeholder}>Location</Text>
-
-            <TextInput
-              value={searchText}
-              onChangeText={setSearchText}
-              placeholder=""
-              style={styles.inputText}
-              onSubmitEditing={handleSearch}
-              returnKeyType="search"
-            />
-            <Text style={[styles.inputText, { marginTop: 10 }]}>
-              {location
-                ? `${location?.name}, ${location?.country}`
-                : "No location selected"}
-            </Text>
+            <Text style={styles.inputText}>Dubai</Text>
           </View>
-
           <View style={styles.buttonContainer}>
             <Button
               label={"Sign Up"}
@@ -103,7 +69,6 @@ const CreateAccountScreen = ({ navigation }) => {
               IconColor={"#fff"}
             />
           </View>
-
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account? </Text>
             <TouchableOpacity>

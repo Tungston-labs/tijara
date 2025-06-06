@@ -30,7 +30,7 @@ export default function MainNavigation() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{ headerShown: false }}
-        initialRouteName="SplashScreen"
+        initialRouteName="RegistrationScreen"
       >
         <Stack.Screen name="LoginScreen" component={LoginScreen} />
         <Stack.Screen

@@ -1,25 +1,27 @@
 import React from "react";
-import { View, Image, Text } from "react-native";
+import { View, Text } from "react-native";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 
 import styles from "./styles";
 import Button from "../../componets/Button";
 import Header from "../../componets/Header";
+import { useRoute } from "@react-navigation/native"; // import useRoute
 
 const RoleSelectionScreen = ({ navigation }) => {
+  const route = useRoute(); // get route object
+  const location = route.params?.location; // safely access location param
+
   const handleButtonClick = () => {
-    navigation.navigate("SellerRegistrationScreen",{ role: "seller" });
+    navigation.navigate("SellerRegistrationScreen", { role: "seller", location });
   };
 
   const handleIconPress = () => {
     navigation.navigate("CreateAccountScreen");
   };
 
-const handleBuyerButtonClick = () => {
-  navigation.navigate("RegistrationScreen", { role: "buyer" });
-};
-
-
+  const handleBuyerButtonClick = () => {
+    navigation.navigate("RegistrationScreen", { role: "buyer", location });
+  };
 
   return (
     <View style={styles.container}>

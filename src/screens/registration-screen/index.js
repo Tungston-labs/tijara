@@ -1,31 +1,39 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Image,
+  Alert,
+} from "react-native";
 import { useDispatch } from "react-redux";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import styles from "./styles";
+
 import Button from "../../componets/Button";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Header from "../../componets/Header";
 import TextInputField from "../../componets/TextInputField";
+
 import { buyerSignUpThunk } from "../../redux/slice/buyerSlice";
-import { useNavigation } from "@react-navigation/native";
-import { useRoute } from "@react-navigation/native";
+import { getUserLocation } from "../../utils/geoLocation";
 
 const RegistrationScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-  const { location, role } = route.params || {};
+  const { role } = route.params || {}; // You no longer need location from here
+
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
     email: "",
     password: "",
     confirmPassword: "",
-    location: JSON.stringify({
-      latitude: 17.9156,
-      longitude: 77.365,
-    }),
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (field, value) => {
     setForm({ ...form, [field]: value });
@@ -35,33 +43,34 @@ const RegistrationScreen = () => {
     navigation.navigate("LoginScreen");
   };
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     if (form.password !== form.confirmPassword) {
-      alert("Passwords do not match");
+      Alert.alert("Error", "Passwords do not match");
       return;
     }
 
-    const payload = {
-      name: form.fullName,
-      phone: form.phone,
-      email: form.email,
-      password: form.password,
-      location: JSON.stringify({
-        latitude: 17.9156,
-        longitude: 77.365,
-      }),
-    };
+    try {
+      setLoading(true);
+      const location = await getUserLocation();
 
-    dispatch(buyerSignUpThunk(payload))
-      .unwrap()
-      .then(() => {
-        navigation.navigate("RequestSentScreen");
-      })
-      .catch((err) => {
-        const message =
-          err?.message || (typeof err === "string" ? err : "An error occurred");
-        alert(message);
-      });
+      const payload = {
+        name: form.fullName,
+        phone: form.phone,
+        email: form.email,
+        password: form.password,
+        location: JSON.stringify(location), // stringified for backend
+        role: role || "buyer",
+      };
+
+      await dispatch(buyerSignUpThunk(payload)).unwrap();
+      navigation.navigate("RequestSentScreen");
+    } catch (err) {
+      const message =
+        err?.message || (typeof err === "string" ? err : "An error occurred");
+      Alert.alert("Signup Failed", message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -113,12 +122,15 @@ const RegistrationScreen = () => {
               onChangeText={(text) => handleChange("confirmPassword", text)}
             />
           </View>
+
           <View style={styles.buttonContainer}>
             <Button
-              label={"Submit For Verification Up"}
+              label={loading ? "Submitting..." : "Submit For Verification"}
               handleButtonPress={handleButtonClick}
+              disabled={loading}
             />
           </View>
+
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account? </Text>
             <TouchableOpacity onPress={handleIconPress}>
