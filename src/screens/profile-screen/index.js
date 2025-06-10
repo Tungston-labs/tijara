@@ -27,6 +27,9 @@ const ProfileScreen = ({ navigation }) => {
   const handleIconPress = () => {
     navigation.navigate("BuyerHomeScreen");
   };
+
+
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>

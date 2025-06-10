@@ -1,14 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 import Header from "../../componets/Header";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { getUserLocation } from "../../utils/geoLocation";
+import { Alert } from "react-native";
 
-const CreateAccountScreen = ({ navigation }) => {
-  const handleButtonClick = () => {
-    navigation.navigate("RoleSelectionScreen");
+const CreateAccountScreen = ({  }) => {
+  const route = useRoute();
+  const navigation=useNavigation();
+  const [loading, setLoading] = useState(false);
+
+const handleButtonClick = async () => {
+    setLoading(true);
+    try {
+      const coords = await getUserLocation();
+      // Pass actual coordinates to next screen
+      navigation.navigate("RoleSelectionScreen", {
+        location: coords,
+        role: route.params?.role || "buyer",
+      });
+    } catch (error) {
+      Alert.alert(
+        "Location Error",
+        "Could not fetch your location. Using default location.",
+        [{ text: "OK" }]
+      );
+      // Fallback to default coordinates if permission denied or error
+      navigation.navigate("RoleSelectionScreen", {
+        location: {
+          latitude: 25.276987,
+          longitude: 55.296249,
+        },
+        role: route.params?.role || "buyer",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
   return (
     <View style={styles.container}>
       <BackgroundWrapper>
