@@ -2,35 +2,32 @@ import React, { useState } from "react";
 import {
   View,
   Text,
+  Image,
   TouchableOpacity,
   ScrollView,
-  Image,
   Alert,
 } from "react-native";
 import { useDispatch } from "react-redux";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";
 
 import Button from "../../componets/Button";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Header from "../../componets/Header";
+import images from "../../config/images";
 import TextInputField from "../../componets/TextInputField";
 
 import { buyerSignUpThunk } from "../../redux/slice/buyerSlice";
-import { getUserLocation } from "../../utils/geoLocation";
 
 const RegistrationScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const route = useRoute();
-  const { role } = route.params || {}; // You no longer need location from here
 
   const [form, setForm] = useState({
-    fullName: "",
+    name: "",
     phone: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -48,21 +45,26 @@ const RegistrationScreen = () => {
       Alert.alert("Error", "Passwords do not match");
       return;
     }
-
     try {
       setLoading(true);
-      const location = await getUserLocation();
 
       const payload = {
-        name: form.fullName,
+        name: form.name,
         phone: form.phone,
         email: form.email,
         password: form.password,
-        location: JSON.stringify(location), // stringified for backend
-        role: role || "buyer",
+        coords: {
+          latitude: "25.276987",
+          longitude: "55.296249",
+        },
+        profileImage:
+          "MV5BZGYwYTNjNTAtZTFhNS00MDQ5LThmZjUtN2I4ODQ5ZjI2NjI4DQ5ZII...", // Mock image data
       };
 
-      await dispatch(buyerSignUpThunk(payload)).unwrap();
+      console.log("Sending registration payload:", payload);
+      const response = await dispatch(buyerSignUpThunk(payload)).unwrap();
+      console.log("Registration response:", response);
+
       navigation.navigate("RequestSentScreen");
     } catch (err) {
       const message =
@@ -92,27 +94,29 @@ const RegistrationScreen = () => {
             <TextInputField
               placeholder="Full Name"
               customStyle={styles.inputContainer}
-              value={form.fullName}
-              onChangeText={(text) => handleChange("fullName", text)}
+              value={form.name}
+              onChangeText={(text) => handleChange("name", text)}
             />
             <TextInputField
               placeholder="Phone Number"
               customStyle={styles.inputContainer}
               value={form.phone}
               onChangeText={(text) => handleChange("phone", text)}
+              keyboardType="phone-pad"
             />
             <TextInputField
               placeholder="Email"
               customStyle={styles.inputContainer}
               value={form.email}
               onChangeText={(text) => handleChange("email", text)}
+              keyboardType="email-address"
             />
             <TextInputField
               placeholder="Password"
               customStyle={styles.inputContainer}
               value={form.password}
-              secureTextEntry
               onChangeText={(text) => handleChange("password", text)}
+              secureTextEntry
             />
             <TextInputField
               placeholder="Confirm Password"
@@ -122,7 +126,6 @@ const RegistrationScreen = () => {
               onChangeText={(text) => handleChange("confirmPassword", text)}
             />
           </View>
-
           <View style={styles.buttonContainer}>
             <Button
               label={loading ? "Submitting..." : "Submit For Verification"}
@@ -130,11 +133,10 @@ const RegistrationScreen = () => {
               disabled={loading}
             />
           </View>
-
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account? </Text>
             <TouchableOpacity onPress={handleIconPress}>
-              <Text style={styles.loginLink}> Login</Text>
+              <Text style={styles.loginLink}>Login</Text>
             </TouchableOpacity>
           </View>
         </BackgroundWrapper>

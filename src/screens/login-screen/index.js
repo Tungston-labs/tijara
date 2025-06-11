@@ -13,6 +13,9 @@ const LoginScreen = ({ navigation }) => {
   const handleIconPress = () => {
     navigation.navigate("RoleSelectionScreen");
   };
+  const handleCreateAccount = () => {
+    navigation.navigate("RoleSelectionScreen");
+  };
   return (
     <View style={styles.container}>
       <BackgroundWrapper>
@@ -53,7 +56,7 @@ const LoginScreen = ({ navigation }) => {
 
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Don’t have an account? </Text>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleCreateAccount}>
               <Text style={styles.loginLink}> Sign Up</Text>
             </TouchableOpacity>
             <Text style={styles.loginText}> Now </Text>

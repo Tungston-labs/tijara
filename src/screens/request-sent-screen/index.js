@@ -1,12 +1,40 @@
-import { View, Text, Image } from "react-native";
 import React from "react";
+import { View, Text, Image } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
+import { checkBuyerStatusThunk } from "../../redux/slice/buyerSlice";
 
-const RequestSentScreen = ({ navigation }) => {
-  const handleButtonClick = () => {
-    navigation.navigate("RequestSuccessScreen");
+const RequestSentScreen = () => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const { user, verificationStatus, loading } = useSelector(
+    (state) => state.buyer
+  );
+
+  const handleButtonClick = async () => {
+    try {
+      if (user?._id) {
+        await dispatch(checkBuyerStatusThunk(user._id)).unwrap();
+
+        if (verificationStatus === "approved") {
+          navigation.replace("RequestSuccessScreen");
+        } else if (
+          verificationStatus === "rejected" ||
+          verificationStatus === "pending"
+        ) {
+          navigation.replace("RequestNotVerifiedScreen");
+        }
+      } else {
+        console.log("No user ID available");
+        alert("Unable to check status. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error checking status:", error);
+      alert("Error checking status. Please try again.");
+    }
   };
 
   return (
@@ -32,8 +60,9 @@ const RequestSentScreen = ({ navigation }) => {
 
         <View style={styles.buttonContainer}>
           <Button
-            label={"Submit For Verification"}
+            label={loading ? "Checking..." : "Submit For Verification"}
             handleButtonPress={handleButtonClick}
+            disabled={loading}
           />
         </View>
       </BackgroundWrapper>
