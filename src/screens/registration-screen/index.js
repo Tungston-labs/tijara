@@ -46,7 +46,6 @@ const RegistrationScreen = () => {
       return;
     }
     try {
-      setLoading(true);
 
       const payload = {
         name: form.name,

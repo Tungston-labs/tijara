@@ -14,9 +14,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: width * 1,
   },
-  inputBoxStyle: {
-    width: width * 1,
-  },
   wrapperContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -42,39 +39,46 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBlockStart: "auto",
   },
-  buttonStyle: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 20,
-  },
-    ImageContainer: {
+  ImageContainer: {
     alignSelf: "center",
     width: width * 0.4,
     height: height * 0.1,
   },
-  nextButton: {
-  backgroundColor: "#B3DB48",
-  width: width * 0.9,
-  paddingVertical: 15,
-  borderRadius: 8,
-  alignItems: "center",
-  flexDirection: "row",
-  justifyContent: "center",
-  marginTop: 20,
-},
-
-nextButtonText: {
-  color: "#fff",
-  fontSize: 16,
-  fontWeight: "bold",
-},
-
-nextButtonIcon: {
-  marginLeft: 48,
-},
-
-
+  uploadSection: {
+    width: width * 0.9,
+    marginTop: 10,
+  },
+  uploadLabel: {
+    fontSize: 16,
+    marginBottom: 8,
+    color: "#000",
+  },
+  uploadBox: {
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderColor: "#ccc",
+    paddingVertical: 20,
+    alignItems: "center",
+    borderRadius: 6,
+  },
+  uploadText: {
+    color: "#94D82D",
+    fontSize: 16,
+  },
+  uploadedFileRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  uploadedFileName: {
+    flex: 1,
+    color: "#000",
+  },
+  removeFile: {
+    color: "red",
+    fontSize: 20,
+    marginLeft: 10,
+  },
 });
 
 export default styles;
