@@ -1,20 +1,15 @@
 import { View, Text, TouchableOpacity, ScrollView, Image } from "react-native";
 import React, { useState } from "react";
 import styles from "./styles";
-import Button from "../../componets/Button";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Header from "../../componets/Header";
 import TextInputField from "../../componets/TextInputField";
-import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { sellerSignUpThunk } from "../../redux/slice/sellerSlice";
-import Icon from "react-native-vector-icons/Feather"
+import Icon from "react-native-vector-icons/Feather";
 import { launchImageLibrary } from "react-native-image-picker";
-
 
 const SellerRegistrationScreen = () => {
   const [profileImage, setProfileImage] = useState(null);
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [form, setForm] = useState({
     name: "",
@@ -24,7 +19,6 @@ const SellerRegistrationScreen = () => {
     tradeLicenseNumber: "",
     managerName: "",
     companyName: "",
-   
   });
   const [loading, setLoading] = useState(false);
   const handleIconPress = () => {
@@ -33,72 +27,62 @@ const SellerRegistrationScreen = () => {
   const handleChange = (field, value) => {
     setForm({ ...form, [field]: value });
   };
-const handleSelectImage = () => {
-  const options = {
-    mediaType: "photo",
-    quality: 1,
+  const handleSelectImage = () => {
+    const options = {
+      mediaType: "photo",
+      quality: 0.7,
+    };
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) return;
+      if (response.errorCode) {
+        console.error("ImagePicker Error: ", response.errorMessage);
+        return;
+      }
+
+      const asset = response.assets?.[0];
+      if (asset) {
+        setProfileImage({
+          uri: asset.uri,
+          name: asset.fileName,
+          type: asset.type,
+        });
+      }
+    });
   };
 
-  launchImageLibrary(options, (response) => {
-    if (response.didCancel) return;
-    if (response.errorCode) {
-      console.log("Image Picker Error: ", response.errorMessage);
+  const handleNext = async () => {
+    if (
+      !form.name ||
+      !form.phone ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
+      Alert.alert("Validation Error", "Please fill in all fields.");
       return;
     }
 
-    const asset = response.assets?.[0];
-    if (asset) {
-      setProfileImage(asset);
-      // also update form data if needed
-    }
-  });
-};
-  const handleButtonClick = async () => {
     if (form.password !== form.confirmPassword) {
       Alert.alert("Error", "Passwords do not match");
       return;
     }
-    try {
-      const payload = {
-        name: form.name,
-        phone: form.phone,
-        email: form.email,
-        password: form.password,
-       
-        coords: {
-          latitude: "25.276987",
-          longitude: "55.296249",
-        },
-        profileImage:
-          "MV5BZGYwYTNjNTAtZTFhNS00MDQ5LThmZjUtN2I4ODQ5ZjI2NjI4DQ5ZII...",
-    
-      };
-      console.log("Sending registration payload:", payload);
-      const response = await dispatch(sellerSignUpThunk(payload)).unwrap();
-      console.log("Registration response:", response);
 
-      navigation.navigate("RequestSentScreen");
-    } catch (err) {
-      const message =
-        err?.message || (typeof err === "string" ? err : "An error occurred");
-      Alert.alert("Signup Failed", message);
-    } finally {
-      setLoading(false);
-    }
+    const basicFormData = {
+      name: form.name,
+      phone: form.phone,
+      email: form.email,
+      password: form.password,
+      coords: {
+        latitude: 25.276987,
+        longitude: 55.296249,
+      },
+    };
+
+    navigation.navigate("SellerRegistrationSecond", {
+      form: basicFormData,
+      profileImage,
+    });
   };
-  const handleNext = () => {
-  const formData = {
-    ...form,
-    coords: {
-      latitude: "25.276987",
-      longitude: "55.296249",
-    },
-    profileImage: "MV5BZGYwYTNjNTAtZTFhNS00MDQ5LThmZjUtN2I4ODQ5ZjI2NjI4DQ5ZII...", // You can replace this with actual image URI if available
-  };
-
-  navigation.navigate("SellerRegistrationSecond", { formData });
-};
-
 
   return (
     <ScrollView>
@@ -110,11 +94,23 @@ const handleSelectImage = () => {
             Title={"Complete your"}
             Subtitle={"Account Creation"}
           />
-          <Image
-            source={require("../../resources/images/profile.png")}
-            resizeMode="contain"
-            style={styles.ImageContainer}
-          />
+          <View style={styles.profileImageWrapper}>
+            <Image
+              source={
+                profileImage
+                  ? { uri: profileImage.uri }
+                  : require("../../resources/images/profile.png")
+              }
+              style={styles.profileImage}
+              resizeMode="cover"
+            />
+            <TouchableOpacity
+              style={styles.plusIconContainer}
+              onPress={handleSelectImage}
+            >
+              <Icon name="plus-circle" size={24} color="#9AD000" />
+            </TouchableOpacity>
+          </View>
           <View style={styles.textInputcontainer}>
             <TextInputField
               placeholder="Full Name"

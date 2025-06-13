@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: width * 1,
+    marginTop: -20,
   },
   inputBoxStyle: {
     width: width * 1,
@@ -53,6 +54,26 @@ const styles = StyleSheet.create({
     width: width * 0.4,
     height: height * 0.1,
   },
+  profileImageWrapper: {
+  position: "relative",
+  alignSelf: "center",
+  marginVertical: 20,
+},
+
+profileImage: {
+  width: 100,
+  height: 100,
+  borderRadius: 50,
+  backgroundColor: "#eee",
+},
+
+plusIconContainer: {
+  position: "absolute",
+  bottom: 0,
+  right: 0,
+  backgroundColor: "#fff",
+  borderRadius: 50,
+},
   
 });
 export default styles;

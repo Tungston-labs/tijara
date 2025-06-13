@@ -1,25 +1,34 @@
-import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
 import React, { useState } from "react";
 import styles from "./styles";
-import Button from "../../componets/Button";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Header from "../../componets/Header";
 import TextInputField from "../../componets/TextInputField";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
-
+import { sellerSignUpThunk } from "../../redux/slice/sellerSlice";
+import { launchImageLibrary } from "react-native-image-picker";
+import Button from "../../componets/Button";
 const SellerRegistrationSecond = () => {
-    const dispatch = useDispatch(); 
-
+  const dispatch = useDispatch();
   const navigation = useNavigation();
+  const route = useRoute();
+
+const { form: prevForm = {}, profileImage } = route.params || {};
+
   const [form, setForm] = useState({
     companyName: "",
     tradeLicenseNumber: "",
     managerName: "",
     tradeLicenseCopy: null,
   });
-  const route = useRoute();
-const formData = route?.params?.formData ?? {}; 
 
   const [loading, setLoading] = useState(false);
 
@@ -28,41 +37,93 @@ const formData = route?.params?.formData ?? {};
   };
 
   const handleFileUpload = () => {
-    const mockFile = {
-      name: "dsderg-124.jpg",
-      uri: "mock/path/to/dsderg-124.jpg",
-      type: "image/jpeg",
+    const options = {
+      mediaType: "photo",
+      quality: 0.7,
     };
-    setForm({ ...form, tradeLicenseCopy: mockFile });
+
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) return;
+      if (response.errorCode) {
+        Alert.alert("Error", response.errorMessage);
+        return;
+      }
+
+      const asset = response.assets?.[0];
+      if (asset) {
+        setForm({
+          ...form,
+          tradeLicenseCopy: {
+            uri: asset.uri,
+            name: asset.fileName,
+            type: asset.type,
+          },
+        });
+      }
+    });
   };
 
   const handleRemoveFile = () => {
     setForm({ ...form, tradeLicenseCopy: null });
   };
 
-const handleSubmit = async () => {
-  const payload = {
-    ...formData, // from screen 1
-    companyName: form.companyName,
-    tradeLicenseNumber: form.tradeLicenseNumber,
-    managerName: form.managerName,
-    tradeLicenseCopy: form.tradeLicenseCopy?.uri ?? null,
+  const handleSubmit = async () => {
+    if (!form.companyName || !form.tradeLicenseNumber || !form.managerName) {
+      Alert.alert("Validation Error", "Please fill all required fields");
+      return;
+    }
+
+    if (!form.tradeLicenseCopy) {
+      Alert.alert("Validation Error", "Please upload your trade license copy");
+      return;
+    }
+
+    const formData = new FormData();
+
+    // Append data from first screen
+    formData.append("name", prevForm.name);
+    formData.append("email", prevForm.email);
+    formData.append("password", prevForm.password);
+    formData.append("phone", prevForm.phone);
+
+    formData.append("coords", JSON.stringify({
+      latitude: 25.276987,
+      longitude: 55.296249,
+    }));
+
+    if (profileImage) {
+      formData.append("profileImage", {
+        uri: profileImage.uri,
+        type: profileImage.type || "image/jpeg",
+        name: profileImage.name || "profile.jpg",
+      });
+    }
+
+    // Append second screen data
+    formData.append("companyName", form.companyName);
+    formData.append("tradeLicenseNumber", form.tradeLicenseNumber);
+    formData.append("managerName", form.managerName);
+
+    formData.append("tradeLicenseCopy", {
+      uri: form.tradeLicenseCopy.uri,
+      type: form.tradeLicenseCopy.type,
+      name: form.tradeLicenseCopy.name,
+    });
+
+    try {
+      setLoading(true);
+      await dispatch(sellerSignUpThunk(formData)).unwrap();
+      navigation.navigate("RequestSentScreen", {
+        phone: prevForm.phone,
+        from: "seller",
+      });
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      Alert.alert("Signup Failed", err?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
   };
-console.log("Final Payload:", payload);
-
-  try {
-    setLoading(true);
-    const response = await dispatch(sellerSignUpThunk(payload)).unwrap();
-    console.log("Registration successful:", response);
-    navigation.navigate("RequestSentScreen");
-  } catch (err) {
-    Alert.alert("Signup Failed", err?.message || "An error occurred");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
 
   return (
     <ScrollView>
@@ -75,8 +136,7 @@ console.log("Final Payload:", payload);
             Subtitle={"Company Details"}
           />
 
-       
-
+      
           <View style={styles.textInputcontainer}>
             <TextInputField
               placeholder="Company Name"

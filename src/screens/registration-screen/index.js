@@ -10,19 +10,18 @@ import {
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";
-
 import Button from "../../componets/Button";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Header from "../../componets/Header";
-import images from "../../config/images";
 import TextInputField from "../../componets/TextInputField";
-
 import { buyerSignUpThunk } from "../../redux/slice/buyerSlice";
+import { launchImageLibrary } from "react-native-image-picker";
+import Icon from "react-native-vector-icons/Feather";
 
 const RegistrationScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-
+  const[profileImage,setProfileImage]=useState(false)
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -40,39 +39,70 @@ const RegistrationScreen = () => {
     navigation.navigate("LoginScreen");
   };
 
-  const handleButtonClick = async () => {
-    if (form.password !== form.confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
+const handleSelectImage = () => {
+  const options = {
+    mediaType: "photo",
+    quality: 0.7,
+  };
+
+  launchImageLibrary(options, (response) => {
+    if (response.didCancel) return;
+    if (response.errorCode) {
+      console.error("ImagePicker Error: ", response.errorMessage);
       return;
     }
-    try {
 
-      const payload = {
-        name: form.name,
-        phone: form.phone,
-        email: form.email,
-        password: form.password,
-        coords: {
-          latitude: "25.276987",
-          longitude: "55.296249",
-        },
-        profileImage:
-          "MV5BZGYwYTNjNTAtZTFhNS00MDQ5LThmZjUtN2I4ODQ5ZjI2NjI4DQ5ZII...", // Mock image data
-      };
-
-      console.log("Sending registration payload:", payload);
-      const response = await dispatch(buyerSignUpThunk(payload)).unwrap();
-      console.log("Registration response:", response);
-
-      navigation.navigate("RequestSentScreen");
-    } catch (err) {
-      const message =
-        err?.message || (typeof err === "string" ? err : "An error occurred");
-      Alert.alert("Signup Failed", message);
-    } finally {
-      setLoading(false);
+    const asset = response.assets?.[0];
+    if (asset) {
+      setProfileImage({
+        uri: asset.uri,
+        name: asset.fileName,
+        type: asset.type,
+      });
     }
-  };
+  });
+};
+ const handleButtonClick = async () => {
+  if (form.password !== form.confirmPassword) {
+    Alert.alert("Error", "Passwords do not match");
+    return;
+  }
+
+  if (!profileImage) {
+    Alert.alert("Validation Error", "Please upload a profile image");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("name", form.name);
+  formData.append("phone", form.phone);
+  formData.append("email", form.email);
+  formData.append("password", form.password);
+
+  formData.append("coords", JSON.stringify({
+    latitude: 25.276987,
+    longitude: 55.296249,
+  }));
+
+  formData.append("profileImage", {
+    uri: profileImage.uri,
+    type: profileImage.type || "image/jpeg",
+    name: profileImage.name || "profile.jpg",
+  });
+
+  try {
+    setLoading(true);
+    await dispatch(buyerSignUpThunk(formData)).unwrap();
+    navigation.navigate("RequestSentScreen");
+  } catch (err) {
+    const message =
+      err?.message || (typeof err === "string" ? err : "An error occurred");
+    Alert.alert("Signup Failed", message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <ScrollView>
@@ -84,11 +114,23 @@ const RegistrationScreen = () => {
             Title={"Complete your"}
             Subtitle={"Account Creation"}
           />
-          <Image
-            source={require("../../resources/images/profile.png")}
-            resizeMode="contain"
-            style={styles.ImageContainer}
-          />
+          <View style={styles.profileImageWrapper}>
+            <Image
+              source={
+                profileImage
+                  ? { uri: profileImage.uri }
+                  : require("../../resources/images/profile.png")
+              }
+              style={styles.profileImage}
+              resizeMode="cover"
+            />
+            <TouchableOpacity
+              style={styles.plusIconContainer}
+              onPress={handleSelectImage}
+            >
+              <Icon name="plus-circle" size={24} color="#9AD000" />
+            </TouchableOpacity>
+          </View>
           <View style={styles.textInputcontainer}>
             <TextInputField
               placeholder="Full Name"
