@@ -16,6 +16,9 @@ const styles = StyleSheet.create({
     height: height * 0.18,
     paddingBottom: 60,
   },
+  headerTitleContainer: {
+    marginTop: 55,
+  },
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",

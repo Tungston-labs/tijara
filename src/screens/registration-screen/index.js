@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Platform,
+  PermissionsAndroid,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
@@ -21,7 +23,7 @@ import Icon from "react-native-vector-icons/Feather";
 const RegistrationScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const[profileImage,setProfileImage]=useState(false)
+  const [profileImage, setProfileImage] = useState(false);
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -36,73 +38,116 @@ const RegistrationScreen = () => {
   };
 
   const handleIconPress = () => {
-    navigation.navigate("LoginScreen");
+    navigation.goBack();
   };
 
-const handleSelectImage = () => {
-  const options = {
-    mediaType: "photo",
-    quality: 0.7,
+  const requestPermissions = async () => {
+    try {
+      if (Platform.Version >= 33) {
+        const permissions = [
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
+        ];
+
+        const granted = await PermissionsAndroid.requestMultiple(permissions);
+        return permissions.every(
+          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
+        );
+      } else {
+        const permissions = [
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        ];
+
+        const granted = await PermissionsAndroid.requestMultiple(permissions);
+        return permissions.every(
+          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
+        );
+      }
+    } catch (error) {
+      console.warn("Permission error:", error);
+      return false;
+    }
   };
 
-  launchImageLibrary(options, (response) => {
-    if (response.didCancel) return;
-    if (response.errorCode) {
-      console.error("ImagePicker Error: ", response.errorMessage);
+  const handleSelectImage = async () => {
+    const hasPermissions = await requestPermissions();
+
+    if (!hasPermissions) {
+      Alert.alert(
+        "Permission Required",
+        "Please grant storage permissions to select an image."
+      );
       return;
     }
 
-    const asset = response.assets?.[0];
-    if (asset) {
-      setProfileImage({
-        uri: asset.uri,
-        name: asset.fileName,
-        type: asset.type,
-      });
+    const options = {
+      mediaType: "photo",
+      quality: 0.7,
+    };
+
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) return;
+      if (response.errorCode) {
+        console.error("ImagePicker Error: ", response.errorMessage);
+        return;
+      }
+
+      const asset = response.assets?.[0];
+      if (asset) {
+        setProfileImage({
+          uri: asset.uri,
+          name: asset.fileName,
+          type: asset.type,
+        });
+      }
+    });
+  };
+
+  const handleButtonClick = async () => {
+    if (form.password !== form.confirmPassword) {
+      Alert.alert("Error", "Please fill all the fields correctly");
+      return;
     }
-  });
-};
- const handleButtonClick = async () => {
-  if (form.password !== form.confirmPassword) {
-    Alert.alert("Error", "Passwords do not match");
-    return;
-  }
 
-  if (!profileImage) {
-    Alert.alert("Validation Error", "Please upload a profile image");
-    return;
-  }
+    if (!profileImage) {
+      Alert.alert("Validation Error", "Please upload a profile image");
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("name", form.name);
-  formData.append("phone", form.phone);
-  formData.append("email", form.email);
-  formData.append("password", form.password);
+    const formData = new FormData();
+    formData.append("name", form.name);
+    formData.append("phone", form.phone);
+    formData.append("email", form.email);
+    formData.append("password", form.password);
 
-  formData.append("coords", JSON.stringify({
-    latitude: 25.276987,
-    longitude: 55.296249,
-  }));
+    formData.append(
+      "coords",
+      JSON.stringify({
+        latitude: 25.276987,
+        longitude: 55.296249,
+      })
+    );
 
-  formData.append("profileImage", {
-    uri: profileImage.uri,
-    type: profileImage.type || "image/jpeg",
-    name: profileImage.name || "profile.jpg",
-  });
+    formData.append("profileImage", {
+      uri: profileImage.uri,
+      type: profileImage.type || "image/jpeg",
+      name: profileImage.name || "profile.jpg",
+    });
 
-  try {
-    setLoading(true);
-    await dispatch(buyerSignUpThunk(formData)).unwrap();
-    navigation.navigate("RequestSentScreen");
-  } catch (err) {
-    const message =
-      err?.message || (typeof err === "string" ? err : "An error occurred");
-    Alert.alert("Signup Failed", message);
-  } finally {
-    setLoading(false);
-  }
-};
-
+    try {
+      setLoading(true);
+      await dispatch(buyerSignUpThunk(formData)).unwrap();
+      navigation.navigate("RequestSentScreen");
+    } catch (err) {
+      const message =
+        err?.message || (typeof err === "string" ? err : "An error occurred");
+      Alert.alert("Signup Failed", message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ScrollView>
@@ -115,20 +160,16 @@ const handleSelectImage = () => {
             Subtitle={"Account Creation"}
           />
           <View style={styles.profileImageWrapper}>
-            <Image
-              source={
-                profileImage
-                  ? { uri: profileImage.uri }
-                  : require("../../resources/images/profile.png")
-              }
-              style={styles.profileImage}
-              resizeMode="cover"
-            />
-            <TouchableOpacity
-              style={styles.plusIconContainer}
-              onPress={handleSelectImage}
-            >
-              <Icon name="plus-circle" size={24} color="#9AD000" />
+            <TouchableOpacity onPress={handleSelectImage}>
+              <Image
+                source={
+                  profileImage
+                    ? { uri: profileImage.uri }
+                    : require("../../resources/images/profile.png")
+                }
+                style={styles.profileImage}
+                resizeMode="cover"
+              />
             </TouchableOpacity>
           </View>
           <View style={styles.textInputcontainer}>

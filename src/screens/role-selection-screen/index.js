@@ -12,7 +12,10 @@ const RoleSelectionScreen = ({ navigation }) => {
   const location = route.params?.location; // safely access location param
 
   const handleButtonClick = () => {
-    navigation.navigate("SellerRegistrationScreen", { role: "seller", location });
+    navigation.navigate("SellerRegistrationScreen", {
+      role: "seller",
+      location,
+    });
   };
 
   const handleIconPress = () => {

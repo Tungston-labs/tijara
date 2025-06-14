@@ -10,8 +10,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   contentContainer: {
-    height: height * 0.88,
+    flex: 1,
     alignItems: "center",
+    justifyContent: "space-between",
+    paddingBottom: 40,
   },
   wrapperContainer: {
     justifyContent: "center",
@@ -64,7 +66,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: width * 1,
     alignItems: "center",
-    marginBlockStart: "auto",
+    marginTop: "auto",
   },
   buttonStyle: {
     flexDirection: "row",
@@ -77,6 +79,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 20,
     marginBottom: 25,
+    width: "100%",
   },
   loginText: {
     color: "#000000",

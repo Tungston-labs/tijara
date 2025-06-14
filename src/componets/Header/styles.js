@@ -6,16 +6,15 @@ const styles = StyleSheet.create({
   container: {
     height: height * 0.12,
     width: width * 1,
+    marginTop: 15,
   },
   rowContainer: {
     flexDirection: "row",
   },
   iconStyle: {
-    paddingTop: 50,
     width: width * 0.2,
   },
   editIconContainerStyle: {
-    paddingTop: 50,
     width: width * 0.2,
   },
   editText: {
@@ -25,7 +24,6 @@ const styles = StyleSheet.create({
   textContainer: {
     alignItems: "center",
     width: width * 0.6,
-    paddingTop: 50,
     textAlign: "center",
   },
   textStyle: {

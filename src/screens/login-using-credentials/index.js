@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setToken } from "../../services/config";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
-import {  sellerLoginThunk } from "../../redux/slice/sellerSlice";
+import { sellerLoginThunk } from "../../redux/slice/sellerSlice";
 import { loginThunk } from "../../redux/slice/buyerSlice";
 
 const LoginScreen = ({ route }) => {
@@ -24,28 +24,28 @@ const LoginScreen = ({ route }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { loading, error } = useSelector((state) => state.seller);
-const handleLogin = async () => {
-  const credentials = { email, password };
+  const handleLogin = async () => {
+    const credentials = { email, password };
 
-  try {
-    const res =
-      role === "buyer"
-        ? await dispatch(loginThunk(credentials)).unwrap()
-        : await dispatch(sellerLoginThunk(credentials)).unwrap();
+    try {
+      const res =
+        role === "buyer"
+          ? await dispatch(loginThunk(credentials)).unwrap()
+          : await dispatch(sellerLoginThunk(credentials)).unwrap();
 
-    if (res?.accessToken) {
-      setToken(res.accessToken);
+      if (res?.accessToken) {
+        setToken(res.accessToken);
 
-      if (role === "buyer") {
-        navigation.replace("BuyerHomeScreen");
-      } else {
-        navigation.replace("SellerHomeScreen");
+        if (role === "buyer") {
+          navigation.replace("BuyerHomeScreen");
+        } else {
+          navigation.replace("SellerHomeScreen");
+        }
       }
+    } catch (err) {
+      console.error("Login error:", err);
     }
-  } catch (err) {
-    console.error("Login error:", err);
-  }
-};
+  };
 
   return (
     <SafeAreaView style={styles.container}>

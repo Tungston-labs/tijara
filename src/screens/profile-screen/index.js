@@ -28,8 +28,6 @@ const ProfileScreen = ({ navigation }) => {
     navigation.navigate("BuyerHomeScreen");
   };
 
-
-  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -37,6 +35,7 @@ const ProfileScreen = ({ navigation }) => {
           Title={"Profile"}
           icon={true}
           handleIconPress={handleIconPress}
+          customStyle={styles.headerTitleContainer}
         />
       </View>
 
