@@ -46,7 +46,7 @@ const CreateAccountScreen = ({}) => {
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account? </Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate("LoginScreen")}
+              onPress={() => navigation.navigate("LoginScreenPassword")}
             >
               <Text style={styles.loginLink}> Login</Text>
             </TouchableOpacity>

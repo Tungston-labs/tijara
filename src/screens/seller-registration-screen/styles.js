@@ -48,5 +48,54 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 20,
   },
+    ImageContainer: {
+    alignSelf: "center",
+    width: width * 0.4,
+    height: height * 0.1,
+  },
+  nextButton: {
+  backgroundColor: "#B3DB48",
+  width: width * 0.9,
+  paddingVertical: 15,
+  borderRadius: 8,
+  alignItems: "center",
+  flexDirection: "row",
+  justifyContent: "center",
+  marginTop: 20,
+},
+
+nextButtonText: {
+  color: "#fff",
+  fontSize: 16,
+  fontWeight: "bold",
+},
+
+nextButtonIcon: {
+  marginLeft: 48,
+},
+profileImageWrapper: {
+  position: "relative",
+  alignSelf: "center",
+  marginVertical: 20,
+},
+
+profileImage: {
+  width: 100,
+  height: 100,
+  borderRadius: 50,
+  backgroundColor: "#eee",
+},
+
+plusIconContainer: {
+  position: "absolute",
+  bottom: 0,
+  right: 0,
+  backgroundColor: "#fff",
+  borderRadius: 50,
+},
+
+
+
 });
+
 export default styles;

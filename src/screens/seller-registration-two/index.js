@@ -1,0 +1,200 @@
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
+import React, { useState } from "react";
+import styles from "./styles";
+import BackgroundWrapper from "../../componets/BackgroundWrapper";
+import Header from "../../componets/Header";
+import TextInputField from "../../componets/TextInputField";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { sellerSignUpThunk } from "../../redux/slice/sellerSlice";
+import { launchImageLibrary } from "react-native-image-picker";
+import Button from "../../componets/Button";
+const SellerRegistrationSecond = () => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const route = useRoute();
+
+const { form: prevForm = {}, profileImage } = route.params || {};
+
+  const [form, setForm] = useState({
+    companyName: "",
+    tradeLicenseNumber: "",
+    managerName: "",
+    tradeLicenseCopy: null,
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (field, value) => {
+    setForm({ ...form, [field]: value });
+  };
+
+  const handleFileUpload = () => {
+    const options = {
+      mediaType: "photo",
+      quality: 0.7,
+    };
+
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) return;
+      if (response.errorCode) {
+        Alert.alert("Error", response.errorMessage);
+        return;
+      }
+
+      const asset = response.assets?.[0];
+      if (asset) {
+        setForm({
+          ...form,
+          tradeLicenseCopy: {
+            uri: asset.uri,
+            name: asset.fileName,
+            type: asset.type,
+          },
+        });
+      }
+    });
+  };
+
+  const handleRemoveFile = () => {
+    setForm({ ...form, tradeLicenseCopy: null });
+  };
+
+  const handleSubmit = async () => {
+    if (!form.companyName || !form.tradeLicenseNumber || !form.managerName) {
+      Alert.alert("Validation Error", "Please fill all required fields");
+      return;
+    }
+
+    if (!form.tradeLicenseCopy) {
+      Alert.alert("Validation Error", "Please upload your trade license copy");
+      return;
+    }
+
+    const formData = new FormData();
+
+    // Append data from first screen
+    formData.append("name", prevForm.name);
+    formData.append("email", prevForm.email);
+    formData.append("password", prevForm.password);
+    formData.append("phone", prevForm.phone);
+
+    formData.append("coords", JSON.stringify({
+      latitude: 25.276987,
+      longitude: 55.296249,
+    }));
+
+    if (profileImage) {
+      formData.append("profileImage", {
+        uri: profileImage.uri,
+        type: profileImage.type || "image/jpeg",
+        name: profileImage.name || "profile.jpg",
+      });
+    }
+
+    // Append second screen data
+    formData.append("companyName", form.companyName);
+    formData.append("tradeLicenseNumber", form.tradeLicenseNumber);
+    formData.append("managerName", form.managerName);
+
+    formData.append("tradeLicenseCopy", {
+      uri: form.tradeLicenseCopy.uri,
+      type: form.tradeLicenseCopy.type,
+      name: form.tradeLicenseCopy.name,
+    });
+
+    try {
+      setLoading(true);
+      await dispatch(sellerSignUpThunk(formData)).unwrap();
+      navigation.navigate("RequestSentScreen", {
+        phone: prevForm.phone,
+        from: "seller",
+      });
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      Alert.alert("Signup Failed", err?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <ScrollView>
+      <View style={styles.container}>
+        <BackgroundWrapper style={styles.wrapperContainer}>
+          <Header
+            handleIconPress={() => navigation.navigate("SellerRegistrationScreen")}
+            icon={true}
+            Title={"Complete your"}
+            Subtitle={"Company Details"}
+          />
+
+      
+          <View style={styles.textInputcontainer}>
+            <TextInputField
+              placeholder="Company Name"
+              customStyle={styles.inputContainer}
+              value={form.companyName}
+              onChangeText={(text) => handleChange("companyName", text)}
+            />
+            <TextInputField
+              placeholder="Trade License Number"
+              customStyle={styles.inputContainer}
+              value={form.tradeLicenseNumber}
+              onChangeText={(text) => handleChange("tradeLicenseNumber", text)}
+            />
+            <TextInputField
+              placeholder="Manager Name"
+              customStyle={styles.inputContainer}
+              value={form.managerName}
+              onChangeText={(text) => handleChange("managerName", text)}
+            />
+            <View style={styles.uploadSection}>
+              <Text style={styles.uploadLabel}>Upload Trade License Copy</Text>
+              <TouchableOpacity
+                onPress={handleFileUpload}
+                style={styles.uploadBox}
+              >
+                <Text style={styles.uploadText}>+ Add file</Text>
+              </TouchableOpacity>
+              {form.tradeLicenseCopy && (
+                <View style={styles.uploadedFileRow}>
+                  <Text style={styles.uploadedFileName}>
+                    {form.tradeLicenseCopy.name}
+                  </Text>
+                  <TouchableOpacity onPress={handleRemoveFile}>
+                    <Text style={styles.removeFile}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <Button
+              label={loading ? "Submitting..." : "Submit for Verification"}
+              handleButtonPress={handleSubmit}
+              disabled={loading}
+            />
+          </View>
+
+          <View style={styles.loginContainer}>
+            <Text style={styles.loginText}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+              <Text style={styles.loginLink}> Login</Text>
+            </TouchableOpacity>
+          </View>
+        </BackgroundWrapper>
+      </View>
+    </ScrollView>
+  );
+};
+
+export default SellerRegistrationSecond;

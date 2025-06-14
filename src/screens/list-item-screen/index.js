@@ -52,7 +52,7 @@ const ListItemScreen = () => {
         <View style={styles.itemHeaderContainer}>
           <Text style={styles.itemHeader}>Popular Item</Text>
         </View>
-
+      
         <View style={styles.flatListContainer}>
           <FlatList
             data={listData}
