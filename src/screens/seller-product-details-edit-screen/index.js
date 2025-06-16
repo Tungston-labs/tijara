@@ -7,7 +7,7 @@ import BackgroundWrapper from "../../componets/BackgroundWrapper";
 
 const SellerProductDetailsEditScreen = ({ navigation }) => {
   const handleIconPress = () => {
-    navigation.navigate("BuyerHomeScreen");
+    navigation.goBack();
   };
   const handleEditPress = () => {
     navigation.navigate("AddItemScreen");

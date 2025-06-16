@@ -24,8 +24,8 @@ const ProfileScreen = ({ navigation }) => {
   const closeModal = () => {
     setModalVisible(false);
   };
-  const handleIconPress = () => {
-    navigation.navigate("BuyerHomeScreen");
+ const handleIconPress = () => {
+    navigation.goBack();
   };
 
   return (

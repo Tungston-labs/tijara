@@ -36,6 +36,8 @@ export const loginThunk = createAsyncThunk(
       const res = await login(credentials);
       // Store token in AsyncStorage or secure storage
       // await AsyncStorage.setItem('token', res.accessToken);
+      console.log("Login response in thunk:", res); // <- DEBUG
+
       return res;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -72,7 +74,6 @@ const buyerSlice = createSlice({
       .addCase(buyerSignUpThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
-        state.verificationStatus = action.payload.status;
       })
       .addCase(buyerSignUpThunk.rejected, (state, action) => {
         state.loading = false;
@@ -90,6 +91,11 @@ const buyerSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
+      .addCase(loginThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
       .addCase(loginThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -98,14 +104,11 @@ const buyerSlice = createSlice({
         state.loading = false;
         state.user = {
           name: action.payload.name,
-          _id: action.payload._id,
+          _id: action.payload._id, // Make sure `_id` is in the response
         };
         state.token = action.payload.accessToken;
         state.role = action.payload.role;
-      })
-      .addCase(loginThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        console.log("Token buyer received:", action.payload.accessToken);
       });
   },
 });

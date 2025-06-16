@@ -10,7 +10,7 @@ import {
   PermissionsAndroid,
 } from "react-native";
 import { useDispatch } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import styles from "./styles";
 import Button from "../../componets/Button";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
@@ -21,14 +21,20 @@ import { launchImageLibrary } from "react-native-image-picker";
 import Icon from "react-native-vector-icons/Feather";
 
 const RegistrationScreen = () => {
+  const route = useRoute();
+  const role = route.params?.role || "buyer";
+  const location = route.params?.location || null;
+
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [profileImage, setProfileImage] = useState(false);
+
+  const [profileImage, setProfileImage] = useState(null);
   const [form, setForm] = useState({
     name: "",
     phone: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -73,7 +79,6 @@ const RegistrationScreen = () => {
 
   const handleSelectImage = async () => {
     const hasPermissions = await requestPermissions();
-
     if (!hasPermissions) {
       Alert.alert(
         "Permission Required",
@@ -106,8 +111,19 @@ const RegistrationScreen = () => {
   };
 
   const handleButtonClick = async () => {
-    if (form.password !== form.confirmPassword) {
+    if (
+      !form.name ||
+      !form.phone ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
       Alert.alert("Error", "Please fill all the fields correctly");
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
       return;
     }
 
@@ -116,36 +132,51 @@ const RegistrationScreen = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("name", form.name);
-    formData.append("phone", form.phone);
-    formData.append("email", form.email);
-    formData.append("password", form.password);
-
-    formData.append(
-      "coords",
-      JSON.stringify({
+    const basicFormData = {
+      name: form.name,
+      phone: form.phone,
+      email: form.email,
+      password: form.password,
+      coords: {
         latitude: 25.276987,
         longitude: 55.296249,
-      })
-    );
+      },
+      location,
+    };
 
-    formData.append("profileImage", {
-      uri: profileImage.uri,
-      type: profileImage.type || "image/jpeg",
-      name: profileImage.name || "profile.jpg",
-    });
+    if (role === "seller") {
+      navigation.navigate("SellerRegistrationSecond", {
+        form: basicFormData,
+        profileImage,
+      });
+    } else {
+      // Submit buyer registration
+      const formData = new FormData();
+      formData.append("name", form.name);
+      formData.append("phone", form.phone);
+      formData.append("email", form.email);
+      formData.append("password", form.password);
+      formData.append("coords", JSON.stringify(basicFormData.coords));
+      if (location) {
+        formData.append("location", location);
+      }
+      formData.append("profileImage", {
+        uri: profileImage.uri,
+        type: profileImage.type || "image/jpeg",
+        name: profileImage.name || "profile.jpg",
+      });
 
-    try {
-      setLoading(true);
-      await dispatch(buyerSignUpThunk(formData)).unwrap();
-      navigation.navigate("RequestSentScreen");
-    } catch (err) {
-      const message =
-        err?.message || (typeof err === "string" ? err : "An error occurred");
-      Alert.alert("Signup Failed", message);
-    } finally {
-      setLoading(false);
+      try {
+        setLoading(true);
+        await dispatch(buyerSignUpThunk(formData)).unwrap();
+        navigation.navigate("RequestSentScreen");
+      } catch (err) {
+        const message =
+          err?.message || (typeof err === "string" ? err : "An error occurred");
+        Alert.alert("Signup Failed", message);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -156,20 +187,24 @@ const RegistrationScreen = () => {
           <Header
             handleIconPress={handleIconPress}
             icon={true}
-            Title={"Complete your"}
+            Title={`Complete your ${role === "seller" ? "Seller" : "Buyer"}`}
             Subtitle={"Account Creation"}
           />
           <View style={styles.profileImageWrapper}>
-            <TouchableOpacity onPress={handleSelectImage}>
-              <Image
-                source={
-                  profileImage
-                    ? { uri: profileImage.uri }
-                    : require("../../resources/images/profile.png")
-                }
-                style={styles.profileImage}
-                resizeMode="cover"
-              />
+            <Image
+              source={
+                profileImage
+                  ? { uri: profileImage.uri }
+                  : require("../../resources/images/profile.png")
+              }
+              style={styles.profileImage}
+              resizeMode="cover"
+            />
+            <TouchableOpacity
+              style={styles.plusIconContainer}
+              onPress={handleSelectImage}
+            >
+              <Icon name="plus-circle" size={24} color="#9AD000" />
             </TouchableOpacity>
           </View>
           <View style={styles.textInputcontainer}>
@@ -204,20 +239,39 @@ const RegistrationScreen = () => {
               placeholder="Confirm Password"
               customStyle={styles.inputContainer}
               value={form.confirmPassword}
-              secureTextEntry
               onChangeText={(text) => handleChange("confirmPassword", text)}
+              secureTextEntry
             />
           </View>
           <View style={styles.buttonContainer}>
-            <Button
-              label={loading ? "Submitting..." : "Submit For Verification"}
-              handleButtonPress={handleButtonClick}
-              disabled={loading}
-            />
+            {role === "seller" ? (
+              <TouchableOpacity
+                onPress={handleButtonClick}
+                disabled={loading}
+                style={styles.nextButton}
+              >
+                <Text style={styles.nextButtonText}>Next</Text>
+                <Icon
+                  name="chevron-right"
+                  size={24}
+                  color="#fff"
+                  style={styles.nextButtonIcon}
+                />
+              </TouchableOpacity>
+            ) : (
+              <Button
+                label={loading ? "Submitting..." : "Submit For Verification"}
+                handleButtonPress={handleButtonClick}
+                disabled={loading}
+              />
+            )}
           </View>
+
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account? </Text>
-            <TouchableOpacity onPress={handleIconPress}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("LoginScreenPassword")}
+            >
               <Text style={styles.loginLink}>Login</Text>
             </TouchableOpacity>
           </View>

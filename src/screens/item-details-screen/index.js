@@ -13,16 +13,20 @@ import images from "../../config/images";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 import ModalButton from "../../componets/ModalButton";
+import { useSelector } from "react-redux";
 
 const ItemDetailsScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [quantity, setQuantity] = useState(100);
+  const token = useSelector((state) => state.seller.token);
+
+console.log("Token from Redux:", token); 
 
   const decrease = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
   const increase = () => setQuantity((prev) => prev + 1);
 
   const handleIconPress = () => {
-    navigation.navigate("BuyerHomeScreen");
+    navigation.goBack();
   };
   const handleButtonClick = () => {
     setModalVisible(true);

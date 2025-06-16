@@ -9,10 +9,12 @@ import RequestReceiveScreen from "../request-receive-screen";
 import Icon from "react-native-vector-icons/Ionicons";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import UserListItemScreen from "../user-list-item-screen";
+import { useSelector } from "react-redux";
 
 const Tab = createBottomTabNavigator();
 
 const TabScreens = ({ onTabChange }) => {
+  const token = useSelector((state) => state.seller.token);
   return (
     <Tab.Navigator
       screenOptions={{

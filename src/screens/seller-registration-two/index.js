@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Platform,
+  PermissionsAndroid,
 } from "react-native";
 import React, { useState } from "react";
 import styles from "./styles";
@@ -35,33 +37,68 @@ const { form: prevForm = {}, profileImage } = route.params || {};
   const handleChange = (field, value) => {
     setForm({ ...form, [field]: value });
   };
+  const requestPermissions = async () => {
+    try {
+      if (Platform.Version >= 33) {
+        const permissions = [
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
+        ];
 
-  const handleFileUpload = () => {
-    const options = {
-      mediaType: "photo",
-      quality: 0.7,
-    };
+        const granted = await PermissionsAndroid.requestMultiple(permissions);
+        return permissions.every(
+          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
+        );
+      } else {
+        const permissions = [
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        ];
 
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) return;
-      if (response.errorCode) {
-        Alert.alert("Error", response.errorMessage);
-        return;
+        const granted = await PermissionsAndroid.requestMultiple(permissions);
+        return permissions.every(
+          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
+        );
       }
-
-      const asset = response.assets?.[0];
-      if (asset) {
-        setForm({
-          ...form,
-          tradeLicenseCopy: {
-            uri: asset.uri,
-            name: asset.fileName,
-            type: asset.type,
-          },
-        });
-      }
-    });
+    } catch (error) {
+      console.warn("Permission error:", error);
+      return false;
+    }
   };
+ const handleFileUpload = async () => {
+  const hasPermission = await requestPermissions();
+  if (!hasPermission) {
+    Alert.alert("Permission Denied", "Please grant storage permissions to upload the file.");
+    return;
+  }
+
+  const options = {
+    mediaType: "photo",
+    quality: 0.7,
+  };
+
+  launchImageLibrary(options, (response) => {
+    if (response.didCancel) return;
+    if (response.errorCode) {
+      Alert.alert("Error", response.errorMessage);
+      return;
+    }
+
+    const asset = response.assets?.[0];
+    if (asset) {
+      setForm({
+        ...form,
+        tradeLicenseCopy: {
+          uri: asset.uri,
+          name: asset.fileName,
+          type: asset.type,
+        },
+      });
+    }
+  });
+};
+
 
   const handleRemoveFile = () => {
     setForm({ ...form, tradeLicenseCopy: null });

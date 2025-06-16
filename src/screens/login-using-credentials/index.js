@@ -16,17 +16,22 @@ import { sellerLoginThunk } from "../../redux/slice/sellerSlice";
 import { loginThunk } from "../../redux/slice/buyerSlice";
 
 const LoginScreen = ({ route }) => {
-  const { role = "seller" } = route.params || {};
+  const { role = "buyer" } = route.params || {};
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secure, setSecure] = useState(true);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { loading, error } = useSelector((state) => state.seller);
+  const { loading, error } = useSelector((state) =>
+    role === "buyer" ? state.buyer : state.seller
+  );
   const handleLogin = async () => {
     const credentials = { email, password };
-
+    if (!email || !password) {
+      alert("Please enter both email and password");
+      return;
+    }
     try {
       const res =
         role === "buyer"

@@ -2,7 +2,6 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SafeAreaView, Platform, StatusBar, View } from "react-native";
-
 import LoginScreen from "../screens/login-screen";
 import RegistrationScreen from "../screens/registration-screen";
 import SplashScreen from "../screens/splash-screen";
@@ -14,7 +13,6 @@ import RequestNotVerifiedScreen from "../screens/request-not-verified-screen";
 import SuccessScreen from "../screens/success-screen";
 import BuyerHomeScreen from "../screens/buyer-home-screen";
 import ItemDetailsScreen from "../screens/item-details-screen";
-import SellerRegistrationScreen from "../screens/seller-registration-screen";
 import SellerHomeScreen from "../screens/seller-home-screen";
 import BuyerPaymentInfoScreen from "../screens/buyer-payment-info-screen";
 import SubscriptionDetailsScreen from "../screens/subscription-details-screen";
@@ -42,7 +40,7 @@ export default function MainNavigation() {
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}
-          initialRouteName="SellerHomeScreen"
+          initialRouteName="SplashScreen"
         >
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen
@@ -76,10 +74,7 @@ export default function MainNavigation() {
             name="ItemDetailsScreen"
             component={ItemDetailsScreen}
           />
-          <Stack.Screen
-            name="SellerRegistrationScreen"
-            component={SellerRegistrationScreen}
-          />
+       
           <Stack.Screen
             name="LoginScreenPassword"
             component={LoginScreenWithPassword}

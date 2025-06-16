@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   checkSellerStatus,
   login,
-  sellerSignUp,  
+  sellerSignUp,
 } from "../../services/seller-services";
 
 export const sellerSignUpThunk = createAsyncThunk(
@@ -97,8 +97,9 @@ const sellerSlice = createSlice({
         };
         state.token = action.payload.accessToken;
         state.role = action.payload.role;
+
       });
   },
 });
-export const{logout}=sellerSlice.actions
+export const { logout } = sellerSlice.actions;
 export default sellerSlice.reducer;

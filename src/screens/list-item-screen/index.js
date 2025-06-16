@@ -12,21 +12,36 @@ import { SwiperFlatList } from "react-native-swiper-flatlist";
 import images from "../../config/images";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import { useNavigation } from "@react-navigation/native";
-
-const pictures = ["veg1", "veg2", "veg3", "veg4"];
-const listData = [
-  { id: "1", title: "Item 1" },
-  { id: "2", title: "Item 2" },
-  { id: "3", title: "Item 3" },
-  { id: "4", title: "Item 4" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { fetchProductsThunk } from "../../redux/slice/productSlice"; // Adjust path if needed
 
 const ListItemScreen = () => {
-  const [selectedTab, setSelectedTab] = useState("Vegetables");
+  const { products, loading, error } = useSelector((state) => state.product); // From productSlice
+  const token = useSelector((state) => state.buyer.token); // Get buyer token
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (token) {
+      console.log("TOKEN FOUND IN ListItemScreen:", token);
+      dispatch(fetchProductsThunk({ token }));
+    }
+  }, [token]);
+
+  const [selectedTab, setSelectedTab] = useState("vegetables");
+
+  {
+    ["fruits", "vegetables"].map((tab) => (
+      <TouchableOpacity key={tab} onPress={() => setSelectedTab(tab)}>
+        <Text style={[styles.tabText, selectedTab === tab && styles.activeTab]}>
+          {tab.charAt(0).toUpperCase() + tab.slice(1)}
+        </Text>
+      </TouchableOpacity>
+    ));
+  }
   const navigation = useNavigation();
 
-  const handleTileClick = () => {
-    navigation.navigate("ItemDetailsScreen");
+  const handleTileClick = (item) => {
+    navigation.navigate("ItemDetailsScreen", { product: item });
   };
 
   return (
@@ -52,73 +67,92 @@ const ListItemScreen = () => {
         <View style={styles.itemHeaderContainer}>
           <Text style={styles.itemHeader}>Popular Item</Text>
         </View>
-      
+
         <View style={styles.flatListContainer}>
-          <FlatList
-            data={listData}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <Pressable onPress={handleTileClick}>
-                <View style={styles.flatItem}>
-                  <View style={styles.card}>
-                    <SwiperFlatList
-                      autoplay
-                      autoplayDelay={2}
-                      autoplayLoop
-                      showPagination
-                      paginationStyle={{
-                        position: "absolute",
-                        bottom: 80,
-                        alignSelf: "center",
-                      }}
-                      paginationStyleItem={{
-                        width: 7,
-                        height: 7,
-                        borderRadius: 5,
-                        marginHorizontal: 3,
-                      }}
-                      paginationActiveColor="#000000"
-                      paginationDefaultColor="#ccc"
-                      data={pictures}
-                      renderItem={({ item }) => (
-                        <View style={styles.child}>
-                          <Image
-                            source={images[item]}
-                            style={{
-                              width: "100%",
-                              height: 200,
-                              marginTop: 10,
-                            }}
-                            resizeMode="cover"
-                          />
+          {loading ? (
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              Loading...
+            </Text>
+          ) : error ? (
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              Failed to load products.
+            </Text>
+          ) : (
+            <FlatList
+              data={products.filter(
+                (item) => item.itemCategory?.toLowerCase() === selectedTab
+              )}
+              keyExtractor={(item) => item._id}
+              renderItem={({ item }) => (
+                <Pressable onPress={() => handleTileClick(item)}>
+                  <View style={styles.flatItem}>
+                    <View style={styles.card}>
+                      <SwiperFlatList
+                        autoplay
+                        autoplayDelay={2}
+                        autoplayLoop
+                        showPagination
+                        paginationStyle={{
+                          position: "absolute",
+                          bottom: 80,
+                          alignSelf: "center",
+                        }}
+                        paginationStyleItem={{
+                          width: 7,
+                          height: 7,
+                          borderRadius: 5,
+                          marginHorizontal: 3,
+                        }}
+                        paginationActiveColor="#000000"
+                        paginationDefaultColor="#ccc"
+                        data={item.images || pictures} // fallback if no real images
+                        renderItem={({ item: img }) => (
+                          <View style={styles.child}>
+                            <Image
+                              source={{ uri: img }} // Make sure images are full URLs
+                              style={{
+                                width: "100%",
+                                height: 200,
+                                marginTop: 10,
+                              }}
+                              resizeMode="cover"
+                            />
+                          </View>
+                        )}
+                      />
+                      <View style={styles.infoContainer}>
+                        <View style={styles.rowBetween}>
+                          <Text style={styles.author}>
+                            {item?.addedBy?.name || "Seller"}
+                          </Text>
+                          <Text style={styles.title}>{item?.itemName}</Text>
                         </View>
-                      )}
-                    />
 
-                    <View style={styles.infoContainer}>
-                      <View style={styles.rowBetween}>
-                        <Text style={styles.author}>Ajay kumar</Text>
-                        <Text style={styles.title}>Cabbage</Text>
-                      </View>
+                        <View style={styles.rowBetween}>
+                          <Text style={styles.rating}>⭐ 4.8 (54)</Text>
+                          <Text style={styles.subtitle}>
+                            {item?.itemSubCategory}
+                          </Text>
+                        </View>
 
-                      <View style={styles.rowBetween}>
-                        <Text style={styles.rating}>⭐ 4.8 (54)</Text>
-                        <Text style={styles.subtitle}>Savoy Cabbage</Text>
-                      </View>
-
-                      <View style={styles.rowBetween}>
-                        <Text style={styles.quantity}>
-                          Qty Available{"\n"}
-                          <Text style={{ fontWeight: "bold" }}>100 Kg</Text>
-                        </Text>
-                        <Text style={styles.price}>$200</Text>
+                        <View style={styles.rowBetween}>
+                          <Text style={styles.quantity}>
+                            Qty Available{"\n"}
+                            <Text style={{ fontWeight: "bold" }}>
+                              {item?.availableKg} Kg
+                            </Text>
+                          </Text>
+                          <Text style={styles.price}>
+                            ${item?.pricePerKg?.USD}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                   </View>
-                </View>
-              </Pressable>
-            )}
-          />
+                </Pressable>
+              )}
+            />
+          )}
         </View>
       </BackgroundWrapper>
     </View>
