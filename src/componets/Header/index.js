@@ -11,9 +11,10 @@ const Header = ({
   Title,
   Subtitle,
   handleEditIconPress,
+  customStyle,
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, customStyle]}>
       <View style={styles.rowContainer}>
         <View style={styles.iconStyle}>
           {icon && (
