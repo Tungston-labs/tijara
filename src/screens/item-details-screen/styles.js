@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    backgroundColor: "red",
   },
   dataContainer: {
     flexDirection: "row",
@@ -96,7 +95,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 10,
   },
-
+  selectedThumbnail: {
+  borderColor: "#B3DB48",
+  borderWidth: 2,
+},
   sellerBox: {
     flexDirection: "row",
     alignItems: "center",

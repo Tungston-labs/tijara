@@ -40,7 +40,9 @@ export const loginThunk = createAsyncThunk(
 
       return res;
     } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
+      return rejectWithValue(
+        err.response?.data || { message: "Unknown error" }
+      );
     }
   }
 );

@@ -29,20 +29,12 @@ const ListItemScreen = () => {
 
   const [selectedTab, setSelectedTab] = useState("vegetables");
 
-  {
-    ["fruits", "vegetables"].map((tab) => (
-      <TouchableOpacity key={tab} onPress={() => setSelectedTab(tab)}>
-        <Text style={[styles.tabText, selectedTab === tab && styles.activeTab]}>
-          {tab.charAt(0).toUpperCase() + tab.slice(1)}
-        </Text>
-      </TouchableOpacity>
-    ));
-  }
   const navigation = useNavigation();
 
-  const handleTileClick = (item) => {
-    navigation.navigate("ItemDetailsScreen", { product: item });
-  };
+const handleTileClick = (item) => {
+  navigation.navigate("ItemDetailsScreen", { productId: item._id });
+};
+
 
   return (
     <View style={styles.container}>
@@ -50,11 +42,14 @@ const ListItemScreen = () => {
         <View style={styles.boxTabContainer}>
           <View style={styles.tabContainer}>
             {["Fruits", "Vegetables"].map((tab) => (
-              <TouchableOpacity key={tab} onPress={() => setSelectedTab(tab)}>
+              <TouchableOpacity
+                key={tab}
+                onPress={() => setSelectedTab(tab.toLowerCase())}
+              >
                 <Text
                   style={[
                     styles.tabText,
-                    selectedTab === tab && styles.activeTab,
+                    selectedTab === tab.toLowerCase() && styles.activeTab,
                   ]}
                 >
                   {tab}

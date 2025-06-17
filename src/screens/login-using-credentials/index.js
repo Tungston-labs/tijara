@@ -26,31 +26,45 @@ const LoginScreen = ({ route }) => {
   const { loading, error } = useSelector((state) =>
     role === "buyer" ? state.buyer : state.seller
   );
-  const handleLogin = async () => {
-    const credentials = { email, password };
-    if (!email || !password) {
-      alert("Please enter both email and password");
+const handleLogin = async () => {
+  if (!email || !password) {
+    alert("Please enter both email and password");
+    return;
+  }
+
+  const credentials = { email, password };
+
+  try {
+    // Call the correct thunk, doesn't matter which — role will come from response
+    const res = await dispatch(loginThunk(credentials)).unwrap();
+
+    if (res?.accessToken) {
+      setToken(res.accessToken);
+
+      // Use role from backend response instead of route param
+      const userRole = res.role;
+
+      if (userRole === "buyer") {
+        navigation.replace("BuyerHomeScreen");
+      } else if (userRole === "seller") {
+        navigation.replace("SellerHomeScreen");
+      } else {
+        alert("Unknown user role");
+      }
+    }
+  } catch (err) {
+    console.error("Login error:", err);
+
+    // Check if not approved
+    const errorStatus = err?.response?.data?.status || err?.status;
+    if (errorStatus === "pending") {
+      navigation.navigate("RequestNotVerifiedScreen");
       return;
     }
-    try {
-      const res =
-        role === "buyer"
-          ? await dispatch(loginThunk(credentials)).unwrap()
-          : await dispatch(sellerLoginThunk(credentials)).unwrap();
 
-      if (res?.accessToken) {
-        setToken(res.accessToken);
-
-        if (role === "buyer") {
-          navigation.replace("BuyerHomeScreen");
-        } else {
-          navigation.replace("SellerHomeScreen");
-        }
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-    }
-  };
+    alert(err?.response?.data?.message || err.message || "Login failed");
+  }
+};
 
   return (
     <SafeAreaView style={styles.container}>
@@ -115,7 +129,7 @@ const LoginScreen = ({ route }) => {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Don’t have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+        <TouchableOpacity onPress={() => navigation.navigate("RegistrationScreen")}>
           <Text style={styles.signUpText}> Sign Up Now</Text>
         </TouchableOpacity>
       </View>

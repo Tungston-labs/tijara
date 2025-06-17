@@ -36,4 +36,18 @@ export const getAllProducts = async ({ token, page = 1, limit = 10, search = "",
     throw err;
   }
 };
+export const getProductById = async ({ token, productId }) => {
+  try {
+    const response = await API.get(`/product/get-productsbyid/${productId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error("Error fetching product by ID:", err?.response?.data || err.message);
+    throw err;
+  }
+};
+
 // Add more product-related functions as needed

@@ -3,6 +3,7 @@ import buyerReducer from './slice/buyerSlice';
 import sellerReducer from './slice/sellerSlice';
 import locationReducer from './slice/locationSlice';
 import productReducer from'./slice/productSlice';
+import orderReducer from './slice/orderSlice'
  // ensure file exists and exports properly
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,6 @@ export const store = configureStore({
     seller: sellerReducer,
     location: locationReducer,
     product:productReducer,
-  
+    order:orderReducer
   },
 });

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addProduct, getAllProducts } from "../../services/product-services";
+import { addProduct, getAllProducts, getProductById } from "../../services/product-services";
 
 // Async thunk
 export const addProductThunk = createAsyncThunk(
@@ -24,12 +24,24 @@ export const fetchProductsThunk = createAsyncThunk(
     }
   }
 );
+export const getProductByIdThunk = createAsyncThunk(
+  "product/getById",
+  async ({ token, productId }, { rejectWithValue }) => {
+    try {
+      const data = await getProductById({ token, productId });
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 // Slice
 const productSlice = createSlice({
   name: "product",
   initialState: {
     products: [],
+    selectedProduct: null, 
     loading: false,
     error: null,
     successMessage: null,
@@ -79,6 +91,18 @@ const productSlice = createSlice({
       .addCase(fetchProductsThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch products";
+      })
+      .addCase(getProductByIdThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getProductByIdThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedProduct = action.payload;
+      })
+      .addCase(getProductByIdThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch product";
       });
   },
 });
