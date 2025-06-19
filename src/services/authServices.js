@@ -1,6 +1,6 @@
 import API from "./config";
 
-export const sellerSignUp = async (formData) => {
+export const signUp = async (formData) => {
   try {
     const response = await API.post("/seller/seller-register", formData, {
       headers: {
@@ -17,7 +17,7 @@ export const sellerSignUp = async (formData) => {
   }
 };
 
-export const checkSellerStatus = async (userId) => {
+export const checkStatus = async (userId) => {
   try {
     const response = await API.post("/user/check-status", { id: userId });
     return response.data;
@@ -27,10 +27,12 @@ export const checkSellerStatus = async (userId) => {
   }
 };
 
-export const login = async (credentials) => {
+export const Login = async (credentials) => {
   try {
-    const response = await API.post("/seller/seller-login", credentials);
+    const response = await API.post("/user/login", credentials);
+    console.log("response",response);
     return response.data;
+    
   } catch (err) {
     console.error("Error logging in:", err?.response?.data || err.message);
     throw err;

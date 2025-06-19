@@ -13,10 +13,12 @@ import Header from "../../componets/Header";
 import images from "../../config/images";
 import Button from "../../componets/Button";
 import ModalButton from "../../componets/ModalButton";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/slice/authSlice";
 
 const ProfileScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
-
+  const dispatch=useDispatch();
   const handleButtonClick = () => {
     setModalVisible(true);
   };
@@ -27,7 +29,12 @@ const ProfileScreen = ({ navigation }) => {
  const handleIconPress = () => {
     navigation.goBack();
   };
+const handleLogout=async()=>{
+  
+    dispatch(logout)
+    navigation.navigate("LoginScreenPassword")
 
+}
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -62,6 +69,7 @@ const ProfileScreen = ({ navigation }) => {
           customLabelStyle={styles.label}
           IconColor={"red"}
           handleButtonPress={handleButtonClick}
+          
         />
       </View>
       <Modal
@@ -88,6 +96,7 @@ const ProfileScreen = ({ navigation }) => {
                 handleButtonPress={closeModal}
                 customStyle={styles.logoutButtonStyle}
                 customLabelStyle={styles.customLabelStyles}
+                handleButtonPress={handleLogout}
               />
             </View>
           </View>

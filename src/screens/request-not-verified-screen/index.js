@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
-import { checkBuyerStatusThunk } from "../../redux/slice/buyerSlice";
+// import { checkBuyerStatusThunk } from "../../redux/slice/buyerSlice";
 
 const RequestNotVerifiedScreen = () => {
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const RequestNotVerifiedScreen = () => {
   const handleButtonClick = async () => {
     try {
       if (user?._id) {
-        await dispatch(checkBuyerStatusThunk(user._id)).unwrap();
+        // await dispatch(checkBuyerStatusThunk(user._id)).unwrap();
 
         if (verificationStatus === "approved") {
           navigation.navigate("SubscriptionDetailsScreen");

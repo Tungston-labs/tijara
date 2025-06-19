@@ -16,9 +16,10 @@ import Button from "../../componets/Button";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Header from "../../componets/Header";
 import TextInputField from "../../componets/TextInputField";
-import { buyerSignUpThunk } from "../../redux/slice/buyerSlice";
+// import { buyerSignUpThunk } from "../../redux/slice/buyerSlice";
 import { launchImageLibrary } from "react-native-image-picker";
 import Icon from "react-native-vector-icons/Feather";
+// import { SignUpThunk } from "../../redux/slice/authSlice";
 
 const RegistrationScreen = () => {
   const route = useRoute();
@@ -168,7 +169,7 @@ const RegistrationScreen = () => {
 
       try {
         setLoading(true);
-        await dispatch(buyerSignUpThunk(formData)).unwrap();
+        // await dispatch(SignUpThunk(formData)).unwrap();
         navigation.navigate("RequestSentScreen");
       } catch (err) {
         const message =

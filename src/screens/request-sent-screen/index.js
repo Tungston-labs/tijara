@@ -5,19 +5,19 @@ import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
-import { checkBuyerStatusThunk } from "../../redux/slice/buyerSlice";
+import { checkStatusThunk } from "../../redux/slice/authSlice";
 
 const RequestSentScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { user, verificationStatus, loading } = useSelector(
-    (state) => state.buyer
+    (state) => state.user
   );
 
   const handleButtonClick = async () => {
     try {
       if (user?._id) {
-        await dispatch(checkBuyerStatusThunk(user._id)).unwrap();
+        await dispatch(checkStatusThunk(user._id)).unwrap();
 
         if (verificationStatus === "approved") {
           navigation.replace("RequestSuccessScreen");

@@ -1,27 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  buyerSignUp,
-  checkBuyerStatus,
-  login,
-} from "../../services/buyer-service";
+import { checkStatus, Login, signUp } from "../../services/authServices";
 
-export const buyerSignUpThunk = createAsyncThunk(
-  "buyer/signUp",
+export const SignUpThunk = createAsyncThunk(
+  "user/signUp",
   async (formData, { rejectWithValue }) => {
     try {
-      const res = await buyerSignUp(formData);
-      return res.buyer;
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
-
-export const checkBuyerStatusThunk = createAsyncThunk(
-  "buyer/checkStatus",
-  async (userId, { rejectWithValue }) => {
-    try {
-      const res = await checkBuyerStatus(userId);
+      const res = await signUp(formData);
       return res;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -29,15 +13,24 @@ export const checkBuyerStatusThunk = createAsyncThunk(
   }
 );
 
-export const loginThunk = createAsyncThunk(
-  "buyer/login",
+export const checkStatusThunk = createAsyncThunk(
+  "user/checkStatus",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const res = await checkStatus(userId);
+      return res;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+export const userLoginThunk = createAsyncThunk(
+  "user/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      const res = await login(credentials);
-      // Store token in AsyncStorage or secure storage
-      // await AsyncStorage.setItem('token', res.accessToken);
-      console.log("Login response in thunk:", res); // <- DEBUG
-
+      const res = await Login(credentials);
+      console.log("Login response in thunk:", res);
       return res;
     } catch (err) {
       return rejectWithValue(
@@ -47,8 +40,8 @@ export const loginThunk = createAsyncThunk(
   }
 );
 
-const buyerSlice = createSlice({
-  name: "buyer",
+const authSlice = createSlice({
+  name: "user",
   initialState: {
     user: null,
     loading: false,
@@ -63,57 +56,57 @@ const buyerSlice = createSlice({
       state.token = null;
       state.role = null;
       state.verificationStatus = null;
-      // Also clear token from storage
-      // AsyncStorage.removeItem('token');
+      
     },
+    
   },
   extraReducers: (builder) => {
     builder
-      .addCase(buyerSignUpThunk.pending, (state) => {
+      .addCase(SignUpThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(buyerSignUpThunk.fulfilled, (state, action) => {
+      .addCase(SignUpThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
       })
-      .addCase(buyerSignUpThunk.rejected, (state, action) => {
+      .addCase(SignUpThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(checkBuyerStatusThunk.pending, (state) => {
+      .addCase(checkStatusThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(checkBuyerStatusThunk.fulfilled, (state, action) => {
+      .addCase(checkStatusThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.verificationStatus = action.payload.status;
       })
-      .addCase(checkBuyerStatusThunk.rejected, (state, action) => {
+      .addCase(checkStatusThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
 
-      .addCase(loginThunk.rejected, (state, action) => {
+      .addCase(userLoginThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(loginThunk.pending, (state) => {
+      .addCase(userLoginThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(loginThunk.fulfilled, (state, action) => {
+      .addCase(userLoginThunk.fulfilled, (state, action) => {
         state.loading = false;
         state.user = {
           name: action.payload.name,
-          _id: action.payload._id, // Make sure `_id` is in the response
+          _id: action.payload._id,
         };
         state.token = action.payload.accessToken;
         state.role = action.payload.role;
-        console.log("Token buyer received:", action.payload.accessToken);
+        
       });
   },
 });
 
-export const { logout } = buyerSlice.actions;
-export default buyerSlice.reducer;
+export const { logout } = authSlice.actions;
+export default authSlice.reducer;

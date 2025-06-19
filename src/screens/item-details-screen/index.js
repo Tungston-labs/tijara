@@ -23,7 +23,7 @@ const ItemDetailsScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [quantity, setQuantity] = useState(100);
 
-  const token = useSelector((state) => state.buyer.token);
+  const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   const route = useRoute();
   const { productId } = route.params;

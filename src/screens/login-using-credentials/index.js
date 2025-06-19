@@ -4,67 +4,54 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
-  SafeAreaView,
+  ActivityIndicator,
+  SafeAreaView
 } from "react-native";
-import styles from "./styles";
-import { useDispatch, useSelector } from "react-redux";
-import { setToken } from "../../services/config";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { sellerLoginThunk } from "../../redux/slice/sellerSlice";
-import { loginThunk } from "../../redux/slice/buyerSlice";
+import { setToken } from "../../services/config"; // Assume this sets auth token globally
+import styles from "./styles";
+import { userLoginThunk } from "../../redux/slice/authSlice";
 
-const LoginScreen = ({ route }) => {
-  const { role = "buyer" } = route.params || {};
+const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secure, setSecure] = useState(true);
-
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { loading, error } = useSelector((state) =>
-    role === "buyer" ? state.buyer : state.seller
-  );
-const handleLogin = async () => {
-  if (!email || !password) {
-    alert("Please enter both email and password");
-    return;
-  }
-
-  const credentials = { email, password };
-
-  try {
-    // Call the correct thunk, doesn't matter which — role will come from response
-    const res = await dispatch(loginThunk(credentials)).unwrap();
-
-    if (res?.accessToken) {
-      setToken(res.accessToken);
-
-      // Use role from backend response instead of route param
-      const userRole = res.role;
-
-      if (userRole === "buyer") {
-        navigation.replace("BuyerHomeScreen");
-      } else if (userRole === "seller") {
-        navigation.replace("SellerHomeScreen");
-      } else {
-        alert("Unknown user role");
-      }
-    }
-  } catch (err) {
-    console.error("Login error:", err);
-
-    // Check if not approved
-    const errorStatus = err?.response?.data?.status || err?.status;
-    if (errorStatus === "pending") {
-      navigation.navigate("RequestNotVerifiedScreen");
+  const { loading, error } = useSelector((state) => state.user); 
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please enter both email and password");
       return;
     }
+    const credentials = { email, password };
+    try {
+      const res = await dispatch(userLoginThunk(credentials)).unwrap();
+      if (res?.accessToken) {
+        setToken(res.accessToken);
+        const userRole = res.role;
+        if (userRole === "buyer") {
+          navigation.replace("BuyerHomeScreen");
+        } else if (userRole === "seller") {
+          navigation.replace("SellerHomeScreen");
+        } else {
+          alert("Unknown user role");
+        }
+      }
+    } catch (err) {
+      // console.error("Login error:", err);
 
-    alert(err?.response?.data?.message || err.message || "Login failed");
-  }
-};
+      const errorStatus = err?.status || err?.response?.data?.status;
+      if (errorStatus === "pending") {
+        navigation.navigate("RequestNotVerifiedScreen");
+        return;
+      }
+
+      alert(err?.message || "Login failed");
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -129,7 +116,9 @@ const handleLogin = async () => {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Don’t have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("RegistrationScreen")}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("RegistrationScreen")}
+        >
           <Text style={styles.signUpText}> Sign Up Now</Text>
         </TouchableOpacity>
       </View>

@@ -23,6 +23,8 @@ import AddItemScreen from "../screens/add-item-screen";
 import SellerProductDetailsEditScreen from "../screens/seller-product-details-edit-screen";
 import SellerRegistrationSecond from "../screens/seller-registration-two";
 import LoginScreenWithPassword from "../screens/login-using-credentials";
+import UserListItemScreen from "../screens/user-list-item-screen";
+import SellerAddProductScreen from "../screens/add-item-screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -46,6 +48,10 @@ export default function MainNavigation() {
           <Stack.Screen
             name="RegistrationScreen"
             component={RegistrationScreen}
+          />
+            <Stack.Screen
+            name="UserListItemScreen"
+            component={UserListItemScreen}
           />
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
           <Stack.Screen
@@ -100,6 +106,10 @@ export default function MainNavigation() {
           <Stack.Screen
             name="RequestReceiveScreen"
             component={RequestReceiveScreen}
+          />
+           <Stack.Screen
+            name="SellerAddProductScreen"
+            component={SellerAddProductScreen}
           />
           <Stack.Screen name="AddItemScreen" component={AddItemScreen} />
           <Stack.Screen

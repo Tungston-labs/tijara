@@ -1,21 +1,40 @@
 import API from "./config";
 
-export const addProduct = async (data, token) => {
+export const getAllSellerProducts = async ({
+  token,
+  page = 1,
+  limit = 10,
+  search = "",
+  category,
+  status,
+  sellerName,
+}) => {
   try {
-    const response = await API.post("/product/add-product", data, {
+    const response = await API.get("/product/get-products", {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data", // in case you upload images
+      },
+      params: {
+        page,
+        limit,
+        search,
+        category,
+        status,
+        sellerName,
       },
     });
+    console.log("hdbhdhdbdjs",response)
     return response.data;
   } catch (err) {
-    console.error("Add product error:", err?.response?.data || err.message);
+    console.error(
+      "Error fetching products:",
+      err?.response?.data || err.message
+    );
     throw err;
   }
 };
 
-export const getAllProducts = async ({
+export const getAllBuyerProducts = async ({
   token,
   page = 1,
   limit = 10,
@@ -38,10 +57,7 @@ export const getAllProducts = async ({
         sellerName,
       },
     });
-  console.log("hdbhdhdbdjs", response)
-
     return response.data;
-    
   } catch (err) {
     console.error(
       "Error fetching products:",
@@ -51,21 +67,18 @@ export const getAllProducts = async ({
   }
 };
 
-export const getProductById = async ({ token, productId }) => {
+export const addSellerProduct = async ({ token, formData }) => {
   try {
-    const response = await API.get(`/product/get-productsbyid/${productId}`, {
+    const response = await API.post("/product/add-product", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
       },
     });
+    console.log("wdwweerwerwerwer",response)
     return response.data;
   } catch (err) {
-    console.error(
-      "Error fetching product by ID:",
-      err?.response?.data || err.message
-    );
+    console.error("Error adding product:", err?.response?.data || err.message);
     throw err;
   }
 };
-
-// Add more product-related functions as needed

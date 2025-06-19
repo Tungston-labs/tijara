@@ -6,6 +6,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+    container: {
+    flex: 1,
+    //   backgroundColor: "#fff",
+  },
+  firstContainer: {
+    marginTop: 5,
+    marginBottom: 10,
+  },
+
   boxTabContainer: {
     width: "100%",
     justifyContent: "center",

@@ -17,24 +17,32 @@ import { useEffect } from "react";
 import { fetchProductsThunk } from "../../redux/slice/productSlice"; // Adjust path if needed
 
 const ListItemScreen = () => {
-  const { products, loading, error } = useSelector((state) => state.product); // From productSlice
-  const token = useSelector((state) => state.buyer.token); // Get buyer token
+  const { products, loading, error } = useSelector((state) => state.product);
+  const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  const [selectedTab, setSelectedTab] = useState("vegetables");
+  
   useEffect(() => {
+    console.log("shbshshs",token)
     if (token) {
       console.log("TOKEN FOUND IN ListItemScreen:", token);
       dispatch(fetchProductsThunk({ token }));
     }
   }, [token]);
 
-  const [selectedTab, setSelectedTab] = useState("vegetables");
+  const filteredProducts = products.filter(
+    (item) => item.itemCategory?.toLowerCase() === selectedTab
+  );
 
-  const navigation = useNavigation();
+  console.log("All products:", products);
+  console.log("Selected Tab:", selectedTab);
+  console.log("Filtered:", filteredProducts);
 
-const handleTileClick = (item) => {
-  navigation.navigate("ItemDetailsScreen", { productId: item._id });
-};
-
+  const handleTileClick = (item) => {
+    navigation.navigate("ItemDetailsScreen", { productId: item._id });
+  };
 
   return (
     <View style={styles.container}>
@@ -72,11 +80,13 @@ const handleTileClick = (item) => {
             <Text style={{ textAlign: "center", marginTop: 20 }}>
               Failed to load products.
             </Text>
+          ) : filteredProducts.length === 0 ? (
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              No items found.
+            </Text>
           ) : (
             <FlatList
-              data={products.filter(
-                (item) => item.itemCategory?.toLowerCase() === selectedTab
-              )}
+              data={filteredProducts}
               keyExtractor={(item) => item._id}
               renderItem={({ item }) => (
                 <Pressable onPress={() => handleTileClick(item)}>
@@ -100,11 +110,11 @@ const handleTileClick = (item) => {
                         }}
                         paginationActiveColor="#000000"
                         paginationDefaultColor="#ccc"
-                        data={item.images || pictures} // fallback if no real images
+                        data={item.images}
                         renderItem={({ item: img }) => (
                           <View style={styles.child}>
                             <Image
-                              source={{ uri: img }} // Make sure images are full URLs
+                              source={{ uri: img }}
                               style={{
                                 width: "100%",
                                 height: 200,
@@ -122,14 +132,12 @@ const handleTileClick = (item) => {
                           </Text>
                           <Text style={styles.title}>{item?.itemName}</Text>
                         </View>
-
                         <View style={styles.rowBetween}>
                           <Text style={styles.rating}>⭐ 4.8 (54)</Text>
                           <Text style={styles.subtitle}>
                             {item?.itemSubCategory}
                           </Text>
                         </View>
-
                         <View style={styles.rowBetween}>
                           <Text style={styles.quantity}>
                             Qty Available{"\n"}
@@ -153,5 +161,6 @@ const handleTileClick = (item) => {
     </View>
   );
 };
+
 
 export default ListItemScreen;

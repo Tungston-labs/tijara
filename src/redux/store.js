@@ -1,16 +1,17 @@
-import { configureStore } from '@reduxjs/toolkit';
-import buyerReducer from './slice/buyerSlice';
-import sellerReducer from './slice/sellerSlice';
-import locationReducer from './slice/locationSlice';
-import productReducer from'./slice/productSlice';
-import orderReducer from './slice/orderSlice'
- // ensure file exists and exports properly
+import { configureStore } from "@reduxjs/toolkit";
+import locationReducer from "./slice/locationSlice";
+import productReducer from "./slice/productSlice";
+import orderReducer from "./slice/orderSlice";
+import sellerProductReducer from "./slice/sellerProductSlice";
+import authReducer from "./slice/authSlice";
+
 export const store = configureStore({
   reducer: {
-    buyer: buyerReducer, 
-    seller: sellerReducer,
     location: locationReducer,
-    product:productReducer,
-    order:orderReducer
+    product: productReducer,
+    order: orderReducer,
+    sellerProduct: sellerProductReducer,
+    user: authReducer,
   },
+  devTools: __DEV__,
 });
