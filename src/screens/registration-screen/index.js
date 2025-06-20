@@ -16,23 +16,20 @@ import Button from "../../componets/Button";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Header from "../../componets/Header";
 import TextInputField from "../../componets/TextInputField";
-// import { buyerSignUpThunk } from "../../redux/slice/buyerSlice";
 import { launchImageLibrary } from "react-native-image-picker";
 import Icon from "react-native-vector-icons/Feather";
-// import { SignUpThunk } from "../../redux/slice/authSlice";
-
+import API from "../../services/config";
 const RegistrationScreen = () => {
   const route = useRoute();
-  const role = route.params?.role || "buyer";
-  const location = route.params?.location || null;
-
+const { coords, location, role = "buyer" } = route.params || {};
+console.log({coords,location,role})
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const [profileImage, setProfileImage] = useState(null);
   const [form, setForm] = useState({
     name: "",
-    phone: "",
+    phone: "",  
     email: "",
     password: "",
     confirmPassword: "",
@@ -42,7 +39,7 @@ const RegistrationScreen = () => {
 
   const handleChange = (field, value) => {
     setForm({ ...form, [field]: value });
-  };
+  };  
 
   const handleIconPress = () => {
     navigation.goBack();
@@ -138,10 +135,7 @@ const RegistrationScreen = () => {
       phone: form.phone,
       email: form.email,
       password: form.password,
-      coords: {
-        latitude: 25.276987,
-        longitude: 55.296249,
-      },
+      coords,
       location,
     };
 
@@ -151,13 +145,13 @@ const RegistrationScreen = () => {
         profileImage,
       });
     } else {
-      // Submit buyer registration
       const formData = new FormData();
       formData.append("name", form.name);
       formData.append("phone", form.phone);
       formData.append("email", form.email);
       formData.append("password", form.password);
       formData.append("coords", JSON.stringify(basicFormData.coords));
+
       if (location) {
         formData.append("location", location);
       }
@@ -169,11 +163,22 @@ const RegistrationScreen = () => {
 
       try {
         setLoading(true);
-        // await dispatch(SignUpThunk(formData)).unwrap();
+        const response = await API.post(
+          role === "buyer" ? "/buyer/buyer-sign-up" : "/seller/seller-register",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        console.log("Signup Success:", response.data);
         navigation.navigate("RequestSentScreen");
       } catch (err) {
+        console.error("Signup Error:", err?.response?.data || err.message);
         const message =
-          err?.message || (typeof err === "string" ? err : "An error occurred");
+          err?.response?.data?.message || err?.message || "Signup failed";
         Alert.alert("Signup Failed", message);
       } finally {
         setLoading(false);

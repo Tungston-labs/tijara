@@ -15,15 +15,15 @@ import Header from "../../componets/Header";
 import TextInputField from "../../componets/TextInputField";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
-import { sellerSignUpThunk } from "../../redux/slice/sellerSlice";
 import { launchImageLibrary } from "react-native-image-picker";
 import Button from "../../componets/Button";
+import API from '../../services/config'
 const SellerRegistrationSecond = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
 
-const { form: prevForm = {}, profileImage } = route.params || {};
+  const { form: prevForm = {}, profileImage } = route.params || {};
 
   const [form, setForm] = useState({
     companyName: "",
@@ -66,39 +66,41 @@ const { form: prevForm = {}, profileImage } = route.params || {};
       return false;
     }
   };
- const handleFileUpload = async () => {
-  const hasPermission = await requestPermissions();
-  if (!hasPermission) {
-    Alert.alert("Permission Denied", "Please grant storage permissions to upload the file.");
-    return;
-  }
-
-  const options = {
-    mediaType: "photo",
-    quality: 0.7,
-  };
-
-  launchImageLibrary(options, (response) => {
-    if (response.didCancel) return;
-    if (response.errorCode) {
-      Alert.alert("Error", response.errorMessage);
+  const handleFileUpload = async () => {
+    const hasPermission = await requestPermissions();
+    if (!hasPermission) {
+      Alert.alert(
+        "Permission Denied",
+        "Please grant storage permissions to upload the file."
+      );
       return;
     }
 
-    const asset = response.assets?.[0];
-    if (asset) {
-      setForm({
-        ...form,
-        tradeLicenseCopy: {
-          uri: asset.uri,
-          name: asset.fileName,
-          type: asset.type,
-        },
-      });
-    }
-  });
-};
+    const options = {
+      mediaType: "photo",
+      quality: 0.7,
+    };
 
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) return;
+      if (response.errorCode) {
+        Alert.alert("Error", response.errorMessage);
+        return;
+      }
+
+      const asset = response.assets?.[0];
+      if (asset) {
+        setForm({
+          ...form,
+          tradeLicenseCopy: {
+            uri: asset.uri,
+            name: asset.fileName,
+            type: asset.type,
+          },
+        });
+      }
+    });
+  };
 
   const handleRemoveFile = () => {
     setForm({ ...form, tradeLicenseCopy: null });
@@ -123,10 +125,13 @@ const { form: prevForm = {}, profileImage } = route.params || {};
     formData.append("password", prevForm.password);
     formData.append("phone", prevForm.phone);
 
-    formData.append("coords", JSON.stringify({
-      latitude: 25.276987,
-      longitude: 55.296249,
-    }));
+    formData.append(
+      "coords",
+      JSON.stringify({
+        latitude: 25.276987,
+        longitude: 55.296249,
+      })
+    );
 
     if (profileImage) {
       formData.append("profileImage", {
@@ -149,7 +154,12 @@ const { form: prevForm = {}, profileImage } = route.params || {};
 
     try {
       setLoading(true);
-      await dispatch(sellerSignUpThunk(formData)).unwrap();
+      await API.post("/seller/seller-register", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
       navigation.navigate("RequestSentScreen", {
         phone: prevForm.phone,
         from: "seller",
@@ -167,13 +177,14 @@ const { form: prevForm = {}, profileImage } = route.params || {};
       <View style={styles.container}>
         <BackgroundWrapper style={styles.wrapperContainer}>
           <Header
-            handleIconPress={() => navigation.navigate("SellerRegistrationScreen")}
+            handleIconPress={() =>
+              navigation.navigate("SellerRegistrationScreen")
+            }
             icon={true}
             Title={"Complete your"}
             Subtitle={"Company Details"}
           />
 
-      
           <View style={styles.textInputcontainer}>
             <TextInputField
               placeholder="Company Name"
@@ -224,7 +235,9 @@ const { form: prevForm = {}, profileImage } = route.params || {};
 
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("LoginScreen")}
+            >
               <Text style={styles.loginLink}> Login</Text>
             </TouchableOpacity>
           </View>

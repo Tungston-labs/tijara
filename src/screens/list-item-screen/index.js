@@ -146,7 +146,7 @@ const ListItemScreen = () => {
                             </Text>
                           </Text>
                           <Text style={styles.price}>
-                            ${item?.pricePerKg?.USD}
+                            ${item?.pricePerKg?.AED}
                           </Text>
                         </View>
                       </View>

@@ -63,7 +63,7 @@ const TabScreens = ({ onTabChange }) => {
   );
 };
 
-const BuyerHomeScreen = ({ navigation }) => {
+const SellerHomeScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("Home");
   const handleAddItem = () => {
     navigation.navigate("SellerAddProductScreen");
@@ -104,4 +104,4 @@ const BuyerHomeScreen = ({ navigation }) => {
   );
 };
 
-export default BuyerHomeScreen;
+export default SellerHomeScreen;

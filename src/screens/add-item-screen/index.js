@@ -325,6 +325,7 @@ const SellerAddProductScreen = ({ navigation }) => {
                 style={styles.priceInput}
                 placeholder="Enter price"
                 keyboardType="numeric"
+                value={priceAED}
               />
               <View style={styles.priceUnitBox}>
                 <Text style={styles.priceUnit}>AED/Kg</Text>

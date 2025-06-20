@@ -20,11 +20,11 @@ const passedToken = useSelector((state)=>state.user.token);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { products, loading, error } = useSelector((state) => ({
-    products: state.sellerProduct.sellerProducts,
-    loading: state.sellerProduct.loading,
-    error: state.sellerProduct.error,
-  }));
+  const { sellerProducts, loadingSeller, errorSeller } = useSelector((state) => ({
+  sellerProducts: state.sellerProduct.sellerProducts,
+  loadingSeller: state.sellerProduct.loadingSeller,
+  errorSeller: state.sellerProduct.errorSeller,
+}));
 
   // const sellerToken = useSelector((state) => state.seller.token);
 
@@ -100,7 +100,7 @@ const passedToken = useSelector((state)=>state.user.token);
           </View>
           <View style={styles.rowBetween}>
             <Text />
-            <Text style={styles.price}>₹{item.pricePerKg?.INR}</Text>
+            <Text style={styles.price}>₹{item.pricePerKg?.AED}</Text>
           </View>
         </View>
       </View>
@@ -116,14 +116,14 @@ const passedToken = useSelector((state)=>state.user.token);
           <Text style={styles.itemHeader}>All Items</Text>
         </View>
 
-        {loading ? (
+        {loadingSeller ? (
           <ActivityIndicator size="large" color="#000" />
-        ) : error ? (
+        ) : errorSeller ? (
           <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>
         ) : (
           <View style={styles.flatListContainer}>
             <FlatList
-              data={products}
+              data={sellerProducts}
               keyExtractor={(item) => item._id}
               renderItem={renderItem}
               showsVerticalScrollIndicator={false}

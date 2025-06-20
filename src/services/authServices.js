@@ -1,8 +1,24 @@
 import API from "./config";
 
-export const signUp = async (formData) => {
+export const sellerSignUp = async (formData) => {
   try {
     const response = await API.post("/seller/seller-register", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (err) {
+    console.error(
+      "Error response:",
+      err?.response?.data || err?.message || "Unknown error"
+    );
+    throw err;
+  }
+};
+export const buyerSignUp = async (formData) => {
+  try {
+    const response = await API.post("/buyer/buyer-sign-up", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

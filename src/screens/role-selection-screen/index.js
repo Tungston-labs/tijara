@@ -10,7 +10,7 @@ import { useRoute } from "@react-navigation/native"; // import useRoute
 const RoleSelectionScreen = ({ navigation }) => {
   const route = useRoute();
   const location = route.params?.location;
-
+  console.log("ksjksjsjsjsjsjs",location);
   const handleBuyerButtonClick = () => {
     navigation.navigate("RegistrationScreen", { role: "buyer", location });
   };
