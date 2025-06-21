@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: "row",
     width: "90%",
+    
   },
   alignContent: {
     width: width * 1,
@@ -186,8 +187,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   editButtonStyle: {
-    backgroundColor: "#fff",
-    color: "black",
+    backgroundColor: "#ed4e66",
+    color: "white",
   },
   label: {
     fontSize: 16,
@@ -249,6 +250,7 @@ const styles = StyleSheet.create({
   cancelText: {
     color: "#000",
     fontWeight: "bold",
+    backgroundColor:"#e60b2c",
   },
   submitText: {
     color: "#000",
@@ -262,6 +264,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
+  whatsappButton: {
+  backgroundColor: "#25D366",
+  padding: 12,
+  borderRadius: 8,
+  justifyContent: "center",
+  alignItems: "center",
+  flexDirection: "row",
+  marginLeft: 10,
+  minWidth: 20,
+},
+
 });
 
 export default styles;

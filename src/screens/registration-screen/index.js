@@ -21,15 +21,16 @@ import Icon from "react-native-vector-icons/Feather";
 import API from "../../services/config";
 const RegistrationScreen = () => {
   const route = useRoute();
-const { coords, location, role = "buyer" } = route.params || {};
-console.log({coords,location,role})
+  const role = route.params?.role || "buyer";
+  const location = route.params?.location || null;
+  console.log("Location", location);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const [profileImage, setProfileImage] = useState(null);
   const [form, setForm] = useState({
     name: "",
-    phone: "",  
+    phone: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -39,7 +40,7 @@ console.log({coords,location,role})
 
   const handleChange = (field, value) => {
     setForm({ ...form, [field]: value });
-  };  
+  };
 
   const handleIconPress = () => {
     navigation.goBack();
@@ -130,15 +131,21 @@ console.log({coords,location,role})
       return;
     }
 
+    const [lat, lng] = location.split(",").map((val) => parseFloat(val.trim()));
+
     const basicFormData = {
       name: form.name,
       phone: form.phone,
       email: form.email,
       password: form.password,
-      coords,
-      location,
+      coords: {
+        latitude: lat,
+        longitude: lng,
+      },
+      location, // this will still be the original string, which is fine if backend doesn’t use it
     };
 
+    console.log("Basic form data", basicFormData);
     if (role === "seller") {
       navigation.navigate("SellerRegistrationSecond", {
         form: basicFormData,

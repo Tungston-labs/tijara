@@ -18,6 +18,8 @@ import { useRoute } from "@react-navigation/native";
 import { getProductByIdThunk } from "../../redux/slice/productSlice";
 import { createOrderThunk } from "../../redux/slice/orderSlice";
 import { Alert } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { Linking } from "react-native";
 
 const ItemDetailsScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -55,23 +57,38 @@ const ItemDetailsScreen = ({ navigation }) => {
   };
   const { loading, order, error } = useSelector((state) => state.order);
 
-const handleOrderRequest = async () => {
-  try {
-    console.log("Dispatching createOrderThunk");
+  const handleOrderRequest = async () => {
+    try {
+      console.log("Dispatching createOrderThunk");
 
-    const res = await dispatch(
-      createOrderThunk({ token, productId, quantity })
-    ).unwrap();
+      const res = await dispatch(
+        createOrderThunk({ token, productId, quantity })
+      ).unwrap();
 
-    navigation.navigate("SuccessScreen", {
-      orderId: res.order._id,
-    });
+      navigation.navigate("SuccessScreen", {
+        orderId: res.order._id,
+      });
+    } catch (err) {
+      console.error("Error placing order:", err);
+      Alert.alert("Error", err.message || "Failed to place order");
+    }
+  };
+  const handleWhatsAppRequest = () => {
+    const phoneNumber = "+919895977148"; // Replace with actual WhatsApp number
+    const message = `Hello, I would like to request ${quantity} Kg of ${
+      product?.itemName || "this product"
+    }. Please let me know the next steps.`;
 
-  } catch (err) {
-    console.error("Error placing order:", err);
-    Alert.alert("Error", err.message || "Failed to place order");
-  }
-};
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+    Linking.openURL(url).catch((err) =>
+      Alert.alert(
+        "Error",
+        "Could not open WhatsApp. Please make sure it's installed."
+      )
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -131,7 +148,7 @@ const handleOrderRequest = async () => {
               </Text>
             </View>
           </View>
-
+  
           <View style={styles.buttonContainer}>
             <Button label={"Request"} handleButtonPress={handleButtonClick} />
           </View>
@@ -197,11 +214,13 @@ const handleOrderRequest = async () => {
                     customStyle={styles.editButtonStyle}
                     customLabelStyle={styles.label}
                   />
-                  <ModalButton
-                    label={loading ? "Placing..." : "Submit"}
-                    handleButtonPress={handleOrderRequest}
+                  <TouchableOpacity
+                    onPress={handleWhatsAppRequest}
+                    style={[styles.whatsappButton, loading && { opacity: 0.5 }]}
                     disabled={loading}
-                  />
+                  >
+                    <Icon name="whatsapp" size={24} color="white" />
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>

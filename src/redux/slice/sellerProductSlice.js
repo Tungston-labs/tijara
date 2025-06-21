@@ -4,6 +4,7 @@ import {
   getAllBuyerProducts,
   getAllSellerProducts,
 } from "../../services/seller-products-service";
+import { getProductById } from "../../services/product-services";
 
 // Thunks
 export const fetchSellerProductsThunk = createAsyncThunk(
@@ -39,11 +40,23 @@ export const addSellerProductThunk = createAsyncThunk(
     }
   }
 );
+export const getSellerProductByIdThunk = createAsyncThunk(
+  "product/getById",
+  async ({ token, productId }, { rejectWithValue }) => {
+    try {
+      const data = await getProductById({ token, productId });
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 // Initial State
 const initialState = {
   sellerProducts: [],
   marketplaceProducts: [],
+  selectedSellerProduct:null,
   loadingSeller: false,
   loadingMarketplace: false,
   errorSeller: null,
@@ -99,8 +112,19 @@ const sellerProductSlice = createSlice({
         state.errorMarketplace =
           action.payload || "Failed to fetch marketplace products";
       })
+      .addCase(getSellerProductByIdThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getSellerProductByIdThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.selectedSellerProduct = action.payload;
+      })
+      .addCase(getSellerProductByIdThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to fetch product";
+      })
 
-      // Add Seller Product
       .addCase(addSellerProductThunk.pending, (state) => {
         state.adding = true;
         state.addSuccess = false;

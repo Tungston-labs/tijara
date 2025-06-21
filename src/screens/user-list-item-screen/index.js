@@ -16,15 +16,17 @@ import { fetchSellerProductsThunk } from "../../redux/slice/sellerProductSlice";
 
 const UserListItemScreen = () => {
   // const route = useRoute();
-const passedToken = useSelector((state)=>state.user.token);
+  const passedToken = useSelector((state) => state.user.token);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { sellerProducts, loadingSeller, errorSeller } = useSelector((state) => ({
-  sellerProducts: state.sellerProduct.sellerProducts,
-  loadingSeller: state.sellerProduct.loadingSeller,
-  errorSeller: state.sellerProduct.errorSeller,
-}));
+  const { sellerProducts, loadingSeller, errorSeller } = useSelector(
+    (state) => ({
+      sellerProducts: state.sellerProduct.sellerProducts,
+      loadingSeller: state.sellerProduct.loadingSeller,
+      errorSeller: state.sellerProduct.errorSeller,
+    })
+  );
 
   // const sellerToken = useSelector((state) => state.seller.token);
 
@@ -43,71 +45,73 @@ const passedToken = useSelector((state)=>state.user.token);
   }, [dispatch, passedToken]);
 
   const handleTileClick = (product) => {
-    navigation.navigate("ItemDetailsScreen", { product }); // pass full product
+    console.log("Navigating with product ID:", product?._id); 
+    navigation.navigate("SellerProductDetailsEditScreen", {
+      productId: product._id,
+    });
   };
 
- const renderItem = ({ item }) => (
-  <Pressable onPress={() => handleTileClick(item)}>
-    <View style={styles.flatItem}>
-      <View style={styles.card}>
-        <SwiperFlatList
-          autoplay
-          autoplayDelay={2}
-          autoplayLoop
-          showPagination
-          paginationStyle={{
-            position: "absolute",
-            bottom: 80,
-            alignSelf: "center",
-          }}
-          paginationStyleItem={{
-            width: 7,
-            height: 7,
-            borderRadius: 5,
-            marginHorizontal: 3,
-          }}
-          paginationActiveColor="#000000"
-          paginationDefaultColor="#ccc"
-          data={item.images}
-          renderItem={({ item: imageUri }) => (
-            <View style={styles.child}>
-              <Image
-                source={{ uri: imageUri }}
-                style={{
-                  width: "100%",
-                  height: 200,
-                  marginTop: 5,
-                }}
-                resizeMode="cover"
-              />
-            </View>
-          )}
-        />
+  const renderItem = ({ item }) => (
+    <Pressable onPress={() => handleTileClick(item)}>
+      <View style={styles.flatItem}>
+        <View style={styles.card}>
+          <SwiperFlatList
+            autoplay
+            autoplayDelay={2}
+            autoplayLoop
+            showPagination
+            paginationStyle={{
+              position: "absolute",
+              bottom: 80,
+              alignSelf: "center",
+            }}
+            paginationStyleItem={{
+              width: 7,
+              height: 7,
+              borderRadius: 5,
+              marginHorizontal: 3,
+            }}
+            paginationActiveColor="#000000"
+            paginationDefaultColor="#ccc"
+            data={item.images}
+            renderItem={({ item: imageUri }) => (
+              <View style={styles.child}>
+                <Image
+                  source={{ uri: imageUri }}
+                  style={{
+                    width: "100%",
+                    height: 200,
+                    marginTop: 5,
+                  }}
+                  resizeMode="cover"
+                />
+              </View>
+            )}
+          />
 
-        <View style={styles.infoContainer}>
-          <View style={styles.rowBetween}>
-            <Text style={styles.quantity}>
-              Qty Available{"\n"}
-              <Text style={{ fontWeight: "bold" }}>
-                {item.availableKg} Kg
+          <View style={styles.infoContainer}>
+            <View style={styles.rowBetween}>
+              <Text style={styles.quantity}>
+                Qty Available{"\n"}
+                <Text style={{ fontWeight: "bold" }}>
+                  {item.availableKg} Kg
+                </Text>
               </Text>
-            </Text>
-            <Text style={styles.title}>{item.itemName}</Text>
-          </View>
-          <View style={styles.rowBetween}>
-            <Text />
-            <Text style={styles.subtitle}>{item.itemSubCategory}</Text>
-          </View>
-          <View style={styles.rowBetween}>
-            <Text />
-            <Text style={styles.price}>₹{item.pricePerKg?.AED}</Text>
+              <Text style={styles.title}>{item.itemName}</Text>
+            </View>
+            <View style={styles.rowBetween}>
+              <Text />
+              <Text style={styles.subtitle}>{item.itemSubCategory}</Text>
+            </View>
+            <View style={styles.rowBetween}>
+              <Text />
+              <Text style={styles.price}>AED {item.pricePerKg?.AED}</Text>
+            </View>
           </View>
         </View>
       </View>
-    </View>
-  </Pressable>
-);
-
+    </Pressable>
+  );
 
   return (
     <View style={styles.container}>
