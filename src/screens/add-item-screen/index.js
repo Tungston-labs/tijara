@@ -9,6 +9,7 @@ import {
   Alert,
   Platform,
   PermissionsAndroid,
+  KeyboardAvoidingView,
 } from "react-native";
 import styles from "./styles";
 import Header from "../../componets/Header";
@@ -26,7 +27,6 @@ import { ActivityIndicator } from "react-native";
 
 const SellerAddProductScreen = ({ navigation }) => {
   const [category, setCategory] = React.useState(null);
-  const [subCategory, setSubCategory] = React.useState(null);
   const [country, setCountry] = React.useState(null);
   const [showDatePicker, setShowDatePicker] = React.useState(false);
   const [expiryDate, setExpiryDate] = React.useState(null);
@@ -65,8 +65,7 @@ const SellerAddProductScreen = ({ navigation }) => {
   }, [itemName]);
 
   const fetchSubCategories = debounce(async (query) => {
-    if (!query.trim()) return;
-
+    if (!itemName || !query.trim()) return;
     setLoadingSubCategory(true);
     try {
       const res = await API.get(
@@ -164,7 +163,7 @@ const SellerAddProductScreen = ({ navigation }) => {
     // Append other fields
     formData.append("itemCategory", category);
     formData.append("itemName", itemName);
-    formData.append("itemSubCategory", subCategory);
+    formData.append("itemSubCategory", subCategoryText);
     formData.append("country", country);
     formData.append("description", description);
     // formData.append("availableKg", 100);
@@ -209,65 +208,69 @@ const SellerAddProductScreen = ({ navigation }) => {
   );
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        showsVerticalScrollIndicator={true}
-        contentContainerStyle={{ paddingBottom: 40 }}
-        keyboardShouldPersistTaps="handled"
-        nestedScrollEnabled={true}
-      >
-        <BackgroundWrapper>
-          <Header Title="Add new item" />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        <ScrollView
+          showsVerticalScrollIndicator={true}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          keyboardShouldPersistTaps="handled"
+          nestedScrollEnabled={true}
+        >
+          <BackgroundWrapper>
+            <Header Title="Add new item" />
 
-          <Text style={styles.minImageText}>*Min 4 Image</Text>
-          <TouchableOpacity
-            style={styles.uploadBox}
-            onPress={handleSelectImages}
-          >
-            <Text style={styles.uploadText}>+ Upload image</Text>
-          </TouchableOpacity>
+            <Text style={styles.minImageText}>*Min 4 Image</Text>
+            <TouchableOpacity
+              style={styles.uploadBox}
+              onPress={handleSelectImages}
+            >
+              <Text style={styles.uploadText}>+ Upload image</Text>
+            </TouchableOpacity>
 
-          {renderImagePreview()}
+            {renderImagePreview()}
 
-          <View style={styles.formSection}>
-            <Text style={styles.label}>Item Category</Text>
-            <View style={styles.input}>
-              <RNPickerSelect
-                onValueChange={setCategory}
-                items={[
-                  { label: "Fruits", value: "fruits" },
-                  { label: "Vegetables", value: "vegetables" },
-                  { label: "Dairy", value: "dairy" },
-                ]}
-                placeholder={{ label: "Item Category", value: null }}
-                value={category}
-                style={{
-                  inputIOS: {
-                    color: "#222",
-                    fontSize: 15,
-                    paddingVertical: 0,
-                    paddingHorizontal: 0,
-                    backgroundColor: "transparent",
-                    borderWidth: 0,
-                  },
-                  inputAndroid: {
-                    color: "#222",
-                    fontSize: 15,
-                    paddingVertical: 0,
-                    paddingHorizontal: 0,
-                    backgroundColor: "transparent",
-                    borderWidth: 0,
-                  },
-                  placeholder: { color: "#888" },
-                  iconContainer: { top: 16, right: 12 },
-                }}
-                Icon={() => (
-                  <Icon name="arrow-drop-down" size={24} color="#888" />
-                )}
-              />
-            </View>
+            <View style={styles.formSection}>
+              <Text style={styles.label}>Item Category</Text>
+              <View style={styles.input}>
+                <RNPickerSelect
+                  onValueChange={setCategory}
+                  items={[
+                    { label: "Fruits", value: "fruits" },
+                    { label: "Vegetables", value: "vegetables" },
+                    { label: "Dairy", value: "dairy" },
+                  ]}
+                  placeholder={{ label: "Item Category", value: null }}
+                  value={category}
+                  style={{
+                    inputIOS: {
+                      color: "#222",
+                      fontSize: 15,
+                      paddingVertical: 0,
+                      paddingHorizontal: 0,
+                      backgroundColor: "transparent",
+                      borderWidth: 0,
+                    },
+                    inputAndroid: {
+                      color: "#222",
+                      fontSize: 15,
+                      paddingVertical: 0,
+                      paddingHorizontal: 0,
+                      backgroundColor: "transparent",
+                      borderWidth: 0,
+                    },
+                    placeholder: { color: "#888" },
+                    iconContainer: { top: 16, right: 12 },
+                  }}
+                  Icon={() => (
+                    <Icon name="arrow-drop-down" size={24} color="#888" />
+                  )}
+                />
+              </View>
 
-            {/* <Text style={styles.label}>Item name</Text>
+              {/* <Text style={styles.label}>Item name</Text>
             <TextInput
               style={styles.input}
               placeholder="Item name"
@@ -275,225 +278,237 @@ const SellerAddProductScreen = ({ navigation }) => {
               onChangeText={setItemName}
             /> */}
 
-            <View>
-              <Text style={styles.label}>Item name</Text>
+              <View>
+                <Text style={styles.label}>Item name</Text>
 
-              <View style={{ position: "relative" }}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter or select item name"
-                  value={itemName}
-                  onChangeText={(text) => {
-                    setItemName(text);
-                    setShowSuggestions(true);
+                <View style={{ position: "relative" }}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Item name"
+                    value={itemName}
+                    onChangeText={(text) => {
+                      setItemName(text);
+                      setShowSuggestions(true);
+                    }}
+                  />
+
+                  {showSuggestions &&
+                    (loadingSuggestions || suggestions.length > 0) && (
+                      <View
+                        style={{
+                          position: "absolute",
+                          top: 44, // height of input + spacing
+                          left: 0,
+                          right: 0,
+                          backgroundColor: "#fff",
+                          borderWidth: 1,
+                          borderColor: "#ccc",
+                          borderRadius: 6,
+                          maxHeight: 200,
+                          zIndex: 1000,
+                          elevation: 5,
+                          overflow: "hidden",
+                        }}
+                      >
+                        {loadingSuggestions ? (
+                          <View
+                            style={{
+                              padding: 20,
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <ActivityIndicator size="small" color="#888" />
+                          </View>
+                        ) : (
+                          <ScrollView
+                            keyboardShouldPersistTaps="handled"
+                            style={{ maxHeight: 200 }}
+                            nestedScrollEnabled={true}
+                          >
+                            {suggestions.map((item, idx) => (
+                              <TouchableOpacity
+                                key={idx}
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                  setItemName(item);
+                                  setShowSuggestions(false);
+                                }}
+                                style={{
+                                  padding: 10,
+                                  borderBottomColor: "#eee",
+                                  borderBottomWidth: 1,
+                                }}
+                              >
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        )}
+                      </View>
+                    )}
+                </View>
+              </View>
+
+              <View>
+                <Text style={styles.label}>Item Sub-Category</Text>
+
+                <View style={{ position: "relative" }}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Sub-category"
+                    value={subCategoryText}
+                    onChangeText={(text) => {
+                      setSubCategoryText(text);
+                      setShowSubCategorySuggestions(true);
+                    }}
+                  />
+
+                  {showSubCategorySuggestions &&
+                    (loadingSubCategory ||
+                      subCategorySuggestions.length > 0) && (
+                      <View
+                        style={{
+                          position: "absolute",
+                          top: 44,
+                          left: 0,
+                          right: 0,
+                          backgroundColor: "#fff",
+                          borderWidth: 1,
+                          borderColor: "#ccc",
+                          borderRadius: 6,
+                          maxHeight: 200,
+                          zIndex: 1000,
+                          elevation: 5,
+                          overflow: "hidden",
+                        }}
+                      >
+                        {loadingSubCategory ? (
+                          <View
+                            style={{
+                              padding: 20,
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <ActivityIndicator size="small" color="#888" />
+                          </View>
+                        ) : (
+                          <ScrollView
+                            keyboardShouldPersistTaps="handled"
+                            nestedScrollEnabled={true}
+                            style={{ maxHeight: 200 }}
+                          >
+                            {subCategorySuggestions.map((item, idx) => (
+                              <TouchableOpacity
+                                key={idx}
+                                activeOpacity={0.8}
+                                onPress={() => {
+                                  setSubCategoryText(item);
+                                  setShowSubCategorySuggestions(false);
+                                }}
+                                style={{
+                                  padding: 10,
+                                  borderBottomColor: "#eee",
+                                  borderBottomWidth: 1,
+                                }}
+                              >
+                                <Text>{item}</Text>
+                              </TouchableOpacity>
+                            ))}
+                          </ScrollView>
+                        )}
+                      </View>
+                    )}
+                </View>
+              </View>
+
+              <Text style={styles.label}>Country</Text>
+              <View style={styles.input}>
+                <RNPickerSelect
+                  onValueChange={setCountry}
+                  items={[
+                    { label: "UAE", value: "uae" },
+                    { label: "India", value: "india" },
+                    { label: "USA", value: "usa" },
+                  ]}
+                  placeholder={{ label: "Select Country", value: null }}
+                  value={country}
+                  style={{
+                    inputIOS: {
+                      color: "#222",
+                      fontSize: 15,
+                      paddingVertical: 0,
+                      paddingHorizontal: 0,
+                      backgroundColor: "transparent",
+                      borderWidth: 0,
+                    },
+                    inputAndroid: {
+                      color: "#222",
+                      fontSize: 15,
+                      paddingVertical: 0,
+                      paddingHorizontal: 0,
+                      backgroundColor: "transparent",
+                      borderWidth: 0,
+                    },
+                    placeholder: { color: "#888" },
+                    iconContainer: { top: 16, right: 12 },
+                  }}
+                  Icon={() => (
+                    <Icon name="arrow-drop-down" size={24} color="#888" />
+                  )}
+                />
+              </View>
+
+              <Text style={styles.label}>Expiry date</Text>
+              <TouchableOpacity
+                onPress={() => setShowDatePicker(true)}
+                style={styles.dropdown}
+              >
+                <Text style={styles.dropdownText}>
+                  {expiryDate
+                    ? expiryDate.toDateString()
+                    : "Select Expiry Date"}
+                </Text>
+              </TouchableOpacity>
+              {showDatePicker && (
+                <DateTimePicker
+                  value={expiryDate || new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={(event, date) => {
+                    setShowDatePicker(false);
+                    if (date) setExpiryDate(date);
                   }}
                 />
+              )}
 
-                {showSuggestions &&
-                  (loadingSuggestions || suggestions.length > 0) && (
-                    <View
-                      style={{
-                        position: "absolute",
-                        top: 44, // height of input + spacing
-                        left: 0,
-                        right: 0,
-                        backgroundColor: "#fff",
-                        borderWidth: 1,
-                        borderColor: "#ccc",
-                        borderRadius: 6,
-                        maxHeight: 200,
-                        zIndex: 1000,
-                        elevation: 5,
-                        overflow: "hidden",
-                      }}
-                    >
-                      {loadingSuggestions ? (
-                        <View
-                          style={{
-                            padding: 20,
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <ActivityIndicator size="small" color="#888" />
-                        </View>
-                      ) : (
-                        <ScrollView
-                          keyboardShouldPersistTaps="handled"
-                          style={{ maxHeight: 200 }}
-                          nestedScrollEnabled={true}
-                        >
-                          {suggestions.map((item, idx) => (
-                            <TouchableOpacity
-                              key={idx}
-                              activeOpacity={0.8}
-                              onPress={() => {
-                                setItemName(item);
-                                setShowSuggestions(false);
-                              }}
-                              style={{
-                                padding: 10,
-                                borderBottomColor: "#eee",
-                                borderBottomWidth: 1,
-                              }}
-                            >
-                              <Text>{item}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        </ScrollView>
-                      )}
-                    </View>
-                  )}
-              </View>
-            </View>
-
-            <View>
-              <Text style={styles.label}>Item Sub-Category</Text>
-
-              <View style={{ position: "relative" }}>
+              <Text style={styles.label}>Price/KG</Text>
+              <View style={styles.priceRow}>
                 <TextInput
-                  style={styles.input}
-                  placeholder="Enter or select sub-category"
-                  value={subCategoryText}
-                  onChangeText={(text) => {
-                    setSubCategoryText(text);
-                    setShowSubCategorySuggestions(true);
-                  }}
+                  style={styles.priceInput}
+                  placeholder="Enter price"
+                  keyboardType="numeric"
+                  value={priceAED}
+                  onChangeText={setPriceAED}
                 />
-
-                {showSubCategorySuggestions &&
-                  (loadingSubCategory || subCategorySuggestions.length > 0) && (
-                    <View
-                      style={{
-                        position: "absolute",
-                        top: 44,
-                        left: 0,
-                        right: 0,
-                        backgroundColor: "#fff",
-                        borderWidth: 1,
-                        borderColor: "#ccc",
-                        borderRadius: 6,
-                        maxHeight: 200,
-                        zIndex: 1000,
-                        elevation: 5,
-                        overflow: "hidden",
-                      }}
-                    >
-                      {loadingSubCategory ? (
-                        <View
-                          style={{
-                            padding: 20,
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <ActivityIndicator size="small" color="#888" />
-                        </View>
-                      ) : (
-                        <ScrollView
-                          keyboardShouldPersistTaps="handled"
-                          nestedScrollEnabled={true}
-                          style={{ maxHeight: 200 }}
-                        >
-                          {subCategorySuggestions.map((item, idx) => (
-                            <TouchableOpacity
-                              key={idx}
-                              activeOpacity={0.8}
-                              onPress={() => {
-                                setSubCategory(item);
-                                setSubCategoryText(item);
-                                setShowSubCategorySuggestions(false);
-                              }}
-                              style={{
-                                padding: 10,
-                                borderBottomColor: "#eee",
-                                borderBottomWidth: 1,
-                              }}
-                            >
-                              <Text>{item}</Text>
-                            </TouchableOpacity>
-                          ))}
-                        </ScrollView>
-                      )}
-                    </View>
-                  )}
+                <View style={styles.priceUnitBox}>
+                  <Text style={styles.priceUnit}>AED/Kg</Text>
+                </View>
               </View>
-            </View>
 
-            <Text style={styles.label}>Country</Text>
-            <View style={styles.input}>
-              <RNPickerSelect
-                onValueChange={setCountry}
-                items={[
-                  { label: "UAE", value: "uae" },
-                  { label: "India", value: "india" },
-                  { label: "USA", value: "usa" },
-                ]}
-                placeholder={{ label: "Select Country", value: null }}
-                value={country}
-                style={{
-                  inputIOS: {
-                    color: "#222",
-                    fontSize: 15,
-                    paddingVertical: 0,
-                    paddingHorizontal: 0,
-                    backgroundColor: "transparent",
-                    borderWidth: 0,
-                  },
-                  inputAndroid: {
-                    color: "#222",
-                    fontSize: 15,
-                    paddingVertical: 0,
-                    paddingHorizontal: 0,
-                    backgroundColor: "transparent",
-                    borderWidth: 0,
-                  },
-                  placeholder: { color: "#888" },
-                  iconContainer: { top: 16, right: 12 },
-                }}
-                Icon={() => (
-                  <Icon name="arrow-drop-down" size={24} color="#888" />
-                )}
-              />
-            </View>
-
-            <Text style={styles.label}>Expiry date</Text>
-            <TouchableOpacity
-              onPress={() => setShowDatePicker(true)}
-              style={styles.dropdown}
-            >
-              <Text style={styles.dropdownText}>
-                {expiryDate ? expiryDate.toDateString() : "Select Expiry Date"}
-              </Text>
-            </TouchableOpacity>
-            {showDatePicker && (
-              <DateTimePicker
-                value={expiryDate || new Date()}
-                mode="date"
-                display="default"
-                onChange={(event, date) => {
-                  setShowDatePicker(false);
-                  if (date) setExpiryDate(date);
-                }}
-              />
-            )}
-
-            <Text style={styles.label}>Price/KG</Text>
-            <View style={styles.priceRow}>
+              <Text style={styles.label}>Discription</Text>
               <TextInput
-                style={styles.priceInput}
-                placeholder="Enter price"
-                keyboardType="numeric"
-                value={priceAED}
-                onChangeText={setPriceAED}
+                style={styles.descriptionInput}
+                placeholder="Discription"
+                value={description}
+                onChangeText={setDescription}
+                multiline
+                numberOfLines={5}
               />
-              <View style={styles.priceUnitBox}>
-                <Text style={styles.priceUnit}>AED/Kg</Text>
-              </View>
             </View>
-          </View>
 
-          <View style={styles.buttonRow}>
+            {/* <View style={styles.buttonRow}>
             <TouchableOpacity style={styles.cancelButton}>
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
@@ -503,10 +518,19 @@ const SellerAddProductScreen = ({ navigation }) => {
             >
               <Text style={styles.addButtonText}>Add item</Text>
             </TouchableOpacity>
-          </View>
-        </BackgroundWrapper>
-      </ScrollView>
-    </View>
+          </View> */}
+          </BackgroundWrapper>
+        </ScrollView>
+        <View style={styles.fixedButtonRow}>
+          <TouchableOpacity style={styles.cancelButton}>
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.addButton} onPress={handleAddProduct}>
+            <Text style={styles.addButtonText}>Add item</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
