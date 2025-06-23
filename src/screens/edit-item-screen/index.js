@@ -116,50 +116,62 @@ const SellerEditProductScreen = ({ navigation, route }) => {
     });
   };
 
-  const handleUpdateProduct = async () => {
-    if (
-      !category ||
-      !itemName.trim() ||
-      !subCategoryText.trim() ||
-      !country ||
-      !priceAED ||
-      !expiryDate
-    ) {
-      return Alert.alert("Error", "Please fill all fields correctly.");
-    }
+ const handleUpdateProduct = async () => {
+  if (
+    !category ||
+    !itemName.trim() ||
+    !subCategoryText.trim() ||
+    !country ||
+    !priceAED ||
+    !expiryDate
+  ) {
+    return Alert.alert("Error", "Please fill all fields correctly.");
+  }
+  if (images.length === 0) {
+    return Alert.alert("Error", "Please upload at least one image.");
+  }
 
-    const formData = new FormData();
-    images.forEach((img, index) => {
-      if (!img.uri.startsWith("http")) {
-        formData.append("images", {
-          uri: img.uri,
-          name: img.fileName || `image_${index}.jpg`,
-          type: img.type || "image/jpeg",
-        });
-      }
-    });
-    formData.append("itemCategory", category);
-    formData.append("itemName", itemName);
-    formData.append("itemSubCategory", subCategoryText);
-    formData.append("country", country);
-    formData.append("description", description);
-    formData.append("priceAED", priceAED);
-    formData.append("expiryDate", expiryDate.toISOString());
-    console.log("form", formData);
-    try {
-      await dispatch(
-        updateSellerProductThunk({ productId: product._id, formData, token })
-      ).unwrap();
-      Alert.alert("Success", "Product updated successfully");
-      navigation.navigate("SellerProductDetailsEditScreen", {
-        productId: product._id,
-        shouldRefresh: true,
+
+  const formData = new FormData();
+
+  const existingImageUrls = [];
+  images.forEach((img, index) => {
+    if (img.uri.startsWith("http")) {
+      existingImageUrls.push(img.uri);
+    } else {
+      formData.append("images", {
+        uri: img.uri,
+        name: img.fileName || `image_${index}.jpg`,
+        type: img.type || "image/jpeg",
       });
-    } catch (e) {
-      console.error(e);
-      Alert.alert("Error", "Failed to update product");
     }
-  };
+  });
+
+  formData.append("existingImages", JSON.stringify(existingImageUrls));
+  formData.append("itemCategory", category);
+  formData.append("itemName", itemName);
+  formData.append("itemSubCategory", subCategoryText);
+  formData.append("country", country);
+  formData.append("description", description);
+  formData.append("priceAED", priceAED);
+  formData.append("expiryDate", expiryDate.toISOString());
+
+  try {
+    await dispatch(
+      updateSellerProductThunk({ productId: product._id, formData, token })
+    ).unwrap();
+
+    Alert.alert("Success", "Product updated successfully");
+    navigation.navigate("SellerProductDetailsEditScreen", {
+      productId: product._id,
+      shouldRefresh: true,
+    });
+  } catch (e) {
+    console.error(e);
+    Alert.alert("Error", "Failed to update product");
+  }
+};
+
 
   return (
     <TouchableWithoutFeedback
@@ -494,6 +506,7 @@ const SellerEditProductScreen = ({ navigation, route }) => {
                   placeholder="Discription"
                   value={description}
                   onChangeText={setDescription}
+                  scrollEnabled={true}
                 />
               </View>
             </BackgroundWrapper>

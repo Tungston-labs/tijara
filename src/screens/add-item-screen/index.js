@@ -543,7 +543,7 @@ const SellerAddProductScreen = ({ navigation }) => {
                   value={description}
                   onChangeText={setDescription}
                   multiline
-                  numberOfLines={5}
+                  scrollEnabled={true}
                 />
               </View>
 

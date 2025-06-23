@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     backgroundColor: "#fafafa",
     fontSize: 15,
-    minHeight: 100,
+    height: 100,
     textAlignVertical: "top",
   },
   cancelButton: {
