@@ -7,6 +7,8 @@ import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getSellerProductByIdThunk } from "../../redux/slice/sellerProductSlice";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 const SellerProductDetailsEditScreen = () => {
   const route = useRoute();
@@ -20,7 +22,7 @@ const SellerProductDetailsEditScreen = () => {
   const sellerProduct = useSelector(
     (state) => state.sellerProduct.selectedSellerProduct
   );
-
+  console.log("sellerProduct", sellerProduct);
   useEffect(() => {
     console.log("Route Params:", route.params);
     if (productId && token) {
@@ -28,8 +30,27 @@ const SellerProductDetailsEditScreen = () => {
     }
   }, [productId, token]);
 
+  useFocusEffect(
+  useCallback(() => {
+    if (route.params?.shouldRefresh && productId && token) {
+      dispatch(getSellerProductByIdThunk({ token, productId }));
+      navigation.setParams({ shouldRefresh: false }); // Reset the flag
+    }
+  }, [route.params?.shouldRefresh, token, productId])
+);
+
   const handleIconPress = () => {
     navigation.goBack();
+  };
+
+  const handleEditPress = () => {
+    if (sellerProduct) {
+      navigation.navigate("SellerEditProductScreen", {
+        product: sellerProduct,
+      });
+    } else {
+      alert("Something went wrong");
+    }
   };
 
   return (
@@ -41,7 +62,7 @@ const SellerProductDetailsEditScreen = () => {
             icon={true}
             Title={sellerProduct?.itemName}
             editIcon={true}
-            // handleEditIconPress={handleEditPress}
+            handleEditIconPress={handleEditPress}
           />
           <View style={styles.imageContainer}>
             <Image

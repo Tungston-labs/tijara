@@ -5,6 +5,7 @@ import {
   getAllSellerProducts,
 } from "../../services/seller-products-service";
 import { getProductById } from "../../services/product-services";
+import API from "../../services/config";
 
 // Thunks
 export const fetchSellerProductsThunk = createAsyncThunk(
@@ -49,6 +50,24 @@ export const getSellerProductByIdThunk = createAsyncThunk(
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const updateSellerProductThunk = createAsyncThunk(
+  "sellerProducts/update",
+  async ({ productId, formData, token }, { rejectWithValue }) => {
+    try {
+      const res = await API.put(`/product/update/${productId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data;
+    } catch (err) {
+      console.error("Update error", err.response?.data || err.message);
+      return rejectWithValue(err.response?.data || "Update failed");
     }
   }
 );
@@ -161,6 +180,29 @@ const sellerProductSlice = createSlice({
       .addCase(addSellerProductThunk.rejected, (state, action) => {
         state.adding = false;
         state.errorSeller = action.payload || "Failed to add product";
+      })
+       .addCase(updateSellerProductThunk.pending, (state) => {
+        state.adding = true;  // Optional: reuse this for update loading
+        state.errorSeller = null;
+      })
+      .addCase(updateSellerProductThunk.fulfilled, (state, action) => {
+        state.adding = false;
+
+        // Optional: update the product in sellerProducts if needed
+        const updatedProduct = action.payload.product || action.payload;
+        const index = state.sellerProducts.findIndex(
+          (p) => p._id === updatedProduct._id
+        );
+        if (index !== -1) {
+          state.sellerProducts[index] = updatedProduct;
+        }
+
+        // Optional success flag
+        state.addSuccess = true;
+      })
+      .addCase(updateSellerProductThunk.rejected, (state, action) => {
+        state.adding = false;
+        state.errorSeller = action.payload || "Failed to update product";
       });
   },
 });

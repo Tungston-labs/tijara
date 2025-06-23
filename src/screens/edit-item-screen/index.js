@@ -1,3 +1,4 @@
+// SellerEditProductScreen.js
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -12,36 +13,45 @@ import {
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
   Keyboard,
+  ActivityIndicator,
 } from "react-native";
-import styles from "./styles";
+import styles, { pickerSelectStyles } from "./styles";
 import Header from "../../componets/Header";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import RNPickerSelect from "react-native-picker-select";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { pickerSelectStyles } from "./styles";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
-import { addSellerProductThunk } from "../../redux/slice/sellerProductSlice";
-import debounce from "lodash/debounce";
+import { updateSellerProductThunk } from "../../redux/slice/sellerProductSlice";
 import API from "../../services/config";
-import { ActivityIndicator } from "react-native";
+import debounce from "lodash/debounce";
 
-const SellerAddProductScreen = ({ navigation }) => {
-  const [category, setCategory] = React.useState(null);
-  const [country, setCountry] = React.useState(null);
-  const [showDatePicker, setShowDatePicker] = React.useState(false);
-  const [expiryDate, setExpiryDate] = React.useState(null);
-  const [images, setImages] = useState([]);
-  const [itemName, setItemName] = useState("");
-  const [description, setDescription] = useState("");
-  const [priceAED, setPriceAED] = useState("");
+const SellerEditProductScreen = ({ navigation, route }) => {
+  const { product } = route.params;
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.user.token);
 
+  const [category, setCategory] = useState(product.itemCategory || null);
+  const [country, setCountry] = useState(product.country || null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [expiryDate, setExpiryDate] = useState(
+    product.expiryDate ? new Date(product.expiryDate) : null
+  );
+  const [images, setImages] = useState(
+    product.images.map((url) => ({ uri: url })) || []
+  );
+  const [itemName, setItemName] = useState(product.itemName);
+  const [description, setDescription] = useState(product.description);
+  const [priceAED, setPriceAED] = useState(
+    String(product.pricePerKg?.AED || "")
+  );
+  const [subCategoryText, setSubCategoryText] = useState(
+    product.itemSubCategory
+  );
   const [suggestions, setSuggestions] = useState([]);
-  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
-
-  const [subCategoryText, setSubCategoryText] = useState("");
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [subCategorySuggestions, setSubCategorySuggestions] = useState([]);
   const [loadingSubCategory, setLoadingSubCategory] = useState(false);
   const [showSubCategorySuggestions, setShowSubCategorySuggestions] =
@@ -49,14 +59,12 @@ const SellerAddProductScreen = ({ navigation }) => {
 
   const fetchSuggestions = debounce(async (query) => {
     if (!query.trim()) return;
-
     setLoadingSuggestions(true);
     try {
       const res = await API.get(`/product/item-names?search=${query}`);
-      console.log(res);
       setSuggestions(res.data.itemNames || []);
-    } catch (error) {
-      console.error("Error fetching suggestions:", error);
+    } catch (e) {
+      console.error("Fetch error:", e);
     } finally {
       setLoadingSuggestions(false);
     }
@@ -74,8 +82,8 @@ const SellerAddProductScreen = ({ navigation }) => {
         `/product/item-sub-category/${itemName}?search=${query}`
       );
       setSubCategorySuggestions(res.data.subCategories || []);
-    } catch (error) {
-      console.error("Error fetching sub-categories:", error);
+    } catch (e) {
+      console.error("Sub-cat fetch error:", e);
     } finally {
       setLoadingSubCategory(false);
     }
@@ -85,47 +93,7 @@ const SellerAddProductScreen = ({ navigation }) => {
     fetchSubCategories(subCategoryText);
   }, [subCategoryText, itemName]);
 
-  const requestPermissions = async () => {
-    try {
-      if (Platform.Version >= 33) {
-        const permissions = [
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
-        ];
-
-        const granted = await PermissionsAndroid.requestMultiple(permissions);
-        return permissions.every(
-          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
-        );
-      } else {
-        const permissions = [
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        ];
-
-        const granted = await PermissionsAndroid.requestMultiple(permissions);
-        return permissions.every(
-          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
-        );
-      }
-    } catch (error) {
-      console.warn("Permission error:", error);
-      return false;
-    }
-  };
-
   const handleSelectImages = async () => {
-    const hasPermissions = await requestPermissions();
-
-    if (!hasPermissions) {
-      Alert.alert(
-        "Permission Required",
-        "Please grant storage permissions to select images."
-      );
-      return;
-    }
-
     const options = {
       mediaType: "photo",
       quality: 0.7,
@@ -133,118 +101,84 @@ const SellerAddProductScreen = ({ navigation }) => {
     };
 
     launchImageLibrary(options, (response) => {
-      if (response.didCancel) return;
-      if (response.errorCode) {
-        console.error("ImagePicker Error: ", response.errorMessage);
-        return;
+      if (response.didCancel || response.errorCode) return;
+
+      if (response.assets && response.assets.length > 0) {
+        const newImages = response.assets;
+
+        // Append new images to existing ones (up to 10 total)
+        setImages((prevImages) => {
+          const combined = [...prevImages, ...newImages];
+          const unique = combined.slice(0, 10); // Limit to 10 images if needed
+          return unique;
+        });
       }
-      const assets = response.assets || [];
-      setImages(assets);
     });
   };
-  const dispatch = useDispatch();
-  const token = useSelector((state) => state.user.token); // Adjust path to your auth slice
 
-  const handleAddProduct = async () => {
-    if (images.length < 1) {
-      Alert.alert("Validation Error", "At least one image is required.");
-      return;
-    }
+ const handleUpdateProduct = async () => {
+  if (
+    !category ||
+    !itemName.trim() ||
+    !subCategoryText.trim() ||
+    !country ||
+    !priceAED ||
+    !expiryDate
+  ) {
+    return Alert.alert("Error", "Please fill all fields correctly.");
+  }
+  if (images.length === 0) {
+    return Alert.alert("Error", "Please upload at least one image.");
+  }
 
-    if (!category) {
-      Alert.alert("Validation Error", "Please select a category.");
-      return;
-    }
 
-    if (!itemName.trim()) {
-      Alert.alert("Validation Error", "Item name is required.");
-      return;
-    }
+  const formData = new FormData();
 
-    if (!subCategoryText.trim()) {
-      Alert.alert("Validation Error", "Sub-category is required.");
-      return;
-    }
-
-    if (!country) {
-      Alert.alert("Validation Error", "Please select a country.");
-      return;
-    }
-
-    if (!priceAED || isNaN(priceAED)) {
-      Alert.alert("Validation Error", "Valid price is required.");
-      return;
-    }
-
-    if (!expiryDate) {
-      Alert.alert("Validation Error", "Please select an expiry date.");
-      return;
-    }
-
-    const formData = new FormData();
-
-    // Append images
-    images.forEach((img, index) => {
+  const existingImageUrls = [];
+  images.forEach((img, index) => {
+    if (img.uri.startsWith("http")) {
+      existingImageUrls.push(img.uri);
+    } else {
       formData.append("images", {
         uri: img.uri,
         name: img.fileName || `image_${index}.jpg`,
         type: img.type || "image/jpeg",
       });
-    });
-
-    // Append other fields
-    formData.append("itemCategory", category);
-    formData.append("itemName", itemName);
-    formData.append("itemSubCategory", subCategoryText);
-    formData.append("country", country);
-    formData.append("description", description);
-    // formData.append("availableKg", 100);
-
-    formData.append("priceAED", priceAED);
-    formData.append("expiryDate", expiryDate?.toISOString());
-
-    try {
-      await dispatch(addSellerProductThunk({ token, formData })).unwrap();
-      Alert.alert("Success", "Product added successfully");
-      navigation.goBack();
-    } catch (err) {
-      console.error("Error adding product:", err);
-
-      const message =
-        typeof err === "string"
-          ? err
-          : typeof err?.message === "string"
-          ? err.message
-          : "Failed to add product";
-
-      Alert.alert("Error", message);
     }
-  };
+  });
 
-  const renderImagePreview = () => (
-    <View style={styles.horizontalImageScrollContainer}>
-      <ScrollView>
-        <View style={styles.horizontalImageRow}>
-          {images.map((image, i) => (
-            <View key={i} style={styles.imagePreviewBox}>
-              <Image
-                source={{ uri: image.uri }}
-                style={{ width: "100%", height: "100%", borderRadius: 10 }}
-                resizeMode="cover"
-              />
-            </View>
-          ))}
-        </View>
-      </ScrollView>
-    </View>
-  );
+  formData.append("existingImages", JSON.stringify(existingImageUrls));
+  formData.append("itemCategory", category);
+  formData.append("itemName", itemName);
+  formData.append("itemSubCategory", subCategoryText);
+  formData.append("country", country);
+  formData.append("description", description);
+  formData.append("priceAED", priceAED);
+  formData.append("expiryDate", expiryDate.toISOString());
+
+  try {
+    await dispatch(
+      updateSellerProductThunk({ productId: product._id, formData, token })
+    ).unwrap();
+
+    Alert.alert("Success", "Product updated successfully");
+    navigation.navigate("SellerProductDetailsEditScreen", {
+      productId: product._id,
+      shouldRefresh: true,
+    });
+  } catch (e) {
+    console.error(e);
+    Alert.alert("Error", "Failed to update product");
+  }
+};
+
 
   return (
     <TouchableWithoutFeedback
       onPress={() => {
         Keyboard.dismiss();
-        setShowSuggestions(false); // hide itemName suggestions
-        setShowSubCategorySuggestions(false); // hide subCategory suggestions
+        setShowSuggestions(false);
+        setShowSubCategorySuggestions(false);
       }}
     >
       <KeyboardAvoidingView
@@ -256,11 +190,9 @@ const SellerAddProductScreen = ({ navigation }) => {
             showsVerticalScrollIndicator={true}
             contentContainerStyle={{ paddingBottom: 100 }}
             keyboardShouldPersistTaps="handled"
-            nestedScrollEnabled={true}
           >
             <BackgroundWrapper>
-              <Header Title="Add new item" />
-
+              <Header Title="Edit Item" />
               <Text style={styles.minImageText}>*Min 4 Image</Text>
               <TouchableOpacity
                 style={styles.uploadBox}
@@ -268,10 +200,48 @@ const SellerAddProductScreen = ({ navigation }) => {
               >
                 <Text style={styles.uploadText}>+ Upload image</Text>
               </TouchableOpacity>
-
-              {renderImagePreview()}
-
+              <View style={styles.horizontalImageRow}>
+                {images.map((img, i) => (
+                  <View
+                    key={i}
+                    style={{
+                      ...styles.imagePreviewBox,
+                      marginRight: 10,
+                      marginLeft: i === 0 ? 20 : 0,
+                    }}
+                  >
+                    <Image
+                      source={{ uri: img.uri }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: 10,
+                      }}
+                    />
+                    {/* Remove Button */}
+                    <TouchableOpacity
+                      onPress={() => {
+                        const filtered = [...images];
+                        filtered.splice(i, 1);
+                        setImages(filtered);
+                      }}
+                      style={{
+                        position: "absolute",
+                        top: 2,
+                        right: 2,
+                        backgroundColor: "rgba(0,0,0,0.6)",
+                        borderRadius: 10,
+                        padding: 4,
+                        zIndex: 10,
+                      }}
+                    >
+                      <Icon name="close" size={16} color="#fff" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
               <View style={styles.formSection}>
+                {/* Category Picker */}
                 <Text style={styles.label}>Item Category</Text>
                 <View style={styles.input}>
                   <RNPickerSelect
@@ -279,10 +249,10 @@ const SellerAddProductScreen = ({ navigation }) => {
                     items={[
                       { label: "Fruits", value: "fruits" },
                       { label: "Vegetables", value: "vegetables" },
-                      { label: "Dairy", value: "dairy" },
                     ]}
-                    placeholder={{ label: "Item Category", value: null }}
                     value={category}
+                    placeholder={{ label: "Item Category", value: null }}
+                    // style={pickerSelectStyles}
                     style={{
                       inputIOS: {
                         color: "#222",
@@ -308,15 +278,7 @@ const SellerAddProductScreen = ({ navigation }) => {
                     )}
                   />
                 </View>
-
-                {/* <Text style={styles.label}>Item name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Item name"
-              value={itemName}
-              onChangeText={setItemName}
-            /> */}
-
+                {/* Item Name */}
                 <View>
                   <Text style={styles.label}>Item name</Text>
 
@@ -388,7 +350,7 @@ const SellerAddProductScreen = ({ navigation }) => {
                       )}
                   </View>
                 </View>
-
+                {/* Sub-Category */}
                 <View>
                   <Text style={styles.label}>Item Sub-Category</Text>
 
@@ -461,7 +423,7 @@ const SellerAddProductScreen = ({ navigation }) => {
                       )}
                   </View>
                 </View>
-
+                {/* Country */}
                 <Text style={styles.label}>Country</Text>
                 <View style={styles.input}>
                   <RNPickerSelect
@@ -471,8 +433,9 @@ const SellerAddProductScreen = ({ navigation }) => {
                       { label: "India", value: "india" },
                       { label: "USA", value: "usa" },
                     ]}
-                    placeholder={{ label: "Select Country", value: null }}
                     value={country}
+                    placeholder={{ label: "Select Country", value: null }}
+                    // style={pickerSelectStyles}
                     style={{
                       inputIOS: {
                         color: "#222",
@@ -498,7 +461,7 @@ const SellerAddProductScreen = ({ navigation }) => {
                     )}
                   />
                 </View>
-
+                {/* Expiry */}
                 <Text style={styles.label}>Expiry date</Text>
                 <TouchableOpacity
                   onPress={() => setShowDatePicker(true)}
@@ -515,13 +478,13 @@ const SellerAddProductScreen = ({ navigation }) => {
                     value={expiryDate || new Date()}
                     mode="date"
                     display="default"
-                    onChange={(event, date) => {
+                    onChange={(e, date) => {
                       setShowDatePicker(false);
                       if (date) setExpiryDate(date);
                     }}
                   />
                 )}
-
+                {/* Price */}
                 <Text style={styles.label}>Price/KG</Text>
                 <View style={styles.priceRow}>
                   <TextInput
@@ -535,29 +498,17 @@ const SellerAddProductScreen = ({ navigation }) => {
                     <Text style={styles.priceUnit}>AED/Kg</Text>
                   </View>
                 </View>
-
-                <Text style={styles.label}>Discription</Text>
+                {/* Description */}
+                <Text style={styles.label}>Description</Text>
                 <TextInput
                   style={styles.descriptionInput}
+                  multiline
                   placeholder="Discription"
                   value={description}
                   onChangeText={setDescription}
-                  multiline
                   scrollEnabled={true}
                 />
               </View>
-
-              {/* <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.cancelButton}>
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={handleAddProduct}
-            >
-              <Text style={styles.addButtonText}>Add item</Text>
-            </TouchableOpacity>
-          </View> */}
             </BackgroundWrapper>
           </ScrollView>
           <View style={styles.fixedButtonRow}>
@@ -569,9 +520,9 @@ const SellerAddProductScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.addButton}
-              onPress={handleAddProduct}
+              onPress={handleUpdateProduct}
             >
-              <Text style={styles.addButtonText}>Add item</Text>
+              <Text style={styles.addButtonText}>Update Item</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -580,4 +531,4 @@ const SellerAddProductScreen = ({ navigation }) => {
   );
 };
 
-export default SellerAddProductScreen;
+export default SellerEditProductScreen;
