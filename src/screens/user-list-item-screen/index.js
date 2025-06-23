@@ -10,45 +10,43 @@ import {
 import styles from "./styles";
 import { SwiperFlatList } from "react-native-swiper-flatlist";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchSellerProductsThunk } from "../../redux/slice/sellerProductSlice";
+import {
+  fetchSellerProductsThunk,
+  resetSellerProducts,
+} from "../../redux/slice/sellerProductSlice";
 
 const UserListItemScreen = () => {
-  // const route = useRoute();
-  const passedToken = useSelector((state) => state.user.token);
-
+  const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { sellerProducts, loadingSeller, errorSeller } = useSelector(
-    (state) => ({
-      sellerProducts: state.sellerProduct.sellerProducts,
-      loadingSeller: state.sellerProduct.loadingSeller,
-      errorSeller: state.sellerProduct.errorSeller,
-    })
-  );
 
-  // const sellerToken = useSelector((state) => state.seller.token);
+  const {
+    sellerProducts,
+    loadingSeller,
+    errorSeller,
+    page,
+    totalPages,
+  } = useSelector((state) => state.sellerProduct);
 
   useEffect(() => {
-    if (passedToken) {
-      dispatch(
-        fetchSellerProductsThunk({
-          token: passedToken,
-          page: 1,
-          limit: 10,
-        })
-      ).then((res) => {
-        console.log("Response from thunk:", res?.payload);
-      });
+    if (token) {
+      dispatch(resetSellerProducts());
+      dispatch(fetchSellerProductsThunk({ token, page: 1, limit: 10 }));
     }
-  }, [dispatch, passedToken]);
+  }, [dispatch, token]);
 
   const handleTileClick = (product) => {
-    console.log("Navigating with product ID:", product?._id); 
     navigation.navigate("SellerProductDetailsEditScreen", {
       productId: product._id,
     });
+  };
+
+  const handleLoadMore = () => {
+    if (!loadingSeller && page < totalPages) {
+      dispatch(fetchSellerProductsThunk({ token, page: page + 1, limit: 10 }));
+    }
   };
 
   const renderItem = ({ item }) => (
@@ -78,11 +76,7 @@ const UserListItemScreen = () => {
               <View style={styles.child}>
                 <Image
                   source={{ uri: imageUri }}
-                  style={{
-                    width: "100%",
-                    height: 200,
-                    marginTop: 5,
-                  }}
+                  style={{ width: "100%", height: 200, marginTop: 5 }}
                   resizeMode="cover"
                 />
               </View>
@@ -120,16 +114,25 @@ const UserListItemScreen = () => {
           <Text style={styles.itemHeader}>All Items</Text>
         </View>
 
-        {loadingSeller ? (
+        {loadingSeller && page === 1 ? (
           <ActivityIndicator size="large" color="#000" />
         ) : errorSeller ? (
-          <Text style={{ color: "red", textAlign: "center" }}>{error}</Text>
+          <Text style={{ color: "red", textAlign: "center" }}>
+            {errorSeller}
+          </Text>
         ) : (
           <View style={styles.flatListContainer}>
             <FlatList
               data={sellerProducts}
               keyExtractor={(item) => item._id}
               renderItem={renderItem}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={
+                loadingSeller && page > 1 ? (
+                  <ActivityIndicator size="small" color="#000" />
+                ) : null
+              }
               showsVerticalScrollIndicator={false}
             />
           </View>

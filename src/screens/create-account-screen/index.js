@@ -34,7 +34,7 @@ const CreateAccountScreen = () => {
         <Header />
         <View style={styles.contentContainer}>
           <Image
-            source={require("../../resources/images/tijara-logo.png")}
+            source={require("../../resources/images/logotijara.png")}
             style={styles.ImageContainer}
             resizeMode="contain"
           />

@@ -9,9 +9,9 @@ import { getProductById } from "../../services/product-services";
 // Thunks
 export const fetchSellerProductsThunk = createAsyncThunk(
   "sellerProduct/fetchSellerProducts",
-  async ({ token, filters }, { rejectWithValue }) => {
+  async ({ token, filters = {}, page = 1, limit = 10 }, { rejectWithValue }) => {
     try {
-      const data = await getAllSellerProducts({ token, ...filters });
+      const data = await getAllSellerProducts({ token, ...filters, page, limit });
       return data;
     } catch (err) {
       return rejectWithValue(err?.response?.data || err.message);
@@ -40,6 +40,7 @@ export const addSellerProductThunk = createAsyncThunk(
     }
   }
 );
+
 export const getSellerProductByIdThunk = createAsyncThunk(
   "product/getById",
   async ({ token, productId }, { rejectWithValue }) => {
@@ -56,11 +57,14 @@ export const getSellerProductByIdThunk = createAsyncThunk(
 const initialState = {
   sellerProducts: [],
   marketplaceProducts: [],
-  selectedSellerProduct:null,
+  selectedSellerProduct: null,
   loadingSeller: false,
   loadingMarketplace: false,
   errorSeller: null,
   errorMarketplace: null,
+  page: 1,
+  limit: 10,
+  total: 0,
   totalPages: 1,
   adding: false,
   addSuccess: false,
@@ -79,6 +83,13 @@ const sellerProductSlice = createSlice({
       state.adding = false;
       state.addSuccess = false;
     },
+    resetSellerProducts: (state) => {
+      state.sellerProducts = [];
+      state.page = 1;
+      state.total = 0;
+      state.totalPages = 1;
+      state.errorSeller = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -89,8 +100,17 @@ const sellerProductSlice = createSlice({
       })
       .addCase(fetchSellerProductsThunk.fulfilled, (state, action) => {
         state.loadingSeller = false;
-        state.sellerProducts = action.payload.products || [];
-        state.totalPages = action.payload.totalPages || 1;
+        const { products, total, totalPages, page } = action.payload;
+
+        if (page === 1) {
+          state.sellerProducts = products;
+        } else {
+          state.sellerProducts = [...state.sellerProducts, ...products];
+        }
+
+        state.total = total || 0;
+        state.totalPages = totalPages || 1;
+        state.page = page;
       })
       .addCase(fetchSellerProductsThunk.rejected, (state, action) => {
         state.loadingSeller = false;
@@ -112,6 +132,8 @@ const sellerProductSlice = createSlice({
         state.errorMarketplace =
           action.payload || "Failed to fetch marketplace products";
       })
+
+      // Get Product by ID
       .addCase(getSellerProductByIdThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -125,6 +147,7 @@ const sellerProductSlice = createSlice({
         state.error = action.payload || "Failed to fetch product";
       })
 
+      // Add Seller Product
       .addCase(addSellerProductThunk.pending, (state) => {
         state.adding = true;
         state.addSuccess = false;
@@ -133,7 +156,7 @@ const sellerProductSlice = createSlice({
       .addCase(addSellerProductThunk.fulfilled, (state, action) => {
         state.adding = false;
         state.addSuccess = true;
-        state.sellerProducts.push(action.payload.product); // if response has single product
+        state.sellerProducts.push(action.payload.product);
       })
       .addCase(addSellerProductThunk.rejected, (state, action) => {
         state.adding = false;
@@ -142,5 +165,9 @@ const sellerProductSlice = createSlice({
   },
 });
 
-export const { clearSellerProductState } = sellerProductSlice.actions;
+export const {
+  clearSellerProductState,
+  resetSellerProducts,
+} = sellerProductSlice.actions;
+
 export default sellerProductSlice.reducer;

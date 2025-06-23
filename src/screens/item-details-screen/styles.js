@@ -70,12 +70,15 @@ const styles = StyleSheet.create({
   priceContainer: {
     alignItems: "flex-end",
   },
+rowContainer: {
+  flexDirection: "row",
+  justifyContent: "center", 
+  alignItems: "center",
+  gap: 10, 
+  width: "100%",
+},
 
-  rowContainer: {
-    flexDirection: "row",
-    width: "90%",
-    
-  },
+
   alignContent: {
     width: width * 1,
     justifyContent: "center",
@@ -97,9 +100,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   selectedThumbnail: {
-  borderColor: "#B3DB48",
-  borderWidth: 2,
-},
+    borderColor: "#B3DB48",
+    borderWidth: 2,
+  },
   sellerBox: {
     flexDirection: "row",
     alignItems: "center",
@@ -176,10 +179,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 12,
     padding: 20,
-    alignItems: "center",
     width: width * 0.85,
-    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center", // <-- Add this
   },
+
   modalText: {
     fontSize: 16,
     marginBottom: 15,
@@ -187,7 +191,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   editButtonStyle: {
-    backgroundColor: "#ed4e66",
+    backgroundColor: "#F0F0F0",
     color: "white",
   },
   label: {
@@ -250,31 +254,29 @@ const styles = StyleSheet.create({
   cancelText: {
     color: "#000",
     fontWeight: "bold",
-    backgroundColor:"#e60b2c",
+    backgroundColor: "#e60b2c",
   },
   submitText: {
     color: "#000",
     fontWeight: "bold",
   },
-  modalContentContainer: {
-    backgroundColor: "#fff",
-    width: width * 0.85,
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  whatsappButton: {
-  backgroundColor: "#25D366",
-  padding: 12,
-  borderRadius: 8,
+modalContentContainer: {
+  width: "100%",
   justifyContent: "center",
   alignItems: "center",
-  flexDirection: "row",
-  marginLeft: 10,
-  minWidth: 20,
+  marginBottom: 20, // optional spacing below the input block
 },
 
+  whatsappButton: {
+    backgroundColor: "#25D366",
+    padding: 12,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    marginLeft: 10,
+    minWidth: 20,
+  },
 });
 
 export default styles;

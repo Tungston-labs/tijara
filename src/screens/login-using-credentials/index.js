@@ -1,37 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator,
-  SafeAreaView
+  SafeAreaView,
+  Image
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
-import { setToken } from "../../services/config"; // Assume this sets auth token globally
+import { useNavigation, useRoute } from "@react-navigation/native";
 import styles from "./styles";
+import { setToken } from "../../services/config";
 import { userLoginThunk } from "../../redux/slice/authSlice";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secure, setSecure] = useState(true);
+
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { loading, error } = useSelector((state) => state.user); 
+  const route = useRoute();
+
+  const location = route?.params?.location; 
+
+  const { loading, error } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (location) {
+      console.log("Location received in login:", location);
+      // dispatch(setLocation(location)); // Uncomment if using redux
+    }
+  }, [location]);
+
   const handleLogin = async () => {
     if (!email || !password) {
       alert("Please enter both email and password");
       return;
     }
+
     const credentials = { email, password };
+
     try {
       const res = await dispatch(userLoginThunk(credentials)).unwrap();
+
       if (res?.accessToken) {
         setToken(res.accessToken);
         const userRole = res.role;
+
         if (userRole === "buyer") {
           navigation.replace("BuyerHomeScreen");
         } else if (userRole === "seller") {
@@ -41,30 +58,28 @@ const LoginScreen = () => {
         }
       }
     } catch (err) {
-      // console.error("Login error:", err);
-
       const errorStatus = err?.status || err?.response?.data?.status;
       if (errorStatus === "pending") {
         navigation.navigate("RequestNotVerifiedScreen");
         return;
       }
-
       alert(err?.message || "Login failed");
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
+       <Image
+            source={require("../../resources/images/logotijara.png")}
+            style={styles.ImageContainer}
+            resizeMode="contain"
+          />
       <TouchableOpacity
         style={styles.backArrow}
         onPress={() => navigation.goBack()}
       >
         <Icon name="chevron-back-outline" size={24} color="#000" />
       </TouchableOpacity>
-      {/* 
-      <View style={styles.logoContainer}>
-        <Image source={require("../../assets/logo.png")} style={styles.logo} />
-      </View> */}
 
       <Text style={styles.heading}>Welcome back</Text>
       <Text style={styles.subHeading}>Please enter your details to Log in</Text>
@@ -117,7 +132,7 @@ const LoginScreen = () => {
       <View style={styles.footer}>
         <Text style={styles.footerText}>Don’t have an account?</Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate("RegistrationScreen")}
+          onPress={() => navigation.navigate("RoleSelectionScreen", { location })}
         >
           <Text style={styles.signUpText}> Sign Up Now</Text>
         </TouchableOpacity>

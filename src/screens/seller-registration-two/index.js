@@ -17,7 +17,8 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { launchImageLibrary } from "react-native-image-picker";
 import Button from "../../componets/Button";
-import API from '../../services/config'
+import { SignUpThunk } from "../../redux/slice/authSlice";
+
 const SellerRegistrationSecond = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -106,71 +107,62 @@ const SellerRegistrationSecond = () => {
     setForm({ ...form, tradeLicenseCopy: null });
   };
 
-  const handleSubmit = async () => {
-    if (!form.companyName || !form.tradeLicenseNumber || !form.managerName) {
-      Alert.alert("Validation Error", "Please fill all required fields");
-      return;
-    }
+ const handleSubmit = async () => {
+  if (!form.companyName || !form.tradeLicenseNumber || !form.managerName) {
+    Alert.alert("Validation Error", "Please fill all required fields");
+    return;
+  }
 
-    if (!form.tradeLicenseCopy) {
-      Alert.alert("Validation Error", "Please upload your trade license copy");
-      return;
-    }
+  if (!form.tradeLicenseCopy) {
+    Alert.alert("Validation Error", "Please upload your trade license copy");
+    return;
+  }
 
-    const formData = new FormData();
+  const formData = new FormData();
 
-    // Append data from first screen
-    formData.append("name", prevForm.name);
-    formData.append("email", prevForm.email);
-    formData.append("password", prevForm.password);
-    formData.append("phone", prevForm.phone);
+  formData.append("name", prevForm.name);
+  formData.append("email", prevForm.email);
+  formData.append("password", prevForm.password);
+  formData.append("phone", prevForm.phone);
+  formData.append("coords", JSON.stringify(prevForm.coords));
 
-    formData.append(
-      "coords",
-      JSON.stringify({
-        latitude: 25.276987,
-        longitude: 55.296249,
-      })
-    );
+  if (prevForm.location) {
+    formData.append("location", prevForm.location);
+  }
 
-    if (profileImage) {
-      formData.append("profileImage", {
-        uri: profileImage.uri,
-        type: profileImage.type || "image/jpeg",
-        name: profileImage.name || "profile.jpg",
-      });
-    }
-
-    // Append second screen data
-    formData.append("companyName", form.companyName);
-    formData.append("tradeLicenseNumber", form.tradeLicenseNumber);
-    formData.append("managerName", form.managerName);
-
-    formData.append("tradeLicenseCopy", {
-      uri: form.tradeLicenseCopy.uri,
-      type: form.tradeLicenseCopy.type,
-      name: form.tradeLicenseCopy.name,
+  if (profileImage) {
+    formData.append("profileImage", {
+      uri: profileImage.uri,
+      type: profileImage.type || "image/jpeg",
+      name: profileImage.name || "profile.jpg",
     });
+  }
 
-    try {
-      setLoading(true);
-      await API.post("/seller/seller-register", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+  formData.append("companyName", form.companyName);
+  formData.append("tradeLicenseNumber", form.tradeLicenseNumber);
+  formData.append("managerName", form.managerName);
+  formData.append("tradeLicenseCopy", {
+    uri: form.tradeLicenseCopy.uri,
+    type: form.tradeLicenseCopy.type,
+    name: form.tradeLicenseCopy.name,
+  });
 
-      navigation.navigate("RequestSentScreen", {
-        phone: prevForm.phone,
-        from: "seller",
-      });
-    } catch (err) {
-      console.error("Error submitting form:", err);
-      Alert.alert("Signup Failed", err?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    const result = await dispatch(SignUpThunk({ formData, role: "seller" })).unwrap();
+    console.log("Signup success:", result);
+    navigation.navigate("RequestSentScreen", {
+      phone: prevForm.phone,
+      from: "seller",
+    });
+  } catch (err) {
+    console.error("Signup failed:", err);
+    Alert.alert("Signup Failed", err?.message || "Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <ScrollView>

@@ -8,34 +8,36 @@ import Button from "../../componets/Button";
 import { checkStatusThunk } from "../../redux/slice/authSlice";
 
 const RequestSentScreen = () => {
+    const { user,loading } = useSelector((state) => state.user);
+
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { user, verificationStatus, loading } = useSelector(
-    (state) => state.user
-  );
+ 
+const handleButtonClick = async () => {
+  try {
+    console.log("Current user in state:", user); // 🐛 Add this line for debug
 
-  const handleButtonClick = async () => {
-    try {
-      if (user?._id) {
-        await dispatch(checkStatusThunk(user._id)).unwrap();
+    if (user?._id) {
+      const response = await dispatch(checkStatusThunk(user._id)).unwrap();
 
-        if (verificationStatus === "approved") {
-          navigation.replace("RequestSuccessScreen");
-        } else if (
-          verificationStatus === "rejected" ||
-          verificationStatus === "pending"
-        ) {
-          navigation.replace("RequestNotVerifiedScreen");
-        }
-      } else {
-        console.log("No user ID available");
-        alert("Unable to check status. Please try again later.");
+      if (response.status === "approved") {
+        navigation.replace("RequestSuccessScreen", { user: response });
+      } else if (
+        response.status === "rejected" ||
+        response.status === "pending"
+      ) {
+        navigation.replace("RequestNotVerifiedScreen");
       }
-    } catch (error) {
-      console.error("Error checking status:", error);
-      alert("Error checking status. Please try again.");
+    } else {
+      console.log("No user ID available");
+      alert("Unable to check status. Please try again later.");
     }
-  };
+  } catch (error) {
+    console.error("Error checking status:", error);
+    alert("Error checking status. Please try again.");
+  }
+};
+
 
   return (
     <View style={styles.container}>

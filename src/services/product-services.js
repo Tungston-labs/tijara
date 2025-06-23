@@ -20,8 +20,8 @@ export const getAllProducts = async ({
   page = 1,
   limit = 10,
   search = "",
-  category,
-  status,
+  itemCategory,
+   status,
   sellerName,
 }) => {
   try {
@@ -33,15 +33,14 @@ export const getAllProducts = async ({
         page,
         limit,
         search,
-        category,
+        itemCategory,
         status,
         sellerName,
       },
     });
-  console.log("hdbhdhdbdjs", response)
+    console.log("hdbhdhdbdjs", response);
 
     return response.data;
-    
   } catch (err) {
     console.error(
       "Error fetching products:",

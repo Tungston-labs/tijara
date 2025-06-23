@@ -1,11 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { checkStatus, Login, signUp } from "../../services/authServices";
+import {
+  buyerSignUp,
+  checkStatus,
+  Login,
+  sellerSignUp,
+} from "../../services/authServices";
 
 export const SignUpThunk = createAsyncThunk(
   "user/signUp",
-  async (formData, { rejectWithValue }) => {
+  async ({ formData, role }, { rejectWithValue }) => {
     try {
-      const res = await signUp(formData);
+      let res;
+      if (role === "seller") {
+        res = await sellerSignUp(formData);
+      } else {
+        res = await buyerSignUp(formData);
+      }
       return res;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -17,7 +27,9 @@ export const checkStatusThunk = createAsyncThunk(
   "user/checkStatus",
   async (userId, { rejectWithValue }) => {
     try {
+      console.log("DISPATCHED checkStatusThunk WITH ID:", userId);
       const res = await checkStatus(userId);
+      console.log("DISPATCHED checkStatusThunk WITH ID:", userId);
       return res;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -56,9 +68,7 @@ const authSlice = createSlice({
       state.token = null;
       state.role = null;
       state.verificationStatus = null;
-      
     },
-    
   },
   extraReducers: (builder) => {
     builder
@@ -66,14 +76,39 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(SignUpThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-      })
-      .addCase(SignUpThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+      // .addCase(SignUpThunk.fulfilled, (state, action) => {
+      //   state.loading = false;
+
+      //   const userPayload = action.payload.buyer || action.payload.seller;
+
+      //   if (userPayload) {
+      //     state.user = {
+      //       _id: userPayload._id,
+      //       name: userPayload.name,
+      //       email: userPayload.email,
+      //       role: userPayload.role,
+      //     };
+      //     state.token = action.payload.accessToken || null;
+      //     state.role = userPayload.role || null;
+      //   } else {
+      //     console.warn("SignUpThunk fulfilled but user payload is missing.");
+      //   }
+      // })
+.addCase(SignUpThunk.fulfilled, (state, action) => {
+  state.loading = false;
+  const payload = action.payload;
+
+  if (payload && payload._id) {
+    state.user = {
+      _id: payload._id,
+      name: payload.name,
+      email: payload.email,
+      role: payload.role,
+    };
+    state.token = payload.accessToken || null;
+    state.role = payload.role || null;
+  }
+})
       .addCase(checkStatusThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -82,10 +117,13 @@ const authSlice = createSlice({
         state.loading = false;
         state.verificationStatus = action.payload.status;
         state.user = {
-          name: action.payload.name,
-          _id: action.payload._id,
+          ...state.user,
+          _id: action.payload.id,
+          email: action.payload.email,
+          role: action.payload.role,
         };
       })
+
       .addCase(checkStatusThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
@@ -107,7 +145,6 @@ const authSlice = createSlice({
         };
         state.token = action.payload.accessToken;
         state.role = action.payload.role;
-        
       });
   },
 });

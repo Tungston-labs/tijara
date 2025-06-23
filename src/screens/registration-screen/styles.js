@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: width * 0.9,
+    color: "#000"
   },
   loginContainer: {
     flexDirection: "row",

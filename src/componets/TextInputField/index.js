@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, TextInput, Text } from "react-native";
-
 import styles from "./styles";
 
 const TextInputField = ({
@@ -22,9 +21,9 @@ const TextInputField = ({
   return (
     <View>
       <Text style={styles.subText}>{placeholder}</Text>
-      <View style={[styles.container, customStyle]}>
+      <View style={styles.container}>
         <TextInput
-          style={styles.placeholder}
+          style={[styles.placeholder, customStyle]} // 🛠️ Apply customStyle here
           placeholder={placeholder}
           placeholderTextColor="#A9A9A9"
           onChangeText={handleTextChange}

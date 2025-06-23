@@ -74,15 +74,22 @@ const ItemDetailsScreen = ({ navigation }) => {
     }
   };
   const handleWhatsAppRequest = () => {
-    const phoneNumber = "+919895977148"; // Replace with actual WhatsApp number
+    const quantity = 10; // or dynamically from input
     const message = `Hello, I would like to request ${quantity} Kg of ${
       product?.itemName || "this product"
     }. Please let me know the next steps.`;
 
+    const phoneNumber = product?.addedBy?.phone;
+
+    if (!phoneNumber) {
+      Alert.alert("Error", "Seller phone number not available.");
+      return;
+    }
+
     const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
       message
     )}`;
-    Linking.openURL(url).catch((err) =>
+    Linking.openURL(url).catch(() =>
       Alert.alert(
         "Error",
         "Could not open WhatsApp. Please make sure it's installed."
@@ -148,7 +155,7 @@ const ItemDetailsScreen = ({ navigation }) => {
               </Text>
             </View>
           </View>
-  
+
           <View style={styles.buttonContainer}>
             <Button label={"Request"} handleButtonPress={handleButtonClick} />
           </View>
@@ -159,7 +166,9 @@ const ItemDetailsScreen = ({ navigation }) => {
                 <Image source={images.profile} style={styles.sellerImage} />
                 <View style={styles.textContainer}>
                   <View style={styles.rowContainer}>
-                    <Text style={styles.sellerName}>Sold by Admin</Text>
+                    <Text style={styles.sellerName}>
+                      Sold by {product?.addedBy?.name || "Seller"}
+                    </Text>
                     <Image source={images.verify} style={styles.verifyImage} />
                   </View>
                   <Text style={styles.sellerStats}>Sold over 2K+ Tons</Text>

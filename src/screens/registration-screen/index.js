@@ -18,7 +18,7 @@ import Header from "../../componets/Header";
 import TextInputField from "../../componets/TextInputField";
 import { launchImageLibrary } from "react-native-image-picker";
 import Icon from "react-native-vector-icons/Feather";
-import API from "../../services/config";
+import { SignUpThunk } from "../../redux/slice/authSlice";
 const RegistrationScreen = () => {
   const route = useRoute();
   const role = route.params?.role || "buyer";
@@ -170,29 +170,35 @@ const RegistrationScreen = () => {
 
       try {
         setLoading(true);
-        const response = await API.post(
-          role === "buyer" ? "/buyer/buyer-sign-up" : "/seller/seller-register",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
 
-        console.log("Signup Success:", response.data);
+        const formData = new FormData();
+        formData.append("name", form.name);
+        formData.append("phone", form.phone);
+        formData.append("email", form.email);
+        formData.append("password", form.password);
+        formData.append("coords", JSON.stringify(basicFormData.coords));
+        if (location) {
+          formData.append("location", location);
+        }
+        formData.append("profileImage", {
+          uri: profileImage.uri,
+          type: profileImage.type || "image/jpeg",
+          name: profileImage.name || "profile.jpg",
+        });
+
+        const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
+
+        console.log("Signup Success (Redux):", result);
         navigation.navigate("RequestSentScreen");
       } catch (err) {
-        console.error("Signup Error:", err?.response?.data || err.message);
-        const message =
-          err?.response?.data?.message || err?.message || "Signup failed";
+        console.error("Signup Error (Redux):", err);
+        const message = err?.message || "Signup failed";
         Alert.alert("Signup Failed", message);
       } finally {
         setLoading(false);
       }
     }
   };
-
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -293,5 +299,4 @@ const RegistrationScreen = () => {
     </ScrollView>
   );
 };
-
 export default RegistrationScreen;

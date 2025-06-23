@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,35 +13,49 @@ import images from "../../config/images";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { fetchProductsThunk } from "../../redux/slice/productSlice"; // Adjust path if needed
+import {
+  fetchProductsThunk,
+  resetProducts,
+} from "../../redux/slice/productSlice";
 
 const ListItemScreen = () => {
-  const { products, loading, error } = useSelector((state) => state.product);
+  const { products, loading, error, page, totalPages } = useSelector(
+    (state) => state.product
+  );
   const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const [selectedTab, setSelectedTab] = useState("vegetables");
-  
+
+  // Fetch on tab/category change
   useEffect(() => {
-    console.log("shbshshs",token)
     if (token) {
-      console.log("TOKEN FOUND IN ListItemScreen:", token);
-      dispatch(fetchProductsThunk({ token }));
+      dispatch(resetProducts());
+      dispatch(
+        fetchProductsThunk({
+          token,
+          filters: { itemCategory: selectedTab },
+          page: 1,
+        })
+      );
     }
-  }, [token]);
-
-  const filteredProducts = products.filter(
-    (item) => item.itemCategory?.toLowerCase() === selectedTab
-  );
-
-  console.log("All products:", products);
-  console.log("Selected Tab:", selectedTab);
-  console.log("Filtered:", filteredProducts);
+  }, [selectedTab, token]);
 
   const handleTileClick = (item) => {
     navigation.navigate("ItemDetailsScreen", { productId: item._id });
+  };
+
+  const handleLoadMore = () => {
+    if (!loading && page < totalPages) {
+      dispatch(
+        fetchProductsThunk({
+          token,
+          filters: { itemCategory: selectedTab },
+          page: page + 1,
+        })
+      );
+    }
   };
 
   return (
@@ -68,11 +82,11 @@ const ListItemScreen = () => {
         </View>
 
         <View style={styles.itemHeaderContainer}>
-          <Text style={styles.itemHeader}>Popular Item</Text>
+          <Text style={styles.itemHeader}>Popular Items</Text>
         </View>
 
         <View style={styles.flatListContainer}>
-          {loading ? (
+          {loading && page === 1 ? (
             <Text style={{ textAlign: "center", marginTop: 20 }}>
               Loading...
             </Text>
@@ -80,14 +94,21 @@ const ListItemScreen = () => {
             <Text style={{ textAlign: "center", marginTop: 20 }}>
               Failed to load products.
             </Text>
-          ) : filteredProducts.length === 0 ? (
+          ) : products.length === 0 ? (
             <Text style={{ textAlign: "center", marginTop: 20 }}>
               No items found.
             </Text>
           ) : (
             <FlatList
-              data={filteredProducts}
+              data={products}
               keyExtractor={(item) => item._id}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={
+                loading && page > 1 ? (
+                  <Text style={{ textAlign: "center" }}>Loading more...</Text>
+                ) : null
+              }
               renderItem={({ item }) => (
                 <Pressable onPress={() => handleTileClick(item)}>
                   <View style={styles.flatItem}>
@@ -161,6 +182,5 @@ const ListItemScreen = () => {
     </View>
   );
 };
-
 
 export default ListItemScreen;

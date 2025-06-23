@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addProduct, getAllProducts, getProductById } from "../../services/product-services";
+import {
+  addProduct,
+  getAllProducts,
+  getProductById,
+} from "../../services/product-services";
 
 // Async thunk
 export const addProductThunk = createAsyncThunk(
@@ -15,15 +19,16 @@ export const addProductThunk = createAsyncThunk(
 );
 export const fetchProductsThunk = createAsyncThunk(
   "products/fetchAll",
-  async ({ token, filters }, { rejectWithValue }) => {
+  async ({ token, filters = {}, page = 1 }, { rejectWithValue }) => {
     try {
-      const data = await getAllProducts({ token, ...filters });
+      const data = await getAllProducts({ token, ...filters, page }); // pass `page`
       return data;
     } catch (err) {
       return rejectWithValue(err?.response?.data || err.message);
     }
   }
 );
+
 export const getProductByIdThunk = createAsyncThunk(
   "product/getById",
   async ({ token, productId }, { rejectWithValue }) => {
@@ -41,7 +46,7 @@ const productSlice = createSlice({
   name: "product",
   initialState: {
     products: [],
-    selectedProduct: null, 
+    selectedProduct: null,
     loading: false,
     error: null,
     successMessage: null,
@@ -83,11 +88,22 @@ const productSlice = createSlice({
       })
       .addCase(fetchProductsThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload.products;
-        state.total = action.payload.total;
-        state.totalPages = action.payload.totalPages;
-        state.page = action.payload.page;
+        state.error = null;
+
+        const { products, total, totalPages, page } = action.payload;
+
+        if (page === 1) {
+          state.products = products;
+        } else {
+          // append new products to existing list
+          state.products = [...state.products, ...products];
+        }
+
+        state.total = total;
+        state.totalPages = totalPages;
+        state.page = page;
       })
+
       .addCase(fetchProductsThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch products";
@@ -107,5 +123,5 @@ const productSlice = createSlice({
   },
 });
 
-export const { clearProductMessages } = productSlice.actions;
+export const { clearProductMessages,resetProducts } = productSlice.actions;
 export default productSlice.reducer;

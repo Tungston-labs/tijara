@@ -36,6 +36,7 @@ export const buyerSignUp = async (formData) => {
 export const checkStatus = async (userId) => {
   try {
     const response = await API.post("/user/check-status", { id: userId });
+    console.log("gdyeijkeloeolopr",response)
     return response.data;
   } catch (err) {
     console.error("Error checking status:", err?.response?.data || err.message);
