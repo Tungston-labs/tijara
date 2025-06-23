@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,17 +13,41 @@ import images from "../../config/images";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 import ModalButton from "../../componets/ModalButton";
+import { useSelector, useDispatch } from "react-redux";
+import { useRoute } from "@react-navigation/native";
+import { getProductByIdThunk } from "../../redux/slice/productSlice";
+import { createOrderThunk } from "../../redux/slice/orderSlice";
+import { Alert } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { Linking } from "react-native";
 
 const ItemDetailsScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [quantity, setQuantity] = useState(100);
 
+  const token = useSelector((state) => state.user.token);
+  const dispatch = useDispatch();
+  const route = useRoute();
+  const { productId } = route.params;
+
+  const product = useSelector((state) => state.product.selectedProduct);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  useEffect(() => {
+    if (productId && token) {
+      console.log("Token from Redux:", token);
+      dispatch(getProductByIdThunk({ token, productId }));
+    }
+    console.log(getProductByIdThunk);
+  }, [productId, token]);
+
   const decrease = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
   const increase = () => setQuantity((prev) => prev + 1);
 
   const handleIconPress = () => {
-    navigation.navigate("BuyerHomeScreen");
+    navigation.goBack();
   };
+
   const handleButtonClick = () => {
     setModalVisible(true);
   };
@@ -31,9 +55,48 @@ const ItemDetailsScreen = ({ navigation }) => {
   const closeModal = () => {
     setModalVisible(false);
   };
-  const submitModal = () => {
-    navigation.navigate("SuccessScreen");
+  const { loading, order, error } = useSelector((state) => state.order);
+
+  const handleOrderRequest = async () => {
+    try {
+      console.log("Dispatching createOrderThunk");
+
+      const res = await dispatch(
+        createOrderThunk({ token, productId, quantity })
+      ).unwrap();
+
+      navigation.navigate("SuccessScreen", {
+        orderId: res.order._id,
+      });
+    } catch (err) {
+      console.error("Error placing order:", err);
+      Alert.alert("Error", err.message || "Failed to place order");
+    }
   };
+  const handleWhatsAppRequest = () => {
+    const quantity = 10; // or dynamically from input
+    const message = `Hello, I would like to request ${quantity} Kg of ${
+      product?.itemName || "this product"
+    }. Please let me know the next steps.`;
+
+    const phoneNumber = product?.addedBy?.phone;
+
+    if (!phoneNumber) {
+      Alert.alert("Error", "Seller phone number not available.");
+      return;
+    }
+
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
+      message
+    )}`;
+    Linking.openURL(url).catch(() =>
+      Alert.alert(
+        "Error",
+        "Could not open WhatsApp. Please make sure it's installed."
+      )
+    );
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -41,48 +104,71 @@ const ItemDetailsScreen = ({ navigation }) => {
           <Header
             handleIconPress={handleIconPress}
             icon={true}
-            Title={"Cabbage"}
+            Title={product?.itemName || "Loading..."}
           />
 
           <View style={styles.imageContainer}>
-            <Image source={images.fruit5} style={styles.mainImage} />
+            <Image
+              source={
+                product?.images?.[selectedImageIndex]
+                  ? { uri: product.images[selectedImageIndex] }
+                  : images.fruit5
+              }
+              style={styles.mainImage}
+            />
           </View>
+
           <View style={styles.thumbnilImageContainer}>
             <ScrollView horizontal style={styles.thumbnailContainer}>
-              {[1, 2, 3, 4].map((_, i) => (
-                <Image
+              {product?.images?.map((img, i) => (
+                <TouchableOpacity
                   key={i}
-                  source={images.fruit5}
-                  style={styles.thumbnail}
-                />
+                  onPress={() => setSelectedImageIndex(i)}
+                >
+                  <Image
+                    source={{ uri: img }}
+                    style={[
+                      styles.thumbnail,
+                      selectedImageIndex === i && styles.selectedThumbnail, // Optional highlight
+                    ]}
+                  />
+                </TouchableOpacity>
               ))}
             </ScrollView>
           </View>
 
           <View style={styles.infoSection}>
             <View>
-              <Text style={styles.productName}>Cabbage</Text>
-              <Text style={styles.variant}>Savoy Cabbage</Text>
-              <Text style={styles.rating}>⭐ 4.8 • USA</Text>
+              <Text style={styles.productName}>{product?.itemName}</Text>
+              <Text style={styles.variant}>{product?.itemSubCategory}</Text>
+              <Text style={styles.rating}>⭐ 4.8 • {product?.country}</Text>
             </View>
             <View style={styles.priceContainer}>
-              <Text style={styles.price}>200 AED / kg</Text>
+              <Text style={styles.price}>
+                {product?.pricePerKg?.AED} AED / kg
+              </Text>
               <Text style={styles.qty}>
                 Available Qty:{" "}
-                <Text style={{ fontWeight: "bold" }}>1000kg</Text>
+                <Text style={{ fontWeight: "bold" }}>
+                  {product?.availableKg}kg
+                </Text>
               </Text>
             </View>
           </View>
+
           <View style={styles.buttonContainer}>
             <Button label={"Request"} handleButtonPress={handleButtonClick} />
           </View>
+
           <View style={styles.alignContent}>
             <View style={styles.dataContainer}>
               <View style={styles.sellerBox}>
                 <Image source={images.profile} style={styles.sellerImage} />
                 <View style={styles.textContainer}>
                   <View style={styles.rowContainer}>
-                    <Text style={styles.sellerName}>Sold by Ajay Kumar </Text>
+                    <Text style={styles.sellerName}>
+                      Sold by {product?.addedBy?.name || "Seller"}
+                    </Text>
                     <Image source={images.verify} style={styles.verifyImage} />
                   </View>
                   <Text style={styles.sellerStats}>Sold over 2K+ Tons</Text>
@@ -91,14 +177,14 @@ const ItemDetailsScreen = ({ navigation }) => {
               <Text style={styles.sellerRating}>⭐ 4.8</Text>
             </View>
           </View>
+
           <View style={styles.descriptionBox}>
-            <Text style={styles.descriptionTitle}>Discription</Text>
+            <Text style={styles.descriptionTitle}>Description</Text>
             <Text style={styles.descriptionText}>
-              Lorem ipsum dolor sit amet consectetur. Lacus sed auctor ut mauris
-              in mi tellus diam volutpat. Parturient in integer congue volutpat.
-              Sit mi dolor cursus eu. Egestas aliquet dui mi consectetur.
+              {product?.description || "No description available."}
             </Text>
           </View>
+
           <Modal
             visible={modalVisible}
             animationType="slide"
@@ -137,10 +223,13 @@ const ItemDetailsScreen = ({ navigation }) => {
                     customStyle={styles.editButtonStyle}
                     customLabelStyle={styles.label}
                   />
-                  <ModalButton
-                    label={"Submit"}
-                    handleButtonPress={submitModal}
-                  />
+                  <TouchableOpacity
+                    onPress={handleWhatsAppRequest}
+                    style={[styles.whatsappButton, loading && { opacity: 0.5 }]}
+                    disabled={loading}
+                  >
+                    <Icon name="whatsapp" size={24} color="white" />
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>

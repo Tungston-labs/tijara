@@ -70,11 +70,15 @@ const styles = StyleSheet.create({
   priceContainer: {
     alignItems: "flex-end",
   },
+rowContainer: {
+  flexDirection: "row",
+  justifyContent: "center", 
+  alignItems: "center",
+  gap: 10, 
+  width: "100%",
+},
 
-  rowContainer: {
-    flexDirection: "row",
-    width: "90%",
-  },
+
   alignContent: {
     width: width * 1,
     justifyContent: "center",
@@ -84,7 +88,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    backgroundColor: "red",
   },
   dataContainer: {
     flexDirection: "row",
@@ -96,7 +99,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 10,
   },
-
+  selectedThumbnail: {
+    borderColor: "#B3DB48",
+    borderWidth: 2,
+  },
   sellerBox: {
     flexDirection: "row",
     alignItems: "center",
@@ -173,10 +179,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 12,
     padding: 20,
-    alignItems: "center",
     width: width * 0.85,
-    marginBottom: 10,
+    alignItems: "center",
+    justifyContent: "center", // <-- Add this
   },
+
   modalText: {
     fontSize: 16,
     marginBottom: 15,
@@ -184,8 +191,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   editButtonStyle: {
-    backgroundColor: "#fff",
-    color: "black",
+    backgroundColor: "#F0F0F0",
+    color: "white",
   },
   label: {
     fontSize: 16,
@@ -247,18 +254,28 @@ const styles = StyleSheet.create({
   cancelText: {
     color: "#000",
     fontWeight: "bold",
+    backgroundColor: "#e60b2c",
   },
   submitText: {
     color: "#000",
     fontWeight: "bold",
   },
-  modalContentContainer: {
-    backgroundColor: "#fff",
-    width: width * 0.85,
-    borderRadius: 10,
+modalContentContainer: {
+  width: "100%",
+  justifyContent: "center",
+  alignItems: "center",
+  marginBottom: 20, // optional spacing below the input block
+},
+
+  whatsappButton: {
+    backgroundColor: "#25D366",
+    padding: 12,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10,
+    flexDirection: "row",
+    marginLeft: 10,
+    minWidth: 20,
   },
 });
 

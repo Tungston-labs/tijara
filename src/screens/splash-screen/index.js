@@ -24,7 +24,7 @@ const SplashScreen = ({ navigation }) => {
     <View style={styles.container}>
       <BackgroundWrapper customStyle={styles.wrapperContainer}>
         <Image
-          source={require("../../resources/images/tijara-logo.png")}
+          source={require("../../resources/images/logotijara.png")}
           style={styles.ImageContainer}
           resizeMode="contain"
         />

@@ -5,37 +5,47 @@ import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
-import { checkBuyerStatusThunk } from "../../redux/slice/buyerSlice";
+import { checkStatusThunk } from "../../redux/slice/authSlice";
 
 const RequestNotVerifiedScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { user, verificationStatus, loading } = useSelector(
-    (state) => state.buyer
+    (state) => state.user
   );
 
-  const handleButtonClick = async () => {
-    try {
-      if (user?._id) {
-        await dispatch(checkBuyerStatusThunk(user._id)).unwrap();
+const handleButtonClick = async () => {
+  console.log("User object from Redux:", user);
 
-        if (verificationStatus === "approved") {
-          navigation.navigate("SubscriptionDetailsScreen");
+  try {
+    if (user?._id) {
+      const res = await dispatch(checkStatusThunk(user._id)).unwrap();
+
+      if (res.status === "approved") {
+        if (user.role === "buyer") {
+          navigation.navigate("BuyerHomeScreen");
+        } else if (user.role === "seller") {
+          navigation.navigate("SellerHomeScreen");
         } else {
-          Alert.alert(
-            "Not Verified",
-            "Your account is still under review. Please try again later."
-          );
+          Alert.alert("Error", "Unrecognized user role.");
         }
       } else {
-        console.log("No user ID available");
-        Alert.alert("Error", "Unable to check status. Please try again later.");
+        Alert.alert(
+          "Not Verified",
+          "Your account is still under review. Please try again later."
+        );
       }
-    } catch (error) {
-      console.error("Error checking status:", error);
-      Alert.alert("Error", "Error checking status. Please try again.");
+    } else {
+      console.log("No user ID available");
+      Alert.alert("Error", "Unable to check status. Please try again later.");
     }
-  };
+  } catch (error) {
+    console.error("Error checking status:", error);
+    Alert.alert("Error", "Error checking status. Please try again.");
+  }
+};
+
+
 
   return (
     <View style={styles.container}>

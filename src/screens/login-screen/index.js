@@ -11,7 +11,7 @@ const LoginScreen = ({ navigation }) => {
     navigation.navigate("RegistrationScreen");
   };
   const handleIconPress = () => {
-    navigation.navigate("RoleSelectionScreen");
+    navigation.goBack();
   };
   const handleCreateAccount = () => {
     navigation.navigate("RoleSelectionScreen");

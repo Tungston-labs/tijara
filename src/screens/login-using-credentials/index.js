@@ -1,64 +1,85 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
   SafeAreaView,
+  Image
 } from "react-native";
-import styles from "./styles";
-import { useDispatch, useSelector } from "react-redux";
-import { setToken } from "../../services/config";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
-import { sellerLoginThunk } from "../../redux/slice/sellerSlice";
-import { loginThunk } from "../../redux/slice/buyerSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import styles from "./styles";
+import { setToken } from "../../services/config";
+import { userLoginThunk } from "../../redux/slice/authSlice";
 
-const LoginScreen = ({ route }) => {
-  const { role = "seller" } = route.params || {};
+const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secure, setSecure] = useState(true);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { loading, error } = useSelector((state) => state.seller);
+  const route = useRoute();
+
+  const location = route?.params?.location; 
+
+  const { loading, error } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (location) {
+      console.log("Location received in login:", location);
+      // dispatch(setLocation(location)); // Uncomment if using redux
+    }
+  }, [location]);
+
   const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please enter both email and password");
+      return;
+    }
+
     const credentials = { email, password };
 
     try {
-      const res =
-        role === "buyer"
-          ? await dispatch(loginThunk(credentials)).unwrap()
-          : await dispatch(sellerLoginThunk(credentials)).unwrap();
+      const res = await dispatch(userLoginThunk(credentials)).unwrap();
 
       if (res?.accessToken) {
         setToken(res.accessToken);
+        const userRole = res.role;
 
-        if (role === "buyer") {
+        if (userRole === "buyer") {
           navigation.replace("BuyerHomeScreen");
-        } else {
+        } else if (userRole === "seller") {
           navigation.replace("SellerHomeScreen");
+        } else {
+          alert("Unknown user role");
         }
       }
     } catch (err) {
-      console.error("Login error:", err);
+      const errorStatus = err?.status || err?.response?.data?.status;
+      if (errorStatus === "pending") {
+        navigation.navigate("RequestNotVerifiedScreen");
+        return;
+      }
+      alert(err?.message || "Login failed");
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
+       <Image
+            source={require("../../resources/images/logotijara.png")}
+            style={styles.ImageContainer}
+            resizeMode="contain"
+          />
       <TouchableOpacity
         style={styles.backArrow}
         onPress={() => navigation.goBack()}
       >
         <Icon name="chevron-back-outline" size={24} color="#000" />
       </TouchableOpacity>
-      {/* 
-      <View style={styles.logoContainer}>
-        <Image source={require("../../assets/logo.png")} style={styles.logo} />
-      </View> */}
 
       <Text style={styles.heading}>Welcome back</Text>
       <Text style={styles.subHeading}>Please enter your details to Log in</Text>
@@ -110,7 +131,9 @@ const LoginScreen = ({ route }) => {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>Don’t have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("RoleSelectionScreen", { location })}
+        >
           <Text style={styles.signUpText}> Sign Up Now</Text>
         </TouchableOpacity>
       </View>

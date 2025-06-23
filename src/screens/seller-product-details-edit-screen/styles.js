@@ -61,11 +61,21 @@ const styles = StyleSheet.create({
   priceContainer: {
     alignItems: "flex-end",
   },
-  imageContainer: {
-    justifyContent: "center",
-    width: "100%",
-    alignItems: "center",
-  },
+imageContainer: {
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%", 
+},
+
+mainImage: {
+  width: 320,
+  height: 177,
+  borderRadius: 7,
+  resizeMode: "cover", 
+  backgroundColor: "lightgray", 
+  overflow: "hidden", 
+},
+
   price: {
     fontSize: 20,
     fontWeight: "bold",

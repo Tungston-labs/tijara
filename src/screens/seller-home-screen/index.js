@@ -9,10 +9,12 @@ import RequestReceiveScreen from "../request-receive-screen";
 import Icon from "react-native-vector-icons/Ionicons";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import UserListItemScreen from "../user-list-item-screen";
+import { useSelector } from "react-redux";
 
 const Tab = createBottomTabNavigator();
 
 const TabScreens = ({ onTabChange }) => {
+  // const token = useSelector((state) => state.user.token);
   return (
     <Tab.Navigator
       screenOptions={{
@@ -61,10 +63,10 @@ const TabScreens = ({ onTabChange }) => {
   );
 };
 
-const BuyerHomeScreen = ({ navigation }) => {
+const SellerHomeScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("Home");
   const handleAddItem = () => {
-    navigation.navigate("SellerProductDetailsEditScreen");
+    navigation.navigate("SellerAddProductScreen");
   };
   return (
     <View style={styles.container}>
@@ -102,4 +104,4 @@ const BuyerHomeScreen = ({ navigation }) => {
   );
 };
 
-export default BuyerHomeScreen;
+export default SellerHomeScreen;

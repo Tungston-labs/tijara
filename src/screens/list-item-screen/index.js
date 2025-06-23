@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -12,21 +12,50 @@ import { SwiperFlatList } from "react-native-swiper-flatlist";
 import images from "../../config/images";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import { useNavigation } from "@react-navigation/native";
-
-const pictures = ["veg1", "veg2", "veg3", "veg4"];
-const listData = [
-  { id: "1", title: "Item 1" },
-  { id: "2", title: "Item 2" },
-  { id: "3", title: "Item 3" },
-  { id: "4", title: "Item 4" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchProductsThunk,
+  resetProducts,
+} from "../../redux/slice/productSlice";
 
 const ListItemScreen = () => {
-  const [selectedTab, setSelectedTab] = useState("Vegetables");
+  const { products, loading, error, page, totalPages } = useSelector(
+    (state) => state.product
+  );
+  const token = useSelector((state) => state.user.token);
+  const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const handleTileClick = () => {
-    navigation.navigate("ItemDetailsScreen");
+  const [selectedTab, setSelectedTab] = useState("vegetables");
+
+  // Fetch on tab/category change
+  useEffect(() => {
+    if (token) {
+      dispatch(resetProducts());
+      dispatch(
+        fetchProductsThunk({
+          token,
+          filters: { itemCategory: selectedTab },
+          page: 1,
+        })
+      );
+    }
+  }, [selectedTab, token]);
+
+  const handleTileClick = (item) => {
+    navigation.navigate("ItemDetailsScreen", { productId: item._id });
+  };
+
+  const handleLoadMore = () => {
+    if (!loading && page < totalPages) {
+      dispatch(
+        fetchProductsThunk({
+          token,
+          filters: { itemCategory: selectedTab },
+          page: page + 1,
+        })
+      );
+    }
   };
 
   return (
@@ -35,11 +64,14 @@ const ListItemScreen = () => {
         <View style={styles.boxTabContainer}>
           <View style={styles.tabContainer}>
             {["Fruits", "Vegetables"].map((tab) => (
-              <TouchableOpacity key={tab} onPress={() => setSelectedTab(tab)}>
+              <TouchableOpacity
+                key={tab}
+                onPress={() => setSelectedTab(tab.toLowerCase())}
+              >
                 <Text
                   style={[
                     styles.tabText,
-                    selectedTab === tab && styles.activeTab,
+                    selectedTab === tab.toLowerCase() && styles.activeTab,
                   ]}
                 >
                   {tab}
@@ -50,75 +82,101 @@ const ListItemScreen = () => {
         </View>
 
         <View style={styles.itemHeaderContainer}>
-          <Text style={styles.itemHeader}>Popular Item</Text>
+          <Text style={styles.itemHeader}>Popular Items</Text>
         </View>
-      
+
         <View style={styles.flatListContainer}>
-          <FlatList
-            data={listData}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <Pressable onPress={handleTileClick}>
-                <View style={styles.flatItem}>
-                  <View style={styles.card}>
-                    <SwiperFlatList
-                      autoplay
-                      autoplayDelay={2}
-                      autoplayLoop
-                      showPagination
-                      paginationStyle={{
-                        position: "absolute",
-                        bottom: 80,
-                        alignSelf: "center",
-                      }}
-                      paginationStyleItem={{
-                        width: 7,
-                        height: 7,
-                        borderRadius: 5,
-                        marginHorizontal: 3,
-                      }}
-                      paginationActiveColor="#000000"
-                      paginationDefaultColor="#ccc"
-                      data={pictures}
-                      renderItem={({ item }) => (
-                        <View style={styles.child}>
-                          <Image
-                            source={images[item]}
-                            style={{
-                              width: "100%",
-                              height: 200,
-                              marginTop: 10,
-                            }}
-                            resizeMode="cover"
-                          />
+          {loading && page === 1 ? (
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              Loading...
+            </Text>
+          ) : error ? (
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              Failed to load products.
+            </Text>
+          ) : products.length === 0 ? (
+            <Text style={{ textAlign: "center", marginTop: 20 }}>
+              No items found.
+            </Text>
+          ) : (
+            <FlatList
+              data={products}
+              keyExtractor={(item) => item._id}
+              onEndReached={handleLoadMore}
+              onEndReachedThreshold={0.5}
+              ListFooterComponent={
+                loading && page > 1 ? (
+                  <Text style={{ textAlign: "center" }}>Loading more...</Text>
+                ) : null
+              }
+              renderItem={({ item }) => (
+                <Pressable onPress={() => handleTileClick(item)}>
+                  <View style={styles.flatItem}>
+                    <View style={styles.card}>
+                      <SwiperFlatList
+                        autoplay
+                        autoplayDelay={2}
+                        autoplayLoop
+                        showPagination
+                        paginationStyle={{
+                          position: "absolute",
+                          bottom: 80,
+                          alignSelf: "center",
+                        }}
+                        paginationStyleItem={{
+                          width: 7,
+                          height: 7,
+                          borderRadius: 5,
+                          marginHorizontal: 3,
+                        }}
+                        paginationActiveColor="#000000"
+                        paginationDefaultColor="#ccc"
+                        data={item.images}
+                        renderItem={({ item: img }) => (
+                          <View style={styles.child}>
+                            <Image
+                              source={{ uri: img }}
+                              style={{
+                                width: "100%",
+                                height: 200,
+                                marginTop: 10,
+                              }}
+                              resizeMode="cover"
+                            />
+                          </View>
+                        )}
+                      />
+                      <View style={styles.infoContainer}>
+                        <View style={styles.rowBetween}>
+                          <Text style={styles.author}>
+                            {item?.addedBy?.name || "Seller"}
+                          </Text>
+                          <Text style={styles.title}>{item?.itemName}</Text>
                         </View>
-                      )}
-                    />
-
-                    <View style={styles.infoContainer}>
-                      <View style={styles.rowBetween}>
-                        <Text style={styles.author}>Ajay kumar</Text>
-                        <Text style={styles.title}>Cabbage</Text>
-                      </View>
-
-                      <View style={styles.rowBetween}>
-                        <Text style={styles.rating}>⭐ 4.8 (54)</Text>
-                        <Text style={styles.subtitle}>Savoy Cabbage</Text>
-                      </View>
-
-                      <View style={styles.rowBetween}>
-                        <Text style={styles.quantity}>
-                          Qty Available{"\n"}
-                          <Text style={{ fontWeight: "bold" }}>100 Kg</Text>
-                        </Text>
-                        <Text style={styles.price}>$200</Text>
+                        <View style={styles.rowBetween}>
+                          <Text style={styles.rating}>⭐ 4.8 (54)</Text>
+                          <Text style={styles.subtitle}>
+                            {item?.itemSubCategory}
+                          </Text>
+                        </View>
+                        <View style={styles.rowBetween}>
+                          <Text style={styles.quantity}>
+                            Qty Available{"\n"}
+                            <Text style={{ fontWeight: "bold" }}>
+                              {item?.availableKg} Kg
+                            </Text>
+                          </Text>
+                          <Text style={styles.price}>
+                            AED {item?.pricePerKg?.AED}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                   </View>
-                </View>
-              </Pressable>
-            )}
-          />
+                </Pressable>
+              )}
+            />
+          )}
         </View>
       </BackgroundWrapper>
     </View>

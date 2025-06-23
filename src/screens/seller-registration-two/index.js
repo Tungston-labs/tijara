@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Platform,
+  PermissionsAndroid,
 } from "react-native";
 import React, { useState } from "react";
 import styles from "./styles";
@@ -13,15 +15,16 @@ import Header from "../../componets/Header";
 import TextInputField from "../../componets/TextInputField";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
-import { sellerSignUpThunk } from "../../redux/slice/sellerSlice";
 import { launchImageLibrary } from "react-native-image-picker";
 import Button from "../../componets/Button";
+import { SignUpThunk } from "../../redux/slice/authSlice";
+
 const SellerRegistrationSecond = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
 
-const { form: prevForm = {}, profileImage } = route.params || {};
+  const { form: prevForm = {}, profileImage } = route.params || {};
 
   const [form, setForm] = useState({
     companyName: "",
@@ -35,8 +38,45 @@ const { form: prevForm = {}, profileImage } = route.params || {};
   const handleChange = (field, value) => {
     setForm({ ...form, [field]: value });
   };
+  const requestPermissions = async () => {
+    try {
+      if (Platform.Version >= 33) {
+        const permissions = [
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
+        ];
 
-  const handleFileUpload = () => {
+        const granted = await PermissionsAndroid.requestMultiple(permissions);
+        return permissions.every(
+          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
+        );
+      } else {
+        const permissions = [
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        ];
+
+        const granted = await PermissionsAndroid.requestMultiple(permissions);
+        return permissions.every(
+          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
+        );
+      }
+    } catch (error) {
+      console.warn("Permission error:", error);
+      return false;
+    }
+  };
+  const handleFileUpload = async () => {
+    const hasPermission = await requestPermissions();
+    if (!hasPermission) {
+      Alert.alert(
+        "Permission Denied",
+        "Please grant storage permissions to upload the file."
+      );
+      return;
+    }
+
     const options = {
       mediaType: "photo",
       quality: 0.7,
@@ -67,76 +107,76 @@ const { form: prevForm = {}, profileImage } = route.params || {};
     setForm({ ...form, tradeLicenseCopy: null });
   };
 
-  const handleSubmit = async () => {
-    if (!form.companyName || !form.tradeLicenseNumber || !form.managerName) {
-      Alert.alert("Validation Error", "Please fill all required fields");
-      return;
-    }
+ const handleSubmit = async () => {
+  if (!form.companyName || !form.tradeLicenseNumber || !form.managerName) {
+    Alert.alert("Validation Error", "Please fill all required fields");
+    return;
+  }
 
-    if (!form.tradeLicenseCopy) {
-      Alert.alert("Validation Error", "Please upload your trade license copy");
-      return;
-    }
+  if (!form.tradeLicenseCopy) {
+    Alert.alert("Validation Error", "Please upload your trade license copy");
+    return;
+  }
 
-    const formData = new FormData();
+  const formData = new FormData();
 
-    // Append data from first screen
-    formData.append("name", prevForm.name);
-    formData.append("email", prevForm.email);
-    formData.append("password", prevForm.password);
-    formData.append("phone", prevForm.phone);
+  formData.append("name", prevForm.name);
+  formData.append("email", prevForm.email);
+  formData.append("password", prevForm.password);
+  formData.append("phone", prevForm.phone);
+  formData.append("coords", JSON.stringify(prevForm.coords));
 
-    formData.append("coords", JSON.stringify({
-      latitude: 25.276987,
-      longitude: 55.296249,
-    }));
+  if (prevForm.location) {
+    formData.append("location", prevForm.location);
+  }
 
-    if (profileImage) {
-      formData.append("profileImage", {
-        uri: profileImage.uri,
-        type: profileImage.type || "image/jpeg",
-        name: profileImage.name || "profile.jpg",
-      });
-    }
-
-    // Append second screen data
-    formData.append("companyName", form.companyName);
-    formData.append("tradeLicenseNumber", form.tradeLicenseNumber);
-    formData.append("managerName", form.managerName);
-
-    formData.append("tradeLicenseCopy", {
-      uri: form.tradeLicenseCopy.uri,
-      type: form.tradeLicenseCopy.type,
-      name: form.tradeLicenseCopy.name,
+  if (profileImage) {
+    formData.append("profileImage", {
+      uri: profileImage.uri,
+      type: profileImage.type || "image/jpeg",
+      name: profileImage.name || "profile.jpg",
     });
+  }
 
-    try {
-      setLoading(true);
-      await dispatch(sellerSignUpThunk(formData)).unwrap();
-      navigation.navigate("RequestSentScreen", {
-        phone: prevForm.phone,
-        from: "seller",
-      });
-    } catch (err) {
-      console.error("Error submitting form:", err);
-      Alert.alert("Signup Failed", err?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+  formData.append("companyName", form.companyName);
+  formData.append("tradeLicenseNumber", form.tradeLicenseNumber);
+  formData.append("managerName", form.managerName);
+  formData.append("tradeLicenseCopy", {
+    uri: form.tradeLicenseCopy.uri,
+    type: form.tradeLicenseCopy.type,
+    name: form.tradeLicenseCopy.name,
+  });
+
+  try {
+    setLoading(true);
+    const result = await dispatch(SignUpThunk({ formData, role: "seller" })).unwrap();
+    console.log("Signup success:", result);
+    navigation.navigate("RequestSentScreen", {
+      phone: prevForm.phone,
+      from: "seller",
+    });
+  } catch (err) {
+    console.error("Signup failed:", err);
+    Alert.alert("Signup Failed", err?.message || "Something went wrong");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <ScrollView>
       <View style={styles.container}>
         <BackgroundWrapper style={styles.wrapperContainer}>
           <Header
-            handleIconPress={() => navigation.navigate("SellerRegistrationScreen")}
+            handleIconPress={() =>
+              navigation.navigate("SellerRegistrationScreen")
+            }
             icon={true}
             Title={"Complete your"}
             Subtitle={"Company Details"}
           />
 
-      
           <View style={styles.textInputcontainer}>
             <TextInputField
               placeholder="Company Name"
@@ -187,7 +227,9 @@ const { form: prevForm = {}, profileImage } = route.params || {};
 
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>Already have an account?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("LoginScreen")}
+            >
               <Text style={styles.loginLink}> Login</Text>
             </TouchableOpacity>
           </View>

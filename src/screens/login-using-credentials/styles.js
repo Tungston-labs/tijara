@@ -1,4 +1,5 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet ,Dimensions} from "react-native";
+const { width, height } = Dimensions.get("window");
 
 export default StyleSheet.create({
   container: {
@@ -9,7 +10,7 @@ export default StyleSheet.create({
   },
   backArrow: {
     position: "absolute",
-    top: 40,
+    top: 5,
     left: 20,
     zIndex: 10,
   },
@@ -42,6 +43,14 @@ export default StyleSheet.create({
     fontWeight: "500",
     color: "#333",
     marginBottom: 5,
+  },
+  ImageContainer: {
+    justifyContent: "center",
+    alignSelf: "center",
+    width: width * 0.4,
+    height: height * 0.1,
+    marginTop: 8,
+    
   },
   input: {
     backgroundColor: "#F5F5F5",

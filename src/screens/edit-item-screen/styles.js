@@ -1,6 +1,4 @@
-import { StyleSheet, View } from "react-native";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import RNPickerSelect from "react-native-picker-select";
+import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -30,12 +28,6 @@ const styles = StyleSheet.create({
     color: "#7CB518",
     fontSize: 16,
     fontWeight: "bold",
-  },
-  imagePreviewRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginHorizontal: 20,
-    marginBottom: 10,
   },
   imagePreviewBox: {
     width: 67,
@@ -122,22 +114,15 @@ const styles = StyleSheet.create({
     color: "#888",
   },
   descriptionInput: {
-  borderWidth: 1,
-  borderColor: "#e0e0e0",
-  borderRadius: 8,
-  paddingVertical: 12,
-  paddingHorizontal: 14,
-  backgroundColor: "#fafafa",
-  fontSize: 15,
-  height: 100,
-  textAlignVertical: "top",  // Ensures top-aligned text in Android
-},
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginHorizontal: 20,
-    marginBottom: 30,
-    marginTop: 10,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    backgroundColor: "#fafafa",
+    fontSize: 15,
+    height: 100,
+    textAlignVertical: "top",
   },
   cancelButton: {
     flex: 1,
@@ -170,32 +155,43 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   fixedButtonRow: {
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  right: 0,
-  flexDirection: "row",
-  justifyContent: "space-between",
-  paddingHorizontal: 20,
-  // paddingVertical: 20,
-  paddingTop:18,
-  paddingBottom:27,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingTop: 18,
+    paddingBottom: 27,
+    backgroundColor: "#fff",
+    borderTopColor: "#e0e0e0",
+  },
+  suggestionBox: {
   backgroundColor: "#fff",
-  // borderTopWidth: 1,
-  borderTopColor: "#e0e0e0",
+  borderColor: "#ccc",
+  borderWidth: 1,
+  borderRadius: 8,
+  marginTop: 4,
+  maxHeight: 150,
+  overflow: "hidden",
+  zIndex: 999, // Ensure it renders above
+  elevation: 5, // Android shadow
 },
-});
 
-const pickerInputStyle = {
-  color: "#222",
+suggestionItem: {
+  paddingVertical: 10,
+  paddingHorizontal: 15,
+  borderBottomWidth: 1,
+  borderBottomColor: "#eee",
+},
+
+suggestionText: {
   fontSize: 15,
-  paddingVertical: 0,
-  paddingHorizontal: 0,
-  backgroundColor: "transparent",
-  borderWidth: 0,
-  height: 44,
-  textAlignVertical: "center",
-};
+  color: "#333",
+},
+
+});
 
 export const pickerSelectStyles = {
   inputIOS: {
@@ -225,5 +221,6 @@ export const pickerSelectStyles = {
   },
   iconContainer: { top: 10, right: 12 },
 };
+
 
 export default styles;

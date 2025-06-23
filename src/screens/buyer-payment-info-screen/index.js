@@ -26,7 +26,7 @@ const BuyerPaymentInfoScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleIconPress = () => {
-    navigation.navigate("SubscriptionDetailsScreen");
+    navigation.goBack();
   };
 
   const handleButtonClick = () => {

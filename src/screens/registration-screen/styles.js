@@ -21,9 +21,11 @@ const styles = StyleSheet.create({
   wrapperContainer: {
     justifyContent: "center",
     alignItems: "center",
+    
   },
   inputContainer: {
     width: width * 0.9,
+    color: "#000"
   },
   loginContainer: {
     flexDirection: "row",
@@ -74,5 +76,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 50,
   },
+  nextButtonText: {
+  color: "#fff",
+  fontSize: 16,
+  fontWeight: "bold",
+},
+  nextButton: {
+  backgroundColor: "#B3DB48",
+  width: width * 0.9,
+  paddingVertical: 15,
+  borderRadius: 8,
+  alignItems: "center",
+  flexDirection: "row",
+  justifyContent: "center",
+  marginTop: 20,
+},
+nextButtonIcon: {
+  marginLeft: 48,
+},
+
 });
 export default styles;

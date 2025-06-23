@@ -5,6 +5,9 @@ import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 
 const RequestSuccessScreen = ({ navigation }) => {
+  const route = useRoute();
+const passedUser = route.params?.user;
+
   const handleButtonClick = () => {
     navigation.navigate("RequestNotVerifiedScreen");
   };

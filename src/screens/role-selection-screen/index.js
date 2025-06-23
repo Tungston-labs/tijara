@@ -8,22 +8,19 @@ import Header from "../../componets/Header";
 import { useRoute } from "@react-navigation/native"; // import useRoute
 
 const RoleSelectionScreen = ({ navigation }) => {
-  const route = useRoute(); // get route object
-  const location = route.params?.location; // safely access location param
+  const route = useRoute();
+  const location = route.params?.location;
+  console.log("ksjksjsjsjsjsjs",location);
+  const handleBuyerButtonClick = () => {
+    navigation.navigate("RegistrationScreen", { role: "buyer", location });
+  };
 
-  const handleButtonClick = () => {
-    navigation.navigate("SellerRegistrationScreen", {
-      role: "seller",
-      location,
-    });
+  const handleSellerButtonClick = () => {
+    navigation.navigate("RegistrationScreen", { role: "seller", location });
   };
 
   const handleIconPress = () => {
-    navigation.navigate("CreateAccountScreen");
-  };
-
-  const handleBuyerButtonClick = () => {
-    navigation.navigate("RegistrationScreen", { role: "buyer", location });
+    navigation.goBack();
   };
 
   return (
@@ -37,7 +34,7 @@ const RoleSelectionScreen = ({ navigation }) => {
           <Button label={"Buyer"} handleButtonPress={handleBuyerButtonClick} />
           <Button
             label={"Seller"}
-            handleButtonPress={handleButtonClick}
+            handleButtonPress={handleSellerButtonClick}
             customStyle={styles.buttonStyle}
           />
         </View>

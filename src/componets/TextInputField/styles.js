@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
   placeholder: {
     fontSize: 16,
     marginLeft: 2,
+     color: "#000",
   },
   subText: {
     fontSize: 16,
