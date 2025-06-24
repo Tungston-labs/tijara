@@ -88,5 +88,28 @@ const styles = StyleSheet.create({
     color: "#94D82D",
     fontWeight: "600",
   },
+ buttonStyle: {
+  backgroundColor: "#94D82D",
+  borderRadius: 12,
+  paddingVertical: 14,
+  paddingHorizontal: 24,
+  width: "90%",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between", // 👈 to push text left and icon right
+},
+
+buttonContent: {
+  width: "100%",
+  flexDirection: "row",
+  justifyContent: "space-between", // 👈 spread text and icon
+  alignItems: "center",
+},
+
+buttonText: {
+  fontSize: 16,
+  fontWeight: "600",
+  color: "#fff",
+},
 });
 export default styles;

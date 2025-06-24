@@ -1,31 +1,46 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+} from "react-native";
 import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
-import Button from "../../componets/Button";
 import Header from "../../componets/Header";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { getCurrentLocation } from "../../utils/geoLocation"
+import { getCurrentLocation } from "../../utils/geoLocation";
+// import Icon from "react-native-vector-icons/Feather";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const CreateAccountScreen = () => {
-  const route = useRoute();
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
-  const [location, setLocation] = useState("Fetching...");
+  const [location, setLocation] = useState(null);
+  const [isFetching, setIsFetching] = useState(true);
 
   useEffect(() => {
-    getCurrentLocation()
-      .then(({ latitude, longitude }) => {
-        setLocation(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
-      })
-      .catch((err) => {
-        console.error("Location error:", err);
-        setLocation("Unable to fetch location");
-      });
+    fetchLocation();
   }, []);
 
+  const fetchLocation = async () => {
+    setIsFetching(true);
+    try {
+      const { latitude, longitude } = await getCurrentLocation();
+      const loc = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+      setLocation(loc);
+    } catch (err) {
+      console.error("Location error:", err);
+      setLocation("Unable to fetch location");
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   const handleButtonClick = () => {
-    navigation.navigate("RoleSelectionScreen", { location }); // pass location to next screen
+    if (isFetching || !location || location === "Unable to fetch location")
+      return;
+    navigation.navigate("RoleSelectionScreen", { location });
   };
 
   return (
@@ -46,17 +61,36 @@ const CreateAccountScreen = () => {
 
           <View style={styles.inputContainer}>
             <Text style={styles.placeholder}>Location</Text>
-            <Text style={styles.inputText}>{location}</Text>
+            <Text style={styles.inputText}>{location || "Fetching..."}</Text>
+            {!isFetching && location === "Unable to fetch location" && (
+              <TouchableOpacity onPress={fetchLocation}>
+                <Text style={{ color: "blue", marginTop: 5 }}>
+                  Retry Fetch Location
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
 
           <View style={styles.buttonContainer}>
-            <Button
-              label={"Sign Up"}
-              icon={true}
-              handleButtonPress={handleButtonClick}
-              customStyle={styles.buttonStyle}
-              IconColor={"#fff"}
-            />
+            <TouchableOpacity
+              style={[
+                styles.buttonStyle,
+                (isFetching || location === "Unable to fetch location") && {
+                  opacity: 0.5,
+                },
+              ]}
+              onPress={handleButtonClick}
+              disabled={isFetching || location === "Unable to fetch location"}
+            >
+              <View style={styles.buttonContent}>
+                <Text style={styles.buttonText}>Sign Up</Text>
+                {isFetching ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : (
+                  <Icon name="chevron-forward" size={20} color="#fff" />
+                )}
+              </View>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.loginContainer}>
