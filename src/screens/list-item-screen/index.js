@@ -18,7 +18,7 @@ import {
   resetProducts,
 } from "../../redux/slice/productSlice";
 
-const ListItemScreen = () => {
+const ListItemScreen = ({ searchQuery }) => {
   const { products, loading, error, page, totalPages } = useSelector(
     (state) => state.product
   );
@@ -27,6 +27,7 @@ const ListItemScreen = () => {
   const navigation = useNavigation();
 
   const [selectedTab, setSelectedTab] = useState("vegetables");
+  console.log("serch",searchQuery)
 
   // Fetch on tab/category change
   useEffect(() => {
@@ -35,12 +36,12 @@ const ListItemScreen = () => {
       dispatch(
         fetchProductsThunk({
           token,
-          filters: { itemCategory: selectedTab },
+          filters: { itemCategory: selectedTab, search: searchQuery },
           page: 1,
         })
       );
     }
-  }, [selectedTab, token]);
+  }, [selectedTab, token,searchQuery]);
 
   const handleTileClick = (item) => {
     navigation.navigate("ItemDetailsScreen", { productId: item._id });
@@ -120,7 +121,7 @@ const ListItemScreen = () => {
                         showPagination
                         paginationStyle={{
                           position: "absolute",
-                          bottom: 80,
+                          bottom: 70,
                           alignSelf: "center",
                         }}
                         paginationStyleItem={{

@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Modal,
+  TextInput,
 } from "react-native";
 import styles from "./styles";
 import Header from "../../componets/Header";
@@ -163,14 +164,22 @@ const ItemDetailsScreen = ({ navigation }) => {
           <View style={styles.alignContent}>
             <View style={styles.dataContainer}>
               <View style={styles.sellerBox}>
-                <Image source={images.profile} style={styles.sellerImage} />
+                <Image source={{ uri: product?.addedBy?.profileImage }} style={styles.sellerImage} />
+                {/* <Image source={images.profile} style={styles.sellerImage} /> */}
                 <View style={styles.textContainer}>
-                  <View style={styles.rowContainer}>
-                    <Text style={styles.sellerName}>
-                      Sold by {product?.addedBy?.name || "Seller"}
-                    </Text>
-                    <Image source={images.verify} style={styles.verifyImage} />
+                  <View style={styles.sellerInfoContainer}>
+                    <Text style={styles.sellerLabel}>Sold by</Text>
+                    <View style={styles.sellerRow}>
+                      <Text style={styles.sellerName}>
+                        {product?.addedBy?.name || "Seller"}
+                      </Text>
+                      <Image
+                        source={images.verify}
+                        style={styles.verifyImage}
+                      />
+                    </View>
                   </View>
+
                   <Text style={styles.sellerStats}>Sold over 2K+ Tons</Text>
                 </View>
               </View>
@@ -204,8 +213,16 @@ const ItemDetailsScreen = ({ navigation }) => {
                       >
                         <Text style={styles.adjustButtonText}>−</Text>
                       </TouchableOpacity>
-                      <View style={styles.quantityContainer}>
-                        <Text style={styles.quantityText}>{quantity} Kg</Text>
+                      <View style={styles.inputWithUnit}>
+                        <TextInput
+                          style={styles.quantityInput}
+                          keyboardType="numeric"
+                          value={quantity.toString()}
+                          onChangeText={(text) =>
+                            setQuantity(Number(text.replace(/[^0-9]/g, "")))
+                          }
+                        />
+                        <Text style={styles.kgLabel}>Kg</Text>
                       </View>
                       <TouchableOpacity
                         onPress={increase}

@@ -218,7 +218,7 @@ if (!isValidPhone(form.phone)) {
 };
 
   return (
-    <ScrollView>
+    // <ScrollView>
       <View style={styles.container}>
         <BackgroundWrapper style={styles.wrapperContainer}>
           <Header
@@ -287,6 +287,7 @@ if (!isValidPhone(form.phone)) {
                 disabled={loading}
                 style={styles.nextButton}
               >
+                <View style={styles.nextButtonContent}>
                 <Text style={styles.nextButtonText}>Next</Text>
                 <Icon
                   name="chevron-right"
@@ -294,6 +295,7 @@ if (!isValidPhone(form.phone)) {
                   color="#fff"
                   style={styles.nextButtonIcon}
                 />
+                </View>
               </TouchableOpacity>
             ) : (
               <Button
@@ -314,7 +316,7 @@ if (!isValidPhone(form.phone)) {
           </View>
         </BackgroundWrapper>
       </View>
-    </ScrollView>
+    // </ScrollView>
   );
 };
 export default RegistrationScreen;

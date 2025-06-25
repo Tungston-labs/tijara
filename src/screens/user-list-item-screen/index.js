@@ -60,7 +60,7 @@ const UserListItemScreen = () => {
             showPagination
             paginationStyle={{
               position: "absolute",
-              bottom: 80,
+              bottom: 70,
               alignSelf: "center",
             }}
             paginationStyleItem={{

@@ -142,6 +142,7 @@ const authSlice = createSlice({
         state.user = {
           name: action.payload.name,
           _id: action.payload._id,
+          profileImage:action.payload.image
         };
         state.token = action.payload.accessToken;
         state.role = action.payload.role;

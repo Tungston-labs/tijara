@@ -35,9 +35,21 @@ const TabScreens = ({ onTabChange }) => {
           focus: () => onTabChange("Home"),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Buy"
         component={ListItemScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="cart" size={25} color={color} />
+          ),
+        }}
+        listeners={{
+          focus: () => onTabChange("Buy"),
+        }}
+      /> */}
+      <Tab.Screen
+        name="Buy"
+        children={() => <ListItemScreen searchQuery={searchQuery} />}
         options={{
           tabBarIcon: ({ color }) => (
             <Icon name="cart" size={25} color={color} />
@@ -65,9 +77,11 @@ const TabScreens = ({ onTabChange }) => {
 
 const SellerHomeScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("Home");
+  const [searchQuery, setSearchQuery] = useState("");
   const handleAddItem = () => {
     navigation.navigate("SellerAddProductScreen");
   };
+
   return (
     <View style={styles.container}>
       <BackgroundWrapper>
@@ -78,7 +92,11 @@ const SellerHomeScreen = ({ navigation }) => {
             </View>
             <View style={styles.rowContainer}>
               <View style={styles.searchbarContainer}>
-                <SearchBar style={styles.searchbar} />
+                <SearchBar
+                  style={styles.searchbar}
+                  value={searchQuery}
+                  onChangeText={(text) => setSearchQuery(text)}
+                />
               </View>
               <Pressable onPress={handleAddItem}>
                 <View style={styles.addItemContainer}>
@@ -92,12 +110,15 @@ const SellerHomeScreen = ({ navigation }) => {
         {activeTab === "Buy" && (
           <View style={styles.firstContainer}>
             <TijaraHeader navigation={navigation} />
-            <SearchBar />
+            <SearchBar
+              value={searchQuery}
+              onChangeText={(text) => setSearchQuery(text)}
+            />
           </View>
         )}
 
         <View style={{ flex: 1 }}>
-          <TabScreens onTabChange={setActiveTab} />
+          <TabScreens onTabChange={setActiveTab} searchQuery={searchQuery} />
         </View>
       </BackgroundWrapper>
     </View>

@@ -76,6 +76,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 50,
   },
+  nextButtonContent: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  alignItems: "center",
+  width: "100%", 
+  paddingHorizontal:20,
+},
   nextButtonText: {
   color: "#fff",
   fontSize: 16,

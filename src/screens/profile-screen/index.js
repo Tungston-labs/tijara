@@ -13,11 +13,13 @@ import Header from "../../componets/Header";
 import images from "../../config/images";
 import Button from "../../componets/Button";
 import ModalButton from "../../componets/ModalButton";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slice/authSlice";
 
 const ProfileScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const {user} = useSelector((state) => state.user);
+console.log("user",user)
   const dispatch=useDispatch();
   const handleButtonClick = () => {
     setModalVisible(true);
@@ -47,7 +49,8 @@ const handleLogout=async()=>{
       </View>
 
       <View style={styles.avatarContainer}>
-        <Image source={images.profile} style={styles.avatar} />
+        <Image source={{uri:user.profileImage}} style={styles.avatar} />
+        {/* <Image source={images.profile} style={styles.avatar} /> */}
       </View>
 
       <View style={styles.optionsContainer}>
@@ -93,7 +96,7 @@ const handleLogout=async()=>{
               />
               <ModalButton
                 label={"Log out"}
-                handleButtonPress={closeModal}
+                // handleButtonPress={closeModal}
                 customStyle={styles.logoutButtonStyle}
                 customLabelStyle={styles.customLabelStyles}
                 handleButtonPress={handleLogout}
