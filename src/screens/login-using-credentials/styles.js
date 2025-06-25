@@ -74,6 +74,12 @@ export default StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
   },
+forgotContainer: {
+  color: "#000",
+  fontSize: 14,
+  fontWeight: "500",
+},
+
   loginButtonText: {
     color: "#000",
     fontWeight: "bold",

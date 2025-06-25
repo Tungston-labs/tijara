@@ -26,6 +26,9 @@ import LoginScreenWithPassword from "../screens/login-using-credentials";
 import UserListItemScreen from "../screens/user-list-item-screen";
 import SellerAddProductScreen from "../screens/add-item-screen";
 import SellerEditProductScreen from "../screens/edit-item-screen";
+import ForgetPasswordScreen from "../screens/forget-password-screen";
+import OTPVerificationScreen from "../screens/forget-password-verification";
+import ResetPasswordScreen from "../screens/reset-password-screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -62,6 +65,18 @@ export default function MainNavigation() {
           <Stack.Screen
             name="RoleSelectionScreen"
             component={RoleSelectionScreen}
+          />
+          <Stack.Screen
+            name="ForgetPasswordScreen"
+            component={ForgetPasswordScreen}
+          />
+           <Stack.Screen
+            name="OTPVerificationScreen"
+            component={OTPVerificationScreen}
+          />
+           <Stack.Screen
+            name="ResetPasswordScreen"
+            component={ResetPasswordScreen}
           />
           <Stack.Screen
             name="RequestSentScreen"

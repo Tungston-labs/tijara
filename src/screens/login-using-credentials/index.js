@@ -5,7 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   SafeAreaView,
-  Image
+  Image,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,7 +23,7 @@ const LoginScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const location = route?.params?.location; 
+  const location = route?.params?.location;
 
   const { loading, error } = useSelector((state) => state.user);
 
@@ -69,11 +69,11 @@ const LoginScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-       <Image
-            source={require("../../resources/images/logotijara.png")}
-            style={styles.ImageContainer}
-            resizeMode="contain"
-          />
+      <Image
+        source={require("../../resources/images/logotijara.png")}
+        style={styles.ImageContainer}
+        resizeMode="contain"
+      />
       <TouchableOpacity
         style={styles.backArrow}
         onPress={() => navigation.goBack()}
@@ -118,7 +118,12 @@ const LoginScreen = () => {
       </View>
 
       {error && <Text style={styles.error}>{error.message || error}</Text>}
-
+      <TouchableOpacity
+        onPress={() => navigation.navigate("ForgetPasswordScreen")}
+        style={{ alignSelf: "flex-end", marginTop: 8 }}
+      >
+        <Text style={styles.forgotContainer}>Forgot password?</Text>
+      </TouchableOpacity>
       <TouchableOpacity
         style={styles.loginButton}
         onPress={handleLogin}
@@ -132,7 +137,9 @@ const LoginScreen = () => {
       <View style={styles.footer}>
         <Text style={styles.footerText}>Don’t have an account?</Text>
         <TouchableOpacity
-          onPress={() => navigation.navigate("RoleSelectionScreen", { location })}
+          onPress={() =>
+            navigation.navigate("RoleSelectionScreen", { location })
+          }
         >
           <Text style={styles.signUpText}> Sign Up Now</Text>
         </TouchableOpacity>
