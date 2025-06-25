@@ -3,7 +3,7 @@ import { StyleSheet, Dimensions } from "react-native";
 const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#C5E838",
+    backgroundColor: "#B3DB48",
     paddingVertical: 14,
     borderRadius: 10,
     flexDirection: "row",

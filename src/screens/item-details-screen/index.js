@@ -148,7 +148,7 @@ const ItemDetailsScreen = ({ navigation }) => {
                 {product?.pricePerKg?.AED} AED / kg
               </Text>
               <Text style={styles.qty}>
-                Available Qty:{" "}
+                Available Qty:
                 <Text style={{ fontWeight: "bold" }}>
                   {product?.availableKg}kg
                 </Text>

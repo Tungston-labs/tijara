@@ -162,7 +162,7 @@ const SellerEditProductScreen = ({ navigation, route }) => {
     ).unwrap();
 
     Alert.alert("Success", "Product updated successfully");
-    navigation.navigate("SellerProductDetailsEditScreen", {
+    navigation.navigate("SellerHomeScreen", {
       productId: product._id,
       shouldRefresh: true,
     });

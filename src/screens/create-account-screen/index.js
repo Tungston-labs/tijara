@@ -62,14 +62,18 @@ const CreateAccountScreen = () => {
           <View style={styles.inputContainer}>
             <Text style={styles.placeholder}>Location</Text>
             <Text style={styles.inputText}>{location || "Fetching..."}</Text>
-            {!isFetching && location === "Unable to fetch location" && (
-              <TouchableOpacity onPress={fetchLocation}>
-                <Text style={{ color: "blue", marginTop: 5 }}>
-                  Retry Fetch Location
-                </Text>
-              </TouchableOpacity>
-            )}
           </View>
+
+          {!isFetching && location === "Unable to fetch location" && (
+            <TouchableOpacity
+              onPress={fetchLocation}
+              style={{ alignSelf: "center", marginTop: 10 }}
+            >
+              <Text style={{ color: "#B3DB48", fontSize: 14 }}>
+                Retry Fetch Location
+              </Text>
+            </TouchableOpacity>
+          )}
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity

@@ -85,24 +85,24 @@ const styles = StyleSheet.create({
     color: "#000000",
   },
   loginLink: {
-    color: "#94D82D",
+    color: "#B3DB48",
     fontWeight: "600",
   },
  buttonStyle: {
-  backgroundColor: "#94D82D",
+  backgroundColor: "#B3DB48",
   borderRadius: 12,
   paddingVertical: 14,
   paddingHorizontal: 24,
   width: "90%",
   flexDirection: "row",
   alignItems: "center",
-  justifyContent: "space-between", // 👈 to push text left and icon right
+  justifyContent: "space-between", 
 },
 
 buttonContent: {
   width: "100%",
   flexDirection: "row",
-  justifyContent: "space-between", // 👈 spread text and icon
+  justifyContent: "space-between", 
   alignItems: "center",
 },
 

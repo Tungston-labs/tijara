@@ -1,3 +1,4 @@
+//Registration screen
 import React, { useState } from "react";
 import {
   View,
@@ -108,97 +109,114 @@ const RegistrationScreen = () => {
       }
     });
   };
+const isStrongPassword = (password) => {
+  return (
+    password.length >= 8 &&
+    /[A-Z]/.test(password) && // at least one uppercase
+    /[a-z]/.test(password) && // at least one lowercase
+    /[0-9]/.test(password) && // at least one number
+    /[^A-Za-z0-9]/.test(password) // at least one special char
+  );
+};
+const isValidEmail = (email) => {
+  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return re.test(email);
+};
 
-  const handleButtonClick = async () => {
-    if (
-      !form.name ||
-      !form.phone ||
-      !form.email ||
-      !form.password ||
-      !form.confirmPassword
-    ) {
-      Alert.alert("Error", "Please fill all the fields correctly");
-      return;
-    }
 
-    if (form.password !== form.confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
-      return;
-    }
+const isValidPhone = (phone) => {
+  const re = /^\d{10}$/; // for a basic 10-digit format
+  return re.test(phone);
+};
 
-    if (!profileImage) {
-      Alert.alert("Validation Error", "Please upload a profile image");
-      return;
-    }
+ const handleButtonClick = async () => {
+  if (
+    !form.name ||
+    !form.phone ||
+    !form.email ||
+    !form.password ||
+    !form.confirmPassword
+  ) {
+    Alert.alert("Error", "Please fill all the fields correctly");
+    return;
+  }
 
-    const [lat, lng] = location.split(",").map((val) => parseFloat(val.trim()));
+  if (!isStrongPassword(form.password)) {
+    Alert.alert(
+      "Weak Password",
+      "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
+    );
+    return;
+  }
+  if (!isValidEmail(form.email)) {
+  Alert.alert("Invalid Email", "Please enter a valid email address.");
+  return;
+}
 
-    const basicFormData = {
-      name: form.name,
-      phone: form.phone,
-      email: form.email,
-      password: form.password,
-      coords: {
-        latitude: lat,
-        longitude: lng,
-      },
-      location, // this will still be the original string, which is fine if backend doesn’t use it
-    };
+if (!isValidPhone(form.phone)) {
+  Alert.alert("Invalid Phone", "Please enter a valid 10-digit phone number.");
+  return;
+}
 
-    console.log("Basic form data", basicFormData);
-    if (role === "seller") {
-      navigation.navigate("SellerRegistrationSecond", {
-        form: basicFormData,
-        profileImage,
-      });
-    } else {
-      const formData = new FormData();
-      formData.append("name", form.name);
-      formData.append("phone", form.phone);
-      formData.append("email", form.email);
-      formData.append("password", form.password);
-      formData.append("coords", JSON.stringify(basicFormData.coords));
 
-      if (location) {
-        formData.append("location", location);
-      }
-      formData.append("profileImage", {
-        uri: profileImage.uri,
-        type: profileImage.type || "image/jpeg",
-        name: profileImage.name || "profile.jpg",
-      });
+  if (form.password !== form.confirmPassword) {
+    Alert.alert("Error", "Passwords do not match");
+    return;
+  }
 
-      try {
-        setLoading(true);
+  if (!profileImage) {
+    Alert.alert("Validation Error", "Please upload a profile image");
+    return;
+  }
 
-        const formData = new FormData();
-        formData.append("name", form.name);
-        formData.append("phone", form.phone);
-        formData.append("email", form.email);
-        formData.append("password", form.password);
-        formData.append("coords", JSON.stringify(basicFormData.coords));
-        if (location) {
-          formData.append("location", location);
-        }
-        formData.append("profileImage", {
-          uri: profileImage.uri,
-          type: profileImage.type || "image/jpeg",
-          name: profileImage.name || "profile.jpg",
-        });
+  const [lat, lng] = location.split(",").map((val) => parseFloat(val.trim()));
 
-        const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
-
-        console.log("Signup Success (Redux):", result);
-        navigation.navigate("RequestSentScreen");
-      } catch (err) {
-        console.error("Signup Error (Redux):", err);
-        const message = err?.message || "Signup failed";
-        Alert.alert("Signup Failed", message);
-      } finally {
-        setLoading(false);
-      }
-    }
+  const basicFormData = {
+    name: form.name,
+    phone: form.phone,
+    email: form.email,
+    password: form.password,
+    coords: {
+      latitude: lat,
+      longitude: lng,
+    },
+    location,
   };
+
+  if (role === "seller") {
+    navigation.navigate("SellerRegistrationSecond", {
+      form: basicFormData,
+      profileImage,
+    });
+  } else {
+    // Buyer: continue submission directly
+    const formData = new FormData();
+    formData.append("name", form.name);
+    formData.append("phone", form.phone);
+    formData.append("email", form.email);
+    formData.append("password", form.password);
+    formData.append("coords", JSON.stringify(basicFormData.coords));
+    if (location) {
+      formData.append("location", location);
+    }
+    formData.append("profileImage", {
+      uri: profileImage.uri,
+      type: profileImage.type || "image/jpeg",
+      name: profileImage.name || "profile.jpg",
+    });
+
+    try {
+      setLoading(true);
+      const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
+      navigation.navigate("RequestSentScreen");
+    } catch (err) {
+      Alert.alert("Signup Failed", err?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  }
+};
+
   return (
     <ScrollView>
       <View style={styles.container}>
