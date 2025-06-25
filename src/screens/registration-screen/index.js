@@ -119,10 +119,9 @@ const isStrongPassword = (password) => {
   );
 };
 const isValidEmail = (email) => {
-  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(email);
 };
-
 
 const isValidPhone = (phone) => {
   const re = /^\d{10}$/; // for a basic 10-digit format

@@ -20,6 +20,7 @@ const ProfileScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch=useDispatch();
   const handleButtonClick = () => {
+
     setModalVisible(true);
   };
 
@@ -93,7 +94,6 @@ const handleLogout=async()=>{
               />
               <ModalButton
                 label={"Log out"}
-                handleButtonPress={closeModal}
                 customStyle={styles.logoutButtonStyle}
                 customLabelStyle={styles.customLabelStyles}
                 handleButtonPress={handleLogout}
