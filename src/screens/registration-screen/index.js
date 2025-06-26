@@ -20,13 +20,18 @@ import TextInputField from "../../componets/TextInputField";
 import { launchImageLibrary } from "react-native-image-picker";
 import Icon from "react-native-vector-icons/Feather";
 import { SignUpThunk } from "../../redux/slice/authSlice";
+import EyeIcon from "react-native-vector-icons/Ionicons";
+
 const RegistrationScreen = () => {
   const route = useRoute();
   const role = route.params?.role || "buyer";
   const location = route.params?.location || null;
+  const [secure, setSecure] = useState(true);
   console.log("Location", location);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [passwordSecure, setPasswordSecure] = useState(true);
+  const [confirmPasswordSecure, setConfirmPasswordSecure] = useState(true);
 
   const [profileImage, setProfileImage] = useState(null);
   const [form, setForm] = useState({
@@ -251,13 +256,22 @@ if (!isValidPhone(form.phone)) {
               value={form.name}
               onChangeText={(text) => handleChange("name", text)}
             />
-            <TextInputField
-              placeholder="Phone Number"
-              customStyle={styles.inputContainer}
-              value={form.phone}
-              onChangeText={(text) => handleChange("phone", text)}
-              keyboardType="phone-pad"
-            />
+            <View style={styles.phoneRow}>
+              <TextInputField
+                value={form.countryCode}
+                onChangeText={(text) => handleChange("countryCode", text)}
+                customStyle={styles.countryCodeInput}
+                keyboardType="phone-pad"
+              />
+              <TextInputField
+                placeholder="Phone Number"
+                value={form.phone}
+                onChangeText={(text) => handleChange("phone", text)}
+                customStyle={styles.phoneNumberInput}
+                keyboardType="phone-pad"
+              />
+            </View>
+
             <TextInputField
               placeholder="Email"
               customStyle={styles.inputContainer}
@@ -270,14 +284,41 @@ if (!isValidPhone(form.phone)) {
               customStyle={styles.inputContainer}
               value={form.password}
               onChangeText={(text) => handleChange("password", text)}
-              secureTextEntry
+              secureTextEntry={passwordSecure}
+              icon={
+                <TouchableOpacity
+                  onPress={() => setPasswordSecure(!passwordSecure)}
+                >
+                  <EyeIcon
+                    name={passwordSecure ? "eye-off-outline" : "eye-outline"}
+                    size={22}
+                    color="#999"
+                  />
+                </TouchableOpacity>
+              }
             />
+
             <TextInputField
               placeholder="Confirm Password"
               customStyle={styles.inputContainer}
               value={form.confirmPassword}
               onChangeText={(text) => handleChange("confirmPassword", text)}
-              secureTextEntry
+              secureTextEntry={confirmPasswordSecure}
+              icon={
+                <TouchableOpacity
+                  onPress={() =>
+                    setConfirmPasswordSecure(!confirmPasswordSecure)
+                  }
+                >
+                  <EyeIcon
+                    name={
+                      confirmPasswordSecure ? "eye-off-outline" : "eye-outline"
+                    }
+                    size={22}
+                    color="#999"
+                  />
+                </TouchableOpacity>
+              }
             />
           </View>
           <View style={styles.buttonContainer}>

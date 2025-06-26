@@ -21,11 +21,10 @@ const styles = StyleSheet.create({
   wrapperContainer: {
     justifyContent: "center",
     alignItems: "center",
-    
   },
   inputContainer: {
     width: width * 0.9,
-    color: "#000"
+    color: "#000",
   },
   loginContainer: {
     flexDirection: "row",
@@ -84,23 +83,46 @@ const styles = StyleSheet.create({
   paddingHorizontal:20,
 },
   nextButtonText: {
-  color: "#fff",
-  fontSize: 16,
-  fontWeight: "bold",
-},
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   nextButton: {
-  backgroundColor: "#B3DB48",
-  width: width * 0.9,
-  paddingVertical: 15,
-  borderRadius: 8,
-  alignItems: "center",
-  flexDirection: "row",
-  justifyContent: "center",
-  marginTop: 20,
-},
-nextButtonIcon: {
-  marginLeft: 48,
-},
+    backgroundColor: "#B3DB48",
+    width: width * 0.9,
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  phoneRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: width * 0.9, // Match other input fields
+    marginBottom: 12,
+  },
 
+  countryCodeInput: {
+    width:  width * 0.9,
+    height: 40,
+    paddingHorizontal: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F8F8F8", // Same as other input background
+  },
+
+  phoneNumberInput: {
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 10,
+    backgroundColor: "#F8F8F8",
+    marginLeft: 10,
+  },
+
+  nextButtonIcon: {
+    marginLeft: 48,
+  },
 });
 export default styles;
