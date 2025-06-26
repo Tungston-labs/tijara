@@ -1,16 +1,16 @@
-import { StyleSheet, Dimensions } from "react-native";
+  import { StyleSheet, Dimensions } from "react-native";
 
-const { width } = Dimensions.get("window");
+  const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     justifyContent: "center",
   },
 
-backArrow: {
+  backArrow: {
     position: "absolute",
     top: 5,
     left: 20,
@@ -28,7 +28,7 @@ backArrow: {
   subtitle: {
     textAlign: "center",
     color: "#777",
-    marginBottom: 30,
+    marginBottom: 20,
   },
 
   label: {
@@ -38,28 +38,32 @@ backArrow: {
     marginLeft: 5,
   },
 
-  input: {
-    backgroundColor: "#F4F4F4",
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginBottom: 16,
-    color: "#000",
+  buttonPlace: {
+    alignItems: "center",
+    marginBottom: 20,
   },
 
   button: {
     backgroundColor: "#C5EF4D",
-    paddingVertical: 15,
+    paddingVertical: 12,
     borderRadius: 8,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 18,
+    width: "90%",
+    alignSelf: "center",
+  },
+
+  inputWide: {
+    width: "90%",
+    alignSelf: "center",
   },
 
   buttonText: {
-    color: "#000",
+    color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
   },
 });
 
-export default styles;
+
+  export default styles;

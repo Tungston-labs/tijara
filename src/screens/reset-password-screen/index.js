@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   SafeAreaView,
   Alert,
@@ -11,10 +10,15 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import styles from "./styles";
 import API from "../../services/config";
+import TextInputField from "../../componets/TextInputField";
 
 const ResetPasswordScreen = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [passwordSecure, setPasswordSecure] = useState(true);
+  const [confirmPasswordSecure, setConfirmPasswordSecure] = useState(true);
+
   const navigation = useNavigation();
 
   const handleResetPassword = async () => {
@@ -57,27 +61,43 @@ const ResetPasswordScreen = () => {
 
       <Text style={styles.title}>Set new password</Text>
       <Text style={styles.subtitle}>Enter new password</Text>
-
-      <Text style={styles.label}>Password</Text>
-      <TextInput
-        style={styles.input}
+     <View style={styles.buttonPlace}>
+      <TextInputField
         placeholder="Password"
-        placeholderTextColor="#aaa"
-        secureTextEntry
         value={password}
         onChangeText={setPassword}
+        secureTextEntry={passwordSecure}
+        customStyle={styles.inputWide}
+        icon={
+          <TouchableOpacity onPress={() => setPasswordSecure(!passwordSecure)}>
+            <Icon
+              name={passwordSecure ? "eye-off-outline" : "eye-outline"}
+              size={22}
+              color="#999"
+            />
+          </TouchableOpacity>
+        }
       />
 
-      <Text style={styles.label}>Confirm Password</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#aaa"
-        secureTextEntry
+      <TextInputField
+        placeholder="Confirm Password"
         value={confirmPassword}
         onChangeText={setConfirmPassword}
+        secureTextEntry={confirmPasswordSecure}
+        customStyle={styles.inputWide}
+        icon={
+          <TouchableOpacity
+            onPress={() => setConfirmPasswordSecure(!confirmPasswordSecure)}
+          >
+            <Icon
+              name={confirmPasswordSecure ? "eye-off-outline" : "eye-outline"}
+              size={22}
+              color="#999"
+            />
+          </TouchableOpacity>
+        }
       />
-
+</View>
       <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
         <Text style={styles.buttonText}>Reset password</Text>
       </TouchableOpacity>

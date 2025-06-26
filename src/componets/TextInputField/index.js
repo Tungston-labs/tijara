@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, TextInput, Text } from "react-native";
 import styles from "./styles";
 
@@ -7,9 +7,14 @@ const TextInputField = ({
   onChangeText,
   customStyle,
   value,
+  icon,
   ...props
 }) => {
   const [text, setText] = useState(value || "");
+
+  useEffect(() => {
+    setText(value || "");
+  }, [value]);
 
   const handleTextChange = (newText) => {
     setText(newText);
@@ -21,15 +26,17 @@ const TextInputField = ({
   return (
     <View>
       <Text style={styles.subText}>{placeholder}</Text>
-      <View style={styles.container}>
+
+      <View style={[styles.container, { flexDirection: "row", alignItems: "center" }]}>
         <TextInput
-          style={[styles.placeholder, customStyle]} // 🛠️ Apply customStyle here
+          style={[styles.placeholder, { flex: 1 }, customStyle]}
           placeholder={placeholder}
           placeholderTextColor="#A9A9A9"
           onChangeText={handleTextChange}
           value={text}
           {...props}
         />
+        {icon}
       </View>
     </View>
   );
