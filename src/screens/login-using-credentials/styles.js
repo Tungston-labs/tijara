@@ -49,7 +49,7 @@ export default StyleSheet.create({
     alignSelf: "center",
     width: width * 0.4,
     height: height * 0.1,
-    marginTop: 8,
+  //  marginBottom:80
     
   },
   input: {
@@ -64,7 +64,7 @@ export default StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F5F5F5",
-    paddingHorizontal: 15,
+    paddingRight: 15,
     borderRadius: 10,
   },
   loginButton: {

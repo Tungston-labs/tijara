@@ -18,7 +18,10 @@ const styles = StyleSheet.create({
   boxTabContainer: {
     width: "100%",
     justifyContent: "center",
-    alignItems: "center",
+    // alignItems: "center",
+    marginInline:25,
+    marginTop:10,
+    marginBottom:5
   },
   tabContainer: {
     flexDirection: "row",
@@ -45,9 +48,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   itemHeader: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "500",
     textAlign: "left",
+    fontFamily:"Nunito"
   },
   flatListContainer: {
     flex: 1,
