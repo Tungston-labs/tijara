@@ -49,7 +49,7 @@ const TabScreens = ({ onTabChange }) => {
       /> */}
       <Tab.Screen
         name="Buy"
-        children={() => <ListItemScreen searchQuery={searchQuery} />}
+        children={() => <ListItemScreen />}
         options={{
           tabBarIcon: ({ color }) => (
             <Icon name="cart" size={25} color={color} />
@@ -77,7 +77,6 @@ const TabScreens = ({ onTabChange }) => {
 
 const SellerHomeScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("Home");
-  const [searchQuery, setSearchQuery] = useState("");
   const handleAddItem = () => {
     navigation.navigate("SellerAddProductScreen");
   };
@@ -93,9 +92,6 @@ const SellerHomeScreen = ({ navigation }) => {
             <View style={styles.rowContainer}>
               <View style={styles.searchbarContainer}>
                 <SearchBar
-                  style={styles.searchbar}
-                  value={searchQuery}
-                  onChangeText={(text) => setSearchQuery(text)}
                 />
               </View>
               <Pressable onPress={handleAddItem}>
@@ -111,14 +107,12 @@ const SellerHomeScreen = ({ navigation }) => {
           <View style={styles.firstContainer}>
             <TijaraHeader navigation={navigation} />
             <SearchBar
-              value={searchQuery}
-              onChangeText={(text) => setSearchQuery(text)}
             />
           </View>
         )}
 
         <View style={{ flex: 1 }}>
-          <TabScreens onTabChange={setActiveTab} searchQuery={searchQuery} />
+          <TabScreens onTabChange={setActiveTab}  />
         </View>
       </BackgroundWrapper>
     </View>
