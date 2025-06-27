@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignSelf: "flex-start",
     height: height * 0.07,
-    // width: width * 0.55,
+    width: width * 0.50,
   },
   rowContainer: {
     flexDirection: "row",
