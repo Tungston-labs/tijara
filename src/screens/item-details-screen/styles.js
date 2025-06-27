@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingVertical: 10,
     width: "100%",
-    padding: 10,
     marginBottom: 10,
+    paddingHorizontal: 20,
   },
   productName: {
     fontSize: 16,
@@ -70,14 +70,13 @@ const styles = StyleSheet.create({
   priceContainer: {
     alignItems: "flex-end",
   },
-rowContainer: {
-  flexDirection: "row",
-  justifyContent: "center", 
-  alignItems: "center",
-  gap: 10, 
-  width: "100%",
-},
-
+  rowContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10,
+    width: "100%",
+  },
 
   alignContent: {
     width: width * 1,
@@ -138,13 +137,13 @@ rowContainer: {
     borderRadius: 25,
     marginRight: 10,
   },
-  sellerName: {
-    fontWeight: "600",
-  },
-  verifyImage: {
-    height: 20,
-    width: 20,
-  },
+  // sellerName: {
+  //   fontWeight: "600",
+  // },
+  // verifyImage: {
+  //   height: 20,
+  //   width: 20,
+  // },
   sellerStats: {
     fontSize: 12,
     color: "#666",
@@ -159,6 +158,8 @@ rowContainer: {
     fontWeight: "600",
     fontSize: 16,
     marginBottom: 5,
+    marginHorizontal: 10,
+    paddingHorizontal: 5,
   },
   descriptionText: {
     backgroundColor: "#EEF0E9",
@@ -200,14 +201,14 @@ rowContainer: {
     color: "#000000",
     marginRight: 8,
   },
-  quantityContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#f5f5f5",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-  },
+  // quantityContainer: {
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   backgroundColor: "#f5f5f5",
+  //   paddingHorizontal: 16,
+  //   paddingVertical: 12,
+  //   borderRadius: 12,
+  // },
   quantityDataContainer: {
     width: width * 0.6,
     alignItems: "center",
@@ -225,11 +226,11 @@ rowContainer: {
     fontWeight: "bold",
     color: "#333",
   },
-  quantityText: {
-    fontSize: 20,
-    fontWeight: "400",
-    color: "#757575",
-  },
+  // quantityText: {
+  //   fontSize: 20,
+  //   fontWeight: "400",
+  //   color: "#757575",
+  // },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -260,12 +261,12 @@ rowContainer: {
     color: "#000",
     fontWeight: "bold",
   },
-modalContentContainer: {
-  width: "100%",
-  justifyContent: "center",
-  alignItems: "center",
-  marginBottom: 20, // optional spacing below the input block
-},
+  modalContentContainer: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20, // optional spacing below the input block
+  },
 
   whatsappButton: {
     backgroundColor: "#25D366",
@@ -276,6 +277,67 @@ modalContentContainer: {
     flexDirection: "row",
     marginLeft: 10,
     minWidth: 20,
+  },
+
+  sellerInfoContainer: {
+    width: "100%",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: 2,
+  },
+
+  sellerLabel: {
+    fontWeight: "600",
+    fontSize: 14,
+    color: "#333",
+  },
+
+  sellerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+
+  sellerName: {
+    fontWeight: "600",
+    fontSize: 14,
+    color: "#000",
+  },
+
+  verifyImage: {
+    width: 16,
+    height: 16,
+    marginLeft: 4,
+  },
+
+  inputWithUnit: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    paddingHorizontal: 8,
+    height: 60,
+    marginHorizontal: 8,
+  },
+
+  quantityInput: {
+    minWidth: 50,
+    maxWidth:150,
+    height: 60,
+    fontSize: 20,
+    fontWeight: "400",
+    color: "#757575",
+    textAlign: "center",
+    margin: 0,
+  },
+
+  kgLabel: {
+    fontSize: 20,
+    color: "#444",
+    color: "#757575",
+    textAlign: "left",
   },
 });
 

@@ -17,8 +17,10 @@ import {
   fetchProductsThunk,
   resetProducts,
 } from "../../redux/slice/productSlice";
+import debounce from "lodash.debounce";
 
 const ListItemScreen = () => {
+  const searchQuery = useSelector((state) => state.search.query);
   const { products, loading, error, page, totalPages } = useSelector(
     (state) => state.product
   );
@@ -27,6 +29,19 @@ const ListItemScreen = () => {
   const navigation = useNavigation();
 
   const [selectedTab, setSelectedTab] = useState("vegetables");
+  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
+
+  useEffect(() => {
+    const handler = debounce(() => {
+      setDebouncedSearch(searchQuery);
+    }, 300);
+
+    handler();
+
+    return () => {
+      handler.cancel();
+    };
+  }, [searchQuery]);
 
   // Fetch on tab/category change
   useEffect(() => {
@@ -35,12 +50,12 @@ const ListItemScreen = () => {
       dispatch(
         fetchProductsThunk({
           token,
-          filters: { itemCategory: selectedTab },
+          filters: { itemCategory: selectedTab, search: debouncedSearch },
           page: 1,
         })
       );
     }
-  }, [selectedTab, token]);
+  }, [selectedTab, token, debouncedSearch]);
 
   const handleTileClick = (item) => {
     navigation.navigate("ItemDetailsScreen", { productId: item._id });
@@ -120,7 +135,7 @@ const ListItemScreen = () => {
                         showPagination
                         paginationStyle={{
                           position: "absolute",
-                          bottom: 80,
+                          bottom: 70,
                           alignSelf: "center",
                         }}
                         paginationStyleItem={{

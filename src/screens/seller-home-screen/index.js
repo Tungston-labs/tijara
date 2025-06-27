@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, StatusBar, Text, View } from "react-native";
 import styles from "./styles";
 import TijaraHeader from "../../componets/TijaraHeader";
 import SearchBar from "../../componets/SearchBar";
@@ -10,6 +10,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import UserListItemScreen from "../user-list-item-screen";
 import { useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Tab = createBottomTabNavigator();
 
@@ -35,9 +36,21 @@ const TabScreens = ({ onTabChange }) => {
           focus: () => onTabChange("Home"),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Buy"
         component={ListItemScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="cart" size={25} color={color} />
+          ),
+        }}
+        listeners={{
+          focus: () => onTabChange("Buy"),
+        }}
+      /> */}
+      <Tab.Screen
+        name="Buy"
+        children={() => <ListItemScreen />}
         options={{
           tabBarIcon: ({ color }) => (
             <Icon name="cart" size={25} color={color} />
@@ -68,39 +81,43 @@ const SellerHomeScreen = ({ navigation }) => {
   const handleAddItem = () => {
     navigation.navigate("SellerAddProductScreen");
   };
+
   return (
-    <View style={styles.container}>
-      <BackgroundWrapper>
-        {activeTab !== "Request" && activeTab !== "Buy" && (
-          <View style={styles.firstContainer}>
-            <View style={styles.wrapperContainer}>
-              <TijaraHeader navigation={navigation} />
-            </View>
-            <View style={styles.rowContainer}>
-              <View style={styles.searchbarContainer}>
-                <SearchBar style={styles.searchbar} />
+    <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
+      <StatusBar barStyle="dark-content" translucent={false} />
+      <View style={styles.container}>
+        <BackgroundWrapper>
+          {activeTab !== "Request" && activeTab !== "Buy" && (
+            <View style={styles.firstContainer}>
+              <View style={styles.wrapperContainer}>
+                <TijaraHeader navigation={navigation} />
               </View>
-              <Pressable onPress={handleAddItem}>
-                <View style={styles.addItemContainer}>
-                  <Text style={styles.addIconStyle}>+</Text>
+              <View style={styles.rowContainer}>
+                <View style={styles.searchbarContainer}>
+                  <SearchBar />
                 </View>
-              </Pressable>
+                <Pressable onPress={handleAddItem}>
+                  <View style={styles.addItemContainer}>
+                    <Text style={styles.addIconStyle}>+</Text>
+                  </View>
+                </Pressable>
+              </View>
             </View>
-          </View>
-        )}
+          )}
 
-        {activeTab === "Buy" && (
-          <View style={styles.firstContainer}>
-            <TijaraHeader navigation={navigation} />
-            <SearchBar />
-          </View>
-        )}
+          {activeTab === "Buy" && (
+            <View style={styles.firstContainer}>
+              <TijaraHeader navigation={navigation} />
+              <SearchBar />
+            </View>
+          )}
 
-        <View style={{ flex: 1 }}>
-          <TabScreens onTabChange={setActiveTab} />
-        </View>
-      </BackgroundWrapper>
-    </View>
+          <View style={{ flex: 1 }}>
+            <TabScreens onTabChange={setActiveTab} />
+          </View>
+        </BackgroundWrapper>
+      </View>
+    </SafeAreaView>
   );
 };
 

@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     width: width * 1,
   },
   firstContainer: {
-    marginTop: 35,
+    // marginTop: 35,
     marginBottom: 10,
   },
   searchbar: {
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 10,
-    marginLeft: 15,
+    marginLeft: 5,
   },
   searchbarContainer: {
     width: 40,
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: "center",
     alignItems: "center",
-    width: width * 0.7,
+    width: width * 0.76,
     marginRight: 10,
   },
   addIconStyle: {

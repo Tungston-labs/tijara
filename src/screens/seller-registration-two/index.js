@@ -117,6 +117,17 @@ const SellerRegistrationSecond = () => {
     Alert.alert("Validation Error", "Please upload your trade license copy");
     return;
   }
+console.log("Seller Form Data --->", {
+  name: prevForm.name,
+  email: prevForm.email,
+  password: prevForm.password,
+  phone: prevForm.phone,
+  coords: prevForm.coords,
+  location: prevForm.location,
+  companyName: form.companyName,
+  tradeLicenseNumber: form.tradeLicenseNumber,
+  managerName: form.managerName,
+});
 
   const formData = new FormData();
 
@@ -170,7 +181,7 @@ const SellerRegistrationSecond = () => {
         <BackgroundWrapper style={styles.wrapperContainer}>
           <Header
             handleIconPress={() =>
-              navigation.navigate("SellerRegistrationScreen")
+              navigation.navigate("RegistrationScreen")
             }
             icon={true}
             Title={"Complete your"}

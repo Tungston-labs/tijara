@@ -12,26 +12,18 @@ const styles = StyleSheet.create({
   textInputcontainer: {
     alignItems: "center",
     justifyContent: "center",
-    width: width * 1,
-    marginTop: -20,
-  },
-  inputBoxStyle: {
-    width: width * 1,
-  },
-  wrapperContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    
+    width: width,
+    paddingBottom:20
   },
   inputContainer: {
     width: width * 0.9,
-    color: "#000"
+    color: "#000",
   },
   loginContainer: {
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 20,
-    marginBottom: 25,
+    marginBottom: 30,
   },
   loginText: {
     color: "#000000",
@@ -41,34 +33,25 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   buttonContainer: {
-    width: width * 1,
+    width: width,
     alignItems: "center",
-    marginBlockStart: "auto",
+    
   },
-  buttonStyle: {
-    flexDirection: "row",
+  wrapperContainer: {
+    justifyContent: "center",
     alignItems: "center",
-    justifyContent: "space-between",
-    padding: 20,
-  },
-  ImageContainer: {
-    alignSelf: "center",
-    width: width * 0.4,
-    height: height * 0.1,
   },
   profileImageWrapper: {
     position: "relative",
     alignSelf: "center",
     marginVertical: 20,
   },
-
   profileImage: {
     width: 100,
     height: 100,
     borderRadius: 50,
     backgroundColor: "#eee",
   },
-
   plusIconContainer: {
     position: "absolute",
     bottom: 0,
@@ -77,23 +60,80 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   nextButtonText: {
-  color: "#fff",
-  fontSize: 16,
-  fontWeight: "bold",
-},
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   nextButton: {
-  backgroundColor: "#B3DB48",
-  width: width * 0.9,
-  paddingVertical: 15,
-  borderRadius: 8,
-  alignItems: "center",
-  flexDirection: "row",
-  justifyContent: "center",
-  marginTop: 20,
-},
-nextButtonIcon: {
-  marginLeft: 48,
+    backgroundColor: "#B3DB48",
+    width: width * 0.9,
+    paddingVertical: 15,
+    borderRadius: 8,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  nextButtonIcon: {
+    marginLeft: 48,
+  },
+  phoneFieldContainer: {
+    width: width * 0.9,
+    marginBottom: 20,
+  },
+  inputLabel: {
+    fontSize: 16,
+    color: "#333",
+    marginBottom: 5,
+    fontWeight: "500",
+  },
+
+
+
+  codeText: {
+    fontSize: 16,
+    color: "#000",
+  },
+
+phoneInputWrapper: {
+  // marginTop:50,
+  // flexDirection: "row",
+  // alignItems: "center",
+  // borderColor: "#ccc",
+  // borderRadius: 10,
+  // backgroundColor: "#f5f5f5",
+  // // width: width * 0.9,
+  // height: 50,
+  // paddingHorizontal: 10,
+  // marginBottom: 15,
 },
 
+countryCodeContainer: {
+  flexDirection: "row",
+  alignItems: "center",
+  paddingHorizontal: 8,
+  paddingVertical: 6,
+  borderRightWidth: 1,
+  borderRightColor: "#ccc",
+  marginRight: 8,
+},
+
+
+
+countryCodeText: {
+  fontSize: 16,
+  color: "#000",
+  marginRight: 4,
+},
+
+phoneInput: {
+  flex: 1,
+  fontSize: 24,
+  color: "#52eb34",
+  height: 0,
+// marginTop:-50,
+},
+
+  
 });
 export default styles;

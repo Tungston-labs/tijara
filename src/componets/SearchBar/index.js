@@ -2,22 +2,29 @@ import { View, TextInput, TouchableOpacity } from "react-native";
 import { React, useState } from "react";
 import styles from "./styles";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchQuery } from "../../redux/slice/searchSlice";
 
-const SearchBar = ({
-  onChangeText,
+// const SearchBar = ({
+//   onChangeText,
 
-  value,
-  ...props
-}) => {
-  const [text, setText] = useState(value || "");
+//   value,
+//   ...props
+// }) => {
+  // const [text, setText] = useState(value || "");
 
+  // const handleTextChange = (newText) => {
+  //   setText(newText);
+  //   if (onChangeText) {
+  //     onChangeText(newText);
+  //   }
+  // };
+const SearchBar = (props) => {
+   const dispatch = useDispatch();
+  const query = useSelector((state) => state.search.query);
   const handleTextChange = (newText) => {
-    setText(newText);
-    if (onChangeText) {
-      onChangeText(newText);
-    }
+    dispatch(setSearchQuery(newText));
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.rowContainer}>
@@ -30,7 +37,7 @@ const SearchBar = ({
           <View style={styles.textInput}>
             <TextInput
               onChangeText={handleTextChange}
-              value={text}
+              value={query}
               {...props}
             />
           </View>

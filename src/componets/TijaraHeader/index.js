@@ -13,7 +13,7 @@ const TijaraHeader = ({ navigation }) => {
       <View style={styles.rowContainer}>
         <View>
           <Image
-            source={require("../../resources/images/tijara-logo.png")}
+            source={require("../../resources/images/logotijara.png")}
             style={styles.ImageContainer}
             resizeMode="contain"
           />

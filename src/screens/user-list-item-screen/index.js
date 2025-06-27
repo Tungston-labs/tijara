@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -16,26 +16,43 @@ import {
   fetchSellerProductsThunk,
   resetSellerProducts,
 } from "../../redux/slice/sellerProductSlice";
+import debounce from "lodash.debounce";
 
 const UserListItemScreen = () => {
   const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const searchQuery = useSelector((state) => state.search.query);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
-  const {
-    sellerProducts,
-    loadingSeller,
-    errorSeller,
-    page,
-    totalPages,
-  } = useSelector((state) => state.sellerProduct);
+  const { sellerProducts, loadingSeller, errorSeller, page, totalPages } =
+    useSelector((state) => state.sellerProduct);
+
+  useEffect(() => {
+    const handler = debounce(() => {
+      setDebouncedSearch(searchQuery);
+    }, 300);
+
+    handler();
+
+    return () => {
+      handler.cancel();
+    };
+  }, [searchQuery]);
 
   useEffect(() => {
     if (token) {
       dispatch(resetSellerProducts());
-      dispatch(fetchSellerProductsThunk({ token, page: 1, limit: 10 }));
+      dispatch(
+        fetchSellerProductsThunk({
+          token,
+          filters: { search: debouncedSearch },
+          page: 1,
+          limit: 10,
+        })
+      );
     }
-  }, [dispatch, token]);
+  }, [dispatch, token, debouncedSearch]);
 
   const handleTileClick = (product) => {
     navigation.navigate("SellerProductDetailsEditScreen", {
@@ -60,7 +77,7 @@ const UserListItemScreen = () => {
             showPagination
             paginationStyle={{
               position: "absolute",
-              bottom: 80,
+              bottom: 70,
               alignSelf: "center",
             }}
             paginationStyleItem={{

@@ -30,6 +30,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#000000",
   },
+
+
   subtitle: {
     fontSize: 18,
     textAlign: "center",
