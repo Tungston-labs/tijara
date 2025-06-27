@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignSelf: "flex-start",
     height: height * 0.07,
-    width: width * 0.55,
+    // width: width * 0.55,
   },
   rowContainer: {
     flexDirection: "row",
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   iconStyle: {
-    width: width * 0.2,
+    width: width * 0.13,
     paddingBottom: 15,
     alignSelf: "flex-end",
   },
