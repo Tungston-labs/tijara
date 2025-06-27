@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
     width: "90%",
     justifyContent: "center",
     alignItems: "center",
+  
   },
 
   label: {

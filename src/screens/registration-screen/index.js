@@ -26,13 +26,11 @@ const RegistrationScreen = () => {
   const route = useRoute();
   const role = route.params?.role || "buyer";
   const location = route.params?.location || null;
-  const [secure, setSecure] = useState(true);
   console.log("Location", location);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [passwordSecure, setPasswordSecure] = useState(true);
   const [confirmPasswordSecure, setConfirmPasswordSecure] = useState(true);
-
   const [profileImage, setProfileImage] = useState(null);
   const [form, setForm] = useState({
     name: "",
@@ -51,6 +49,7 @@ const RegistrationScreen = () => {
   const handleIconPress = () => {
     navigation.goBack();
   };
+  const [countryCode, setCountryCode] = useState("+971");
 
   const requestPermissions = async () => {
     try {
@@ -114,116 +113,115 @@ const RegistrationScreen = () => {
       }
     });
   };
-const isStrongPassword = (password) => {
-  return (
-    password.length >= 8 &&
-    /[A-Z]/.test(password) && // at least one uppercase
-    /[a-z]/.test(password) && // at least one lowercase
-    /[0-9]/.test(password) && // at least one number
-    /[^A-Za-z0-9]/.test(password) // at least one special char
-  );
-};
-const isValidEmail = (email) => {
-  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return re.test(email);
-};
-
-
-const isValidPhone = (phone) => {
-  const re = /^\d{10}$/; // for a basic 10-digit format
-  return re.test(phone);
-};
-
- const handleButtonClick = async () => {
-  if (
-    !form.name ||
-    !form.phone ||
-    !form.email ||
-    !form.password ||
-    !form.confirmPassword
-  ) {
-    Alert.alert("Error", "Please fill all the fields correctly");
-    return;
-  }
-
-  if (!isStrongPassword(form.password)) {
-    Alert.alert(
-      "Weak Password",
-      "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
+  const isStrongPassword = (password) => {
+    return (
+      password.length >= 8 &&
+      /[A-Z]/.test(password) && // at least one uppercase
+      /[a-z]/.test(password) && // at least one lowercase
+      /[0-9]/.test(password) && // at least one number
+      /[^A-Za-z0-9]/.test(password) // at least one special char
     );
-    return;
-  }
-  if (!isValidEmail(form.email)) {
-  Alert.alert("Invalid Email", "Please enter a valid email address.");
-  return;
-}
-
-if (!isValidPhone(form.phone)) {
-  Alert.alert("Invalid Phone", "Please enter a valid 10-digit phone number.");
-  return;
-}
-
-
-  if (form.password !== form.confirmPassword) {
-    Alert.alert("Error", "Passwords do not match");
-    return;
-  }
-
-  if (!profileImage) {
-    Alert.alert("Validation Error", "Please upload a profile image");
-    return;
-  }
-
-  const [lat, lng] = location.split(",").map((val) => parseFloat(val.trim()));
-
-  const basicFormData = {
-    name: form.name,
-    phone: form.phone,
-    email: form.email,
-    password: form.password,
-    coords: {
-      latitude: lat,
-      longitude: lng,
-    },
-    location,
+  };
+  const isValidEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
   };
 
-  if (role === "seller") {
-    navigation.navigate("SellerRegistrationSecond", {
-      form: basicFormData,
-      profileImage,
-    });
-  } else {
-    // Buyer: continue submission directly
-    const formData = new FormData();
-    formData.append("name", form.name);
-    formData.append("phone", form.phone);
-    formData.append("email", form.email);
-    formData.append("password", form.password);
-    formData.append("coords", JSON.stringify(basicFormData.coords));
-    if (location) {
-      formData.append("location", location);
-    }
-    formData.append("profileImage", {
-      uri: profileImage.uri,
-      type: profileImage.type || "image/jpeg",
-      name: profileImage.name || "profile.jpg",
-    });
+  const isValidPhone = (phone) => /^\d{7,15}$/.test(phone);
 
-    try {
-      setLoading(true);
-      const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
-      navigation.navigate("RequestSentScreen");
-    } catch (err) {
-      Alert.alert("Signup Failed", err?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
+  const handleButtonClick = async () => {
+     const fullPhoneNumber = `${countryCode}${form.phone}`;
+    if (
+      !form.name ||
+      !form.phone ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
+      Alert.alert("Error", "Please fill all the fields correctly");
+      return;
     }
-  }
-};
+
+    if (!isStrongPassword(form.password)) {
+      Alert.alert(
+        "Weak Password",
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
+      );
+      return;
+    }
+    if (!isValidEmail(form.email)) {
+      Alert.alert("Invalid Email", "Please enter a valid email address.");
+      return;
+    }
+
+    if (!isValidPhone(form.phone)) {
+      Alert.alert(
+        "Invalid Phone",
+        "Please enter the correct number with respect to the country"
+      );
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      Alert.alert("Error", "Passwords do not match");
+      return;
+    }
+
+    if (!profileImage) {
+      Alert.alert("Validation Error", "Please upload a profile image");
+      return;
+    }
+
+    const [lat, lng] = location.split(",").map((val) => parseFloat(val.trim()));
+
+    const basicFormData = {
+      name: form.name,
+      phone: fullPhoneNumber,
+      email: form.email,
+      password: form.password,
+      coords: {
+        latitude: lat,
+        longitude: lng,
+      },
+      location,
+    };
+
+    if (role === "seller") {
+      navigation.navigate("SellerRegistrationSecond", {
+        form: basicFormData,
+        profileImage,
+      });
+    } else {
+      // Buyer: continue submission directly
+      const formData = new FormData();
+      formData.append("name", form.name);
+      formData.append("phone", fullPhoneNumber);
+      formData.append("email", form.email);
+      formData.append("password", form.password);
+      formData.append("coords", JSON.stringify(basicFormData.coords));
+      if (location) {
+        formData.append("location", location);
+      }
+      formData.append("profileImage", {
+        uri: profileImage.uri,
+        type: profileImage.type || "image/jpeg",
+        name: profileImage.name || "profile.jpg",
+      });
+
+      try {
+        setLoading(true);
+        const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
+        navigation.navigate("RequestSentScreen");
+      } catch (err) {
+        Alert.alert("Signup Failed", err?.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   return (
-    // <ScrollView>
+    <ScrollView>
       <View style={styles.container}>
         <BackgroundWrapper style={styles.wrapperContainer}>
           <Header
@@ -256,21 +254,15 @@ if (!isValidPhone(form.phone)) {
               value={form.name}
               onChangeText={(text) => handleChange("name", text)}
             />
-            <View style={styles.phoneRow}>
-              <TextInputField
-                value={form.countryCode}
-                onChangeText={(text) => handleChange("countryCode", text)}
-                customStyle={styles.countryCodeInput}
-                keyboardType="phone-pad"
-              />
-              <TextInputField
-                placeholder="Phone Number"
-                value={form.phone}
-                onChangeText={(text) => handleChange("phone", text)}
-                customStyle={styles.phoneNumberInput}
-                keyboardType="phone-pad"
-              />
-            </View>
+            <TextInputField
+              placeholder="Phone Number"
+              customStyle={styles.inputContainer}
+              value={form.phone}
+              countryCode={countryCode}
+              setCountryCode={setCountryCode}
+              onChangeText={(text) => handleChange("phone", text)}
+              keyboardType="phone-pad"
+            />
 
             <TextInputField
               placeholder="Email"
@@ -280,6 +272,7 @@ if (!isValidPhone(form.phone)) {
               keyboardType="email-address"
             />
             <TextInputField
+              key={passwordSecure ? "password-hidden" : "password-visible"}
               placeholder="Password"
               customStyle={styles.inputContainer}
               value={form.password}
@@ -299,6 +292,7 @@ if (!isValidPhone(form.phone)) {
             />
 
             <TextInputField
+              key={confirmPasswordSecure ? "confirm-hidden" : "confirm-visible"}
               placeholder="Confirm Password"
               customStyle={styles.inputContainer}
               value={form.confirmPassword}
@@ -328,7 +322,6 @@ if (!isValidPhone(form.phone)) {
                 disabled={loading}
                 style={styles.nextButton}
               >
-                <View style={styles.nextButtonContent}>
                 <Text style={styles.nextButtonText}>Next</Text>
                 <Icon
                   name="chevron-right"
@@ -336,7 +329,6 @@ if (!isValidPhone(form.phone)) {
                   color="#fff"
                   style={styles.nextButtonIcon}
                 />
-                </View>
               </TouchableOpacity>
             ) : (
               <Button
@@ -357,7 +349,7 @@ if (!isValidPhone(form.phone)) {
           </View>
         </BackgroundWrapper>
       </View>
-    // </ScrollView>
+    </ScrollView>
   );
 };
 export default RegistrationScreen;
