@@ -13,7 +13,7 @@ const SplashScreen = ({ navigation }) => {
   }, []);
 
   const handleNavigation = () => {
-    const routeKey = "LoginScreenPassword";
+    const routeKey = "CreateAccountScreen";
 
     navigationTimeout = setTimeout(() => {
       navigation.replace(routeKey);
