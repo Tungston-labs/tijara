@@ -49,7 +49,7 @@ export default StyleSheet.create({
     alignSelf: "center",
     width: width * 0.4,
     height: height * 0.1,
-  //  marginBottom:80
+   marginBottom:40
     
   },
   input: {

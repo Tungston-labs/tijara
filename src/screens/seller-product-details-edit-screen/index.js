@@ -57,13 +57,15 @@ const SellerProductDetailsEditScreen = () => {
     <View style={styles.container}>
       <ScrollView>
         <BackgroundWrapper>
+          
+          <View style={styles.mainImageContainer}>
           <Header
             handleIconPress={handleIconPress}
             icon={true}
             Title={sellerProduct?.itemName}
             editIcon={true}
             handleEditIconPress={handleEditPress}
-          />
+          /></View>
           <View style={styles.imageContainer}>
             <Image
               source={
@@ -92,7 +94,6 @@ const SellerProductDetailsEditScreen = () => {
               ))}
             </ScrollView>
           </View>
-
           <View style={styles.infoSection}>
             <View>
               <Text style={styles.productName}>{sellerProduct?.itemName}</Text>
@@ -105,13 +106,13 @@ const SellerProductDetailsEditScreen = () => {
                 {sellerProduct?.pricePerKg?.AED} AED / kg
               </Text>
               <Text style={styles.qty}>
-                Available Qty:
-                <Text style={{ fontWeight: "bold" }}>
-                  {sellerProduct?.availableKg}
+                Available Qty:{" "} 
+                <Text style={{ fontWeight: "700",color:"#000" }}>
+                  {sellerProduct?.availableKg}kg
                 </Text>
               </Text>
               <Text style={styles.expy}>Expiry date</Text>
-              <Text style={{ fontWeight: "bold" }}>
+              <Text style={{ fontWeight: "400",color:"#000" }}>
                 {sellerProduct?.expiryDate
                   ? new Date(sellerProduct.expiryDate).toLocaleDateString(
                       "en-GB",
@@ -129,7 +130,7 @@ const SellerProductDetailsEditScreen = () => {
           <View style={styles.descriptionBox}>
             <Text style={styles.descriptionTitle}>Discription</Text>
             <Text style={styles.descriptionText}>
-              {sellerProduct?.description}
+              {sellerProduct?.description|| "No description available."}
             </Text>
           </View>
         </BackgroundWrapper>

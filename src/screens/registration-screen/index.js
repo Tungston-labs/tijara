@@ -1,5 +1,5 @@
 //Registration screen
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -26,7 +26,9 @@ const RegistrationScreen = () => {
   const route = useRoute();
   const role = route.params?.role || "buyer";
   const location = route.params?.location || null;
-  console.log("Location", location);
+  const prefillForm = route.params?.prefillForm || null;
+const prefillImage = route.params?.profileImage || null;
+const prefillCountryCode = route.params?.countryCode || "+971";
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [passwordSecure, setPasswordSecure] = useState(true);
@@ -39,6 +41,31 @@ const RegistrationScreen = () => {
     password: "",
     confirmPassword: "",
   });
+
+  useEffect(() => {
+  if (prefillForm) {
+    let rawPhone = prefillForm.phone || "";
+
+    // Remove the country code if it's at the start
+    if (rawPhone.startsWith(prefillCountryCode)) {
+      rawPhone = rawPhone.slice(prefillCountryCode.length);
+    }
+     setForm({
+      name: prefillForm.name || "",
+      phone: rawPhone,
+      email: prefillForm.email || "",
+      password: prefillForm.password || "",
+      confirmPassword: prefillForm.password || "",
+    });
+  }
+
+  if (prefillImage) {
+    setProfileImage(prefillImage);
+  }
+   if (prefillCountryCode) {
+    setCountryCode(prefillCountryCode);
+  }
+}, [prefillForm, prefillImage,prefillCountryCode]);
 
   const [loading, setLoading] = useState(false);
 
@@ -190,6 +217,7 @@ const RegistrationScreen = () => {
       navigation.navigate("SellerRegistrationSecond", {
         form: basicFormData,
         profileImage,
+        countryCode
       });
     } else {
       // Buyer: continue submission directly

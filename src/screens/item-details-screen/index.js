@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
+  AppState,
 } from "react-native";
 import styles from "./styles";
 import Header from "../../componets/Header";
@@ -75,7 +76,7 @@ const ItemDetailsScreen = ({ navigation }) => {
     }
   };
   const handleWhatsAppRequest = () => {
-    const quantity = 10; // or dynamically from input
+    // const quantity = 10; // or dynamically from input
     const message = `Hello, I would like to request ${quantity} Kg of ${
       product?.itemName || "this product"
     }. Please let me know the next steps.`;
@@ -98,6 +99,20 @@ const ItemDetailsScreen = ({ navigation }) => {
     );
   };
 
+  //for model close when go to whatsapp
+  useEffect(() => {
+  const subscription = AppState.addEventListener("change", handleAppStateChange);
+
+  return () => {
+    subscription.remove(); 
+  };
+}, []);
+
+const handleAppStateChange = (nextAppState) => {
+  if (nextAppState === "active") {
+    setModalVisible(false);
+  }
+};
   return (
     <View style={styles.container}>
       <ScrollView>

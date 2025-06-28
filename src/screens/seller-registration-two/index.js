@@ -24,7 +24,7 @@ const SellerRegistrationSecond = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { form: prevForm = {}, profileImage } = route.params || {};
+  const { form: prevForm = {}, profileImage,countryCode } = route.params || {};
 
   const [form, setForm] = useState({
     companyName: "",
@@ -107,73 +107,74 @@ const SellerRegistrationSecond = () => {
     setForm({ ...form, tradeLicenseCopy: null });
   };
 
- const handleSubmit = async () => {
-  if (!form.companyName || !form.tradeLicenseNumber || !form.managerName) {
-    Alert.alert("Validation Error", "Please fill all required fields");
-    return;
-  }
+  const handleSubmit = async () => {
+    if (!form.companyName || !form.tradeLicenseNumber || !form.managerName) {
+      Alert.alert("Validation Error", "Please fill all required fields");
+      return;
+    }
 
-  if (!form.tradeLicenseCopy) {
-    Alert.alert("Validation Error", "Please upload your trade license copy");
-    return;
-  }
-console.log("Seller Form Data --->", {
-  name: prevForm.name,
-  email: prevForm.email,
-  password: prevForm.password,
-  phone: prevForm.phone,
-  coords: prevForm.coords,
-  location: prevForm.location,
-  companyName: form.companyName,
-  tradeLicenseNumber: form.tradeLicenseNumber,
-  managerName: form.managerName,
-});
-
-  const formData = new FormData();
-
-  formData.append("name", prevForm.name);
-  formData.append("email", prevForm.email);
-  formData.append("password", prevForm.password);
-  formData.append("phone", prevForm.phone);
-  formData.append("coords", JSON.stringify(prevForm.coords));
-
-  if (prevForm.location) {
-    formData.append("location", prevForm.location);
-  }
-
-  if (profileImage) {
-    formData.append("profileImage", {
-      uri: profileImage.uri,
-      type: profileImage.type || "image/jpeg",
-      name: profileImage.name || "profile.jpg",
-    });
-  }
-
-  formData.append("companyName", form.companyName);
-  formData.append("tradeLicenseNumber", form.tradeLicenseNumber);
-  formData.append("managerName", form.managerName);
-  formData.append("tradeLicenseCopy", {
-    uri: form.tradeLicenseCopy.uri,
-    type: form.tradeLicenseCopy.type,
-    name: form.tradeLicenseCopy.name,
-  });
-
-  try {
-    setLoading(true);
-    const result = await dispatch(SignUpThunk({ formData, role: "seller" })).unwrap();
-    console.log("Signup success:", result);
-    navigation.navigate("RequestSentScreen", {
+    if (!form.tradeLicenseCopy) {
+      Alert.alert("Validation Error", "Please upload your trade license copy");
+      return;
+    }
+    console.log("Seller Form Data --->", {
+      name: prevForm.name,
+      email: prevForm.email,
+      password: prevForm.password,
       phone: prevForm.phone,
-      from: "seller",
+      coords: prevForm.coords,
+      location: prevForm.location,
+      companyName: form.companyName,
+      tradeLicenseNumber: form.tradeLicenseNumber,
+      managerName: form.managerName,
     });
-  } catch (err) {
-    console.error("Signup failed:", err);
-    Alert.alert("Signup Failed", err?.message || "Something went wrong");
-  } finally {
-    setLoading(false);
-  }
-};
 
+    const formData = new FormData();
+
+    formData.append("name", prevForm.name);
+    formData.append("email", prevForm.email);
+    formData.append("password", prevForm.password);
+    formData.append("phone", prevForm.phone);
+    formData.append("coords", JSON.stringify(prevForm.coords));
+
+    if (prevForm.location) {
+      formData.append("location", prevForm.location);
+    }
+
+    if (profileImage) {
+      formData.append("profileImage", {
+        uri: profileImage.uri,
+        type: profileImage.type || "image/jpeg",
+        name: profileImage.name || "profile.jpg",
+      });
+    }
+
+    formData.append("companyName", form.companyName);
+    formData.append("tradeLicenseNumber", form.tradeLicenseNumber);
+    formData.append("managerName", form.managerName);
+    formData.append("tradeLicenseCopy", {
+      uri: form.tradeLicenseCopy.uri,
+      type: form.tradeLicenseCopy.type,
+      name: form.tradeLicenseCopy.name,
+    });
+
+    try {
+      setLoading(true);
+      const result = await dispatch(
+        SignUpThunk({ formData, role: "seller" })
+      ).unwrap();
+      console.log("Signup success:", result);
+      navigation.navigate("RequestSentScreen", {
+        phone: prevForm.phone,
+        from: "seller",
+      });
+    } catch (err) {
+      console.error("Signup failed:", err);
+      Alert.alert("Signup Failed", err?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <ScrollView>
@@ -181,7 +182,11 @@ console.log("Seller Form Data --->", {
         <BackgroundWrapper style={styles.wrapperContainer}>
           <Header
             handleIconPress={() =>
-              navigation.navigate("RegistrationScreen")
+              navigation.navigate("RegistrationScreen", {
+                prefillForm: prevForm,
+                profileImage,
+                countryCode
+              })
             }
             icon={true}
             Title={"Complete your"}

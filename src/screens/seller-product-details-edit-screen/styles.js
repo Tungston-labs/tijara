@@ -21,14 +21,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
   },
+  mainImageContainer: {
+    marginHorizontal: 10,
+  },
   thumbnilImageContainer: {
     width: "100%",
     backgroundColor: "#EEF0E9",
-    borderRadius: 10,
+    // borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10,
-    marginBottom: 10,
+    marginVertical: 20,
+
   },
   thumbnailContainer: {
     marginVertical: 10,
@@ -46,67 +49,80 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-start",
     paddingVertical: 10,
-    width: width * 1,
+    // width: width * 1,
     padding: 10,
     marginBottom: 10,
+    marginHorizontal: 10,
   },
   productName: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "700",
   },
   variant: {
     color: "#888",
     fontSize: 13,
+        fontWeight: "400",
+
   },
   priceContainer: {
     alignItems: "flex-end",
   },
-imageContainer: {
-  justifyContent: "center",
-  alignItems: "center",
-  width: "100%", 
-},
+  imageContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    // width: "100%",
+    marginHorizontal: 20,
+  },
 
-mainImage: {
-  width: 320,
-  height: 177,
-  borderRadius: 7,
-  resizeMode: "cover", 
-  backgroundColor: "lightgray", 
-  overflow: "hidden", 
-},
+  mainImage: {
+    width: 320,
+    height: 177,
+    width: "100%",
+    borderRadius: 7,
+    resizeMode: "cover",
+    backgroundColor: "lightgray",
+    overflow: "hidden",
+  },
 
   price: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#000",
   },
   qty: {
+        marginTop:2,
+
     fontSize: 13,
     color: "#757575",
   },
   expy: {
+    marginTop:2,
     fontSize: 12,
     color: "#757575",
+    fontWeight:"400"
   },
   descriptionBox: {
     backgroundColor: "#fff",
-    padding: 10,
+    paddingVertical: 25,
+    paddingHorizontal:10,
     marginBottom: 20,
   },
   descriptionTitle: {
     fontWeight: "600",
     fontSize: 16,
-    marginBottom: 5,
+    marginBottom: 10,
+    marginLeft: 10,
+    // marginTop:0
   },
   descriptionText: {
     backgroundColor: "#EEF0E9",
-    padding: 5,
+    padding: 10,
     borderRadius: 10,
     fontSize: 13,
     color: "#555",
     lineHeight: 18,
-    margin: 10,
+    marginHorizontal: 10,
+    minHeight: 100,
   },
   rowContainer: {
     flexDirection: "row",

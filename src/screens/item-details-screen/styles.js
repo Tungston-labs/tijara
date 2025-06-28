@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
     color: "#555",
     lineHeight: 18,
     margin: 10,
+    minHeight:100
   },
   modalBackground: {
     flex: 1,
