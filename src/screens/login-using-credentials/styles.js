@@ -10,8 +10,8 @@ export default StyleSheet.create({
   },
   backArrow: {
     position: "absolute",
-    top: 5,
-    left: 20,
+    top: 15,
+    left: 5,
     zIndex: 10,
   },
   logoContainer: {

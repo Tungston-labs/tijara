@@ -84,7 +84,7 @@ const SellerHomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-      <StatusBar barStyle="dark-content" translucent={false} />
+      <StatusBar barStyle="dark-content" backgroundColor={"#F1F1F1"} translucent={false} />
       <View style={styles.container}>
         <BackgroundWrapper>
           {activeTab !== "Request" && activeTab !== "Buy" && (

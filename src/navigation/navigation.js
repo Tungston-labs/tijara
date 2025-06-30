@@ -35,14 +35,14 @@ const Stack = createNativeStackNavigator();
 export default function MainNavigation() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {Platform.OS === "android" && (
+      {/* {Platform.OS === "android" && (
         <View
           style={{
             height: StatusBar.currentHeight,
             backgroundColor: "#fff",
           }}
         />
-      )}
+      )} */}
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{ headerShown: false }}

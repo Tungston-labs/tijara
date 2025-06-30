@@ -5,12 +5,13 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
+    marginTop:20
   },
   ImageContainer: {
     justifyContent: "flex-start",
     alignSelf: "flex-start",
     height: height * 0.07,
-    width: width * 0.50,
+    width: width * 0.46,
   },
   rowContainer: {
     flexDirection: "row",
