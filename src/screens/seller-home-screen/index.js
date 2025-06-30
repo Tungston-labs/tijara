@@ -108,7 +108,9 @@ const SellerHomeScreen = ({ navigation }) => {
           {activeTab === "Buy" && (
             <View style={styles.firstContainer}>
               <TijaraHeader navigation={navigation} />
-              <SearchBar />
+              <View style={{ marginTop: 10 }}>
+                <SearchBar />
+              </View>
             </View>
           )}
 
