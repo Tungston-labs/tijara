@@ -37,7 +37,7 @@ const ForgetPasswordScreen = () => {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.backArrow}
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate("LoginScreenPassword")}
       >
         <Icon name="chevron-back-outline" size={24} color="#000" />
       </TouchableOpacity>

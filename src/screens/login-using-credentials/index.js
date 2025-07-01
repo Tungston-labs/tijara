@@ -13,8 +13,9 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import styles from "./styles";
 import { setToken } from "../../services/config";
 import { userLoginThunk } from "../../redux/slice/authSlice";
+import { saveAuthData } from "../../utils/mmkvStorage";
 
-const LoginScreen = () => {
+const LoginScreenWithPassword = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secure, setSecure] = useState(true);
@@ -22,15 +23,11 @@ const LoginScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
-
   const location = route?.params?.location;
-
   const { loading, error } = useSelector((state) => state.user);
-
   useEffect(() => {
     if (location) {
       console.log("Location received in login:", location);
-      // dispatch(setLocation(location)); // Uncomment if using redux
     }
   }, [location]);
 
@@ -47,6 +44,8 @@ const LoginScreen = () => {
 
       if (res?.accessToken) {
         setToken(res.accessToken);
+        saveAuthData(res.accessToken, res, res.role);
+
         const userRole = res.role;
 
         if (userRole === "buyer") {
@@ -56,14 +55,22 @@ const LoginScreen = () => {
         } else {
           alert("Unknown user role");
         }
+        setEmail("");
+        setPassword("");
       }
     } catch (err) {
       const errorStatus = err?.status || err?.response?.data?.status;
+      const errorMessage =
+        err?.message ||
+        err?.response?.data?.message ||
+        "Login failed. Please try again.";
+
       if (errorStatus === "pending") {
         navigation.navigate("RequestNotVerifiedScreen");
         return;
       }
-      alert(err?.message || "Login failed");
+
+      alert(typeof errorMessage === "string" ? errorMessage : "Login failed.");
     }
   };
 
@@ -148,4 +155,4 @@ const LoginScreen = () => {
   );
 };
 
-export default LoginScreen;
+export default LoginScreenWithPassword;

@@ -5,7 +5,8 @@ import {
   Login,
   sellerSignUp,
 } from "../../services/authServices";
-
+import { saveAuthData, clearAuthData } from "../../utils/mmkvStorage";
+import { setToken } from "../../services/config";
 export const SignUpThunk = createAsyncThunk(
   "user/signUp",
   async ({ formData, role }, { rejectWithValue }) => {
@@ -67,7 +68,15 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.role = null;
+      clearAuthData();
+      setToken(null);
       state.verificationStatus = null;
+    },
+    loginFromStorage: (state, action) => {
+      state.token = action.payload.token;
+      state.user = action.payload.user;
+      state.role = action.payload.role;
+      setToken(action.payload.token);
     },
   },
   extraReducers: (builder) => {
@@ -94,21 +103,23 @@ const authSlice = createSlice({
       //     console.warn("SignUpThunk fulfilled but user payload is missing.");
       //   }
       // })
-.addCase(SignUpThunk.fulfilled, (state, action) => {
-  state.loading = false;
-  const payload = action.payload;
+      .addCase(SignUpThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        const payload = action.payload;
 
-  if (payload && payload._id) {
-    state.user = {
-      _id: payload._id,
-      name: payload.name,
-      email: payload.email,
-      role: payload.role,
-    };
-    state.token = payload.accessToken || null;
-    state.role = payload.role || null;
-  }
-})
+        if (payload && payload._id) {
+          state.user = {
+            _id: payload._id,
+            name: payload.name,
+            email: payload.email,
+            role: payload.role,
+          };
+          state.token = payload.accessToken || null;
+          state.role = payload.role || null;
+          saveAuthData(action.payload.accessToken, state.user, state.role);
+          setToken(action.payload.accessToken);
+        }
+      })
       .addCase(checkStatusThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -142,13 +153,15 @@ const authSlice = createSlice({
         state.user = {
           name: action.payload.name,
           _id: action.payload._id,
-          profileImage:action.payload.image
+          profileImage: action.payload.image,
         };
         state.token = action.payload.accessToken;
         state.role = action.payload.role;
+        saveAuthData(action.payload.accessToken, state.user, state.role);
+        setToken(action.payload.accessToken);
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout,loginFromStorage } = authSlice.actions;
 export default authSlice.reducer;

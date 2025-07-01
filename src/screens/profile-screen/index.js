@@ -34,8 +34,7 @@ console.log("user",user)
   };
 const handleLogout=async()=>{
   
-    dispatch(logout)
-    navigation.navigate("LoginScreenPassword")
+    dispatch(logout())
 
 }
   return (

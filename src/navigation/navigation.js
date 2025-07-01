@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { SafeAreaView, Platform, StatusBar, View } from "react-native";
-import LoginScreen from "../screens/login-screen";
+import { SafeAreaView, ActivityIndicator } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import { loadAuthData } from "../utils/mmkvStorage";
+import { loginFromStorage } from "../redux/slice/authSlice";
+import { setToken } from "../services/config";
+// import LoginScreen from "../screens/login-screen";
 import RegistrationScreen from "../screens/registration-screen";
 import SplashScreen from "../screens/splash-screen";
 import CreateAccountScreen from "../screens/create-account-screen";
@@ -17,7 +21,7 @@ import SellerHomeScreen from "../screens/seller-home-screen";
 import BuyerPaymentInfoScreen from "../screens/buyer-payment-info-screen";
 import SubscriptionDetailsScreen from "../screens/subscription-details-screen";
 import ProfileScreen from "../screens/profile-screen";
-import SellerHomeScreenEmptybox from "../screens/seller-home-screen-emptybox";
+// import SellerHomeScreenEmptybox from "../screens/seller-home-screen-emptybox";
 import RequestReceiveScreen from "../screens/request-receive-screen";
 import AddItemScreen from "../screens/add-item-screen";
 import SellerProductDetailsEditScreen from "../screens/seller-product-details-edit-screen";
@@ -33,109 +37,142 @@ import ResetPasswordScreen from "../screens/reset-password-screen";
 const Stack = createNativeStackNavigator();
 
 export default function MainNavigation() {
+  const dispatch = useDispatch();
+  const { token, role } = useSelector((state) => state.user);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const bootstrapAsync = async () => {
+      const { token, user, role } = loadAuthData();
+      if (token && user) {
+        dispatch(loginFromStorage({ token, user, role }));
+        setToken(token);
+      }
+      setLoading(false);
+    };
+    bootstrapAsync();
+  }, [dispatch]);
+
+  if (loading) {
+    return (
+      <SafeAreaView
+        style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      >
+        <ActivityIndicator size="large" color="#0000ff" />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* {Platform.OS === "android" && (
-        <View
-          style={{
-            height: StatusBar.currentHeight,
-            backgroundColor: "#fff",
-          }}
-        />
-      )} */}
       <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{ headerShown: false }}
-          initialRouteName="SplashScreen"
-        >
-          <Stack.Screen name="LoginScreen" component={LoginScreen} />
-          <Stack.Screen
-            name="RegistrationScreen"
-            component={RegistrationScreen}
-          />
-          <Stack.Screen
-            name="UserListItemScreen"
-            component={UserListItemScreen}
-          />
-          <Stack.Screen name="SplashScreen" component={SplashScreen} />
-          <Stack.Screen
-            name="CreateAccountScreen"
-            component={CreateAccountScreen}
-          />
-          <Stack.Screen
-            name="RoleSelectionScreen"
-            component={RoleSelectionScreen}
-          />
-          <Stack.Screen
-            name="ForgetPasswordScreen"
-            component={ForgetPasswordScreen}
-          />
-           <Stack.Screen
-            name="OTPVerificationScreen"
-            component={OTPVerificationScreen}
-          />
-           <Stack.Screen
-            name="ResetPasswordScreen"
-            component={ResetPasswordScreen}
-          />
-          <Stack.Screen
-            name="RequestSentScreen"
-            component={RequestSentScreen}
-          />
-          <Stack.Screen
-            name="RequestSuccessScreen"
-            component={RequestSuccessScreen}
-          />
-          <Stack.Screen
-            name="RequestNotVerifiedScreen"
-            component={RequestNotVerifiedScreen}
-          />
-          <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
-          <Stack.Screen name="BuyerHomeScreen" component={BuyerHomeScreen} />
-          <Stack.Screen
-            name="ItemDetailsScreen"
-            component={ItemDetailsScreen}
-          />
-
-          <Stack.Screen
-            name="LoginScreenPassword"
-            component={LoginScreenWithPassword}
-          />
-          <Stack.Screen
-            name="SellerRegistrationSecond"
-            component={SellerRegistrationSecond}
-          />
-          <Stack.Screen name="SellerHomeScreen" component={SellerHomeScreen} />
-          <Stack.Screen
-            name="BuyerPaymentInfoScreen"
-            component={BuyerPaymentInfoScreen}
-          />
-          <Stack.Screen
-            name="SubscriptionDetailsScreen"
-            component={SubscriptionDetailsScreen}
-          />
-          <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-          <Stack.Screen
-            name="SellerHomeScreenEmptybox"
-            component={SellerHomeScreenEmptybox}
-          />
-          <Stack.Screen
-            name="RequestReceiveScreen"
-            component={RequestReceiveScreen}
-          />
-          <Stack.Screen
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {token ? (
+            // 🔑 Logged in Stack
+            role === "buyer" ? (
+              <>
+                <Stack.Screen
+                  name="BuyerHomeScreen"
+                  component={BuyerHomeScreen}
+                />
+                <Stack.Screen
+                  name="ItemDetailsScreen"
+                  component={ItemDetailsScreen}
+                />
+                <Stack.Screen
+                  name="BuyerPaymentInfoScreen"
+                  component={BuyerPaymentInfoScreen}
+                />
+                <Stack.Screen
+                  name="SubscriptionDetailsScreen"
+                  component={SubscriptionDetailsScreen}
+                />
+                <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+                {/* Add other buyer screens */}
+              </>
+            ) : (
+              <>
+                <Stack.Screen
+                  name="SellerHomeScreen"
+                  component={SellerHomeScreen}
+                />
+                <Stack.Screen name="AddItemScreen" component={AddItemScreen} />
+                <Stack.Screen
+                  name="RequestReceiveScreen"
+                  component={RequestReceiveScreen}
+                />
+                <Stack.Screen
+                  name="SellerProductDetailsEditScreen"
+                  component={SellerProductDetailsEditScreen}
+                />
+                <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+                <Stack.Screen
+                  name="UserListItemScreen"
+                  component={UserListItemScreen}
+                />
+                 <Stack.Screen
             name="SellerAddProductScreen"
             component={SellerAddProductScreen}
           />
-          <Stack.Screen name="AddItemScreen" component={AddItemScreen} />
-          <Stack.Screen
-            name="SellerProductDetailsEditScreen"
-            component={SellerProductDetailsEditScreen}
-          />
-          <Stack.Screen
+           <Stack.Screen
             name="SellerEditProductScreen"
             component={SellerEditProductScreen}
           />
+         
+              </>
+            )
+          ) : (
+            // 🔒 Auth Stack
+            <>
+              <Stack.Screen name="SplashScreen" component={SplashScreen} />
+              <Stack.Screen name="LoginScreenPassword" component={LoginScreenWithPassword} />
+              {/* <Stack.Screen
+                name="LoginScreenPassword"
+                component={LoginScreen}
+              /> */}
+              <Stack.Screen
+                name="RegistrationScreen"
+                component={RegistrationScreen}
+              />
+              <Stack.Screen
+                name="CreateAccountScreen"
+                component={CreateAccountScreen}
+              />
+              <Stack.Screen
+                name="RoleSelectionScreen"
+                component={RoleSelectionScreen}
+              />
+              <Stack.Screen
+                name="SellerRegistrationSecond"
+                component={SellerRegistrationSecond}
+              />
+              <Stack.Screen
+                name="RequestSentScreen"
+                component={RequestSentScreen}
+              />
+              <Stack.Screen
+                name="RequestSuccessScreen"
+                component={RequestSuccessScreen}
+              />
+              <Stack.Screen
+                name="RequestNotVerifiedScreen"
+                component={RequestNotVerifiedScreen}
+              />
+              <Stack.Screen name="SuccessScreen" component={SuccessScreen} />
+              <Stack.Screen
+                name="ForgetPasswordScreen"
+                component={ForgetPasswordScreen}
+              />
+              <Stack.Screen
+                name="OTPVerificationScreen"
+                component={OTPVerificationScreen}
+              />
+              <Stack.Screen
+                name="ResetPasswordScreen"
+                component={ResetPasswordScreen}
+              />
+            </>
+          )}
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>
