@@ -118,7 +118,10 @@ export default function MainNavigation() {
             name="SellerEditProductScreen"
             component={SellerEditProductScreen}
           />
-         
+             <Stack.Screen
+                  name="ItemDetailsScreen"
+                  component={ItemDetailsScreen}
+                />
               </>
             )
           ) : (
