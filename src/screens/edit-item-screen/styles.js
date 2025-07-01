@@ -1,4 +1,5 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
+const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
@@ -190,6 +191,68 @@ suggestionText: {
   fontSize: 15,
   color: "#333",
 },
+
+ modalBackground: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    margin: 20,
+    backgroundColor: "#fff",
+    padding: 25,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+ modalTitleText: {
+  fontSize: 20,
+  marginBottom: 15,
+  fontWeight: "600",
+  textAlign: "center",
+  width: "100%",           // Let it fill container
+},
+
+modalText: {
+  fontSize: 14,
+  marginBottom: 15,
+  textAlign: "center",
+  width: "100%",           // Avoid fixed marginLeft
+  fontWeight: "300",
+  lineHeight: 20,          // Optional: improves readability
+},
+  buttonRowContainer: {
+    width: "90%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  cancelButtonStyle: {
+    borderColor: "#000000",
+    backgroundColor: "#EEEEEE",
+    borderWidth: 1,
+    flexDirection: "row",
+    padding: 20,
+  },
+  logoutButtonStyle: {
+    borderColor: "#FFCCCC",
+    backgroundColor: "#FFF5F5",
+    borderWidth: 1,
+    flexDirection: "row",
+    padding: 20,
+    marginLeft: 10,
+  },
+  cancelCustomLabelStyles: {
+    fontSize: 16,
+    fontWeight: "400",
+    color: "black",
+    marginRight: 8,
+  },
+  customLabelStyles: {
+    fontSize: 16,
+    fontWeight: "400",
+    color: "red",
+    marginRight: 8,
+  },
 
 });
 

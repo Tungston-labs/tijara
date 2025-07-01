@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   addProduct,
+  deleteProduct,
   getAllProducts,
   getProductById,
 } from "../../services/product-services";
@@ -37,6 +38,18 @@ export const getProductByIdThunk = createAsyncThunk(
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const deleteProductThunk = createAsyncThunk(
+  "product/deleteProduct",
+  async ({ productId, token }, { rejectWithValue }) => {
+    try {
+      const res = await deleteProduct({ productId, token });
+      return { productId, message: res.message };
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
@@ -119,9 +132,26 @@ const productSlice = createSlice({
       .addCase(getProductByIdThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to fetch product";
+      })
+      .addCase(deleteProductThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteProductThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.successMessage = action.payload.message;
+
+        // Remove deleted product from list
+        state.products = state.products.filter(
+          (product) => product._id !== action.payload.productId
+        );
+      })
+      .addCase(deleteProductThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to delete product";
       });
   },
 });
 
-export const { clearProductMessages,resetProducts } = productSlice.actions;
+export const { clearProductMessages, resetProducts } = productSlice.actions;
 export default productSlice.reducer;

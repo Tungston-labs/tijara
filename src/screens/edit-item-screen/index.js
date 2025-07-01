@@ -14,6 +14,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import styles, { pickerSelectStyles } from "./styles";
 import Header from "../../componets/Header";
@@ -26,6 +27,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateSellerProductThunk } from "../../redux/slice/sellerProductSlice";
 import API from "../../services/config";
 import debounce from "lodash/debounce";
+import ModalButton from "../../componets/ModalButton";
+import {
+  deleteProductThunk,
+  fetchProductsThunk,
+} from "../../redux/slice/productSlice";
 
 const SellerEditProductScreen = ({ navigation, route }) => {
   const { product } = route.params;
@@ -56,6 +62,11 @@ const SellerEditProductScreen = ({ navigation, route }) => {
   const [loadingSubCategory, setLoadingSubCategory] = useState(false);
   const [showSubCategorySuggestions, setShowSubCategorySuggestions] =
     useState(false);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const closeModal = () => {
+    setModalVisible(false);
+  };
 
   const fetchSuggestions = debounce(async (query) => {
     if (!query.trim()) return;
@@ -116,62 +127,68 @@ const SellerEditProductScreen = ({ navigation, route }) => {
     });
   };
 
- const handleUpdateProduct = async () => {
-  if (
-    !category ||
-    !itemName.trim() ||
-    !subCategoryText.trim() ||
-    !country ||
-    !priceAED ||
-    !expiryDate
-  ) {
-    return Alert.alert("Error", "Please fill all fields correctly.");
-  }
-  if (images.length === 0) {
-    return Alert.alert("Error", "Please upload at least one image.");
-  }
-
-
-  const formData = new FormData();
-
-  const existingImageUrls = [];
-  images.forEach((img, index) => {
-    if (img.uri.startsWith("http")) {
-      existingImageUrls.push(img.uri);
-    } else {
-      formData.append("images", {
-        uri: img.uri,
-        name: img.fileName || `image_${index}.jpg`,
-        type: img.type || "image/jpeg",
-      });
+  const handleUpdateProduct = async () => {
+    if (
+      !category ||
+      !itemName.trim() ||
+      !subCategoryText.trim() ||
+      !country ||
+      !priceAED ||
+      !expiryDate
+    ) {
+      return Alert.alert("Error", "Please fill all fields correctly.");
     }
-  });
+    if (images.length === 0) {
+      return Alert.alert("Error", "Please upload at least one image.");
+    }
 
-  formData.append("existingImages", JSON.stringify(existingImageUrls));
-  formData.append("itemCategory", category);
-  formData.append("itemName", itemName);
-  formData.append("itemSubCategory", subCategoryText);
-  formData.append("country", country);
-  formData.append("description", description);
-  formData.append("priceAED", priceAED);
-  formData.append("expiryDate", expiryDate.toISOString());
+    const formData = new FormData();
 
-  try {
-    await dispatch(
-      updateSellerProductThunk({ productId: product._id, formData, token })
-    ).unwrap();
-
-    Alert.alert("Success", "Product updated successfully");
-    navigation.navigate("SellerHomeScreen", {
-      productId: product._id,
-      shouldRefresh: true,
+    const existingImageUrls = [];
+    images.forEach((img, index) => {
+      if (img.uri.startsWith("http")) {
+        existingImageUrls.push(img.uri);
+      } else {
+        formData.append("images", {
+          uri: img.uri,
+          name: img.fileName || `image_${index}.jpg`,
+          type: img.type || "image/jpeg",
+        });
+      }
     });
-  } catch (e) {
-    console.error(e);
-    Alert.alert("Error", "Failed to update product");
-  }
-};
 
+    formData.append("existingImages", JSON.stringify(existingImageUrls));
+    formData.append("itemCategory", category);
+    formData.append("itemName", itemName);
+    formData.append("itemSubCategory", subCategoryText);
+    formData.append("country", country);
+    formData.append("description", description);
+    formData.append("priceAED", priceAED);
+    formData.append("expiryDate", expiryDate.toISOString());
+
+    try {
+      await dispatch(
+        updateSellerProductThunk({ productId: product._id, formData, token })
+      ).unwrap();
+
+      Alert.alert("Success", "Product updated successfully");
+      navigation.navigate("SellerHomeScreen", {
+        productId: product._id,
+        shouldRefresh: true,
+      });
+    } catch (e) {
+      console.error(e);
+      Alert.alert("Error", "Failed to update product");
+    }
+  };
+
+  const handleDelete = async () => {
+    dispatch(deleteProductThunk({ productId: product._id, token }));
+    closeModal();
+    Alert.alert("Success", "Product deleted successfully");
+    dispatch(fetchProductsThunk({ token }));
+    navigation.navigate("SellerHomeScreen");
+  };
 
   return (
     <TouchableWithoutFeedback
@@ -192,7 +209,15 @@ const SellerEditProductScreen = ({ navigation, route }) => {
             keyboardShouldPersistTaps="handled"
           >
             <BackgroundWrapper>
-              <Header Title="Edit Item" />
+              <Header
+                Title="Edit Item"
+                icon={true}
+                handleIconPress={() => navigation.goBack()}
+                deleteIcon={true}
+                handleDeletePress={() => {
+                  setModalVisible(true);
+                }}
+              />{" "}
               <Text style={styles.minImageText}>*Min 4 Image</Text>
               <TouchableOpacity
                 style={styles.uploadBox}
@@ -526,6 +551,37 @@ const SellerEditProductScreen = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         </View>
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={closeModal}
+        >
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitleText}>Delete product</Text>
+              <Text style={styles.modalText}>
+                Are you sure you want to delete this product? This action cannot
+                be undone and the product will be removed permanently from your
+                catalog.
+              </Text>
+              <View style={styles.buttonRowContainer}>
+                <ModalButton
+                  label={"Cancel"}
+                  handleButtonPress={closeModal}
+                  customStyle={styles.cancelButtonStyle}
+                  customLabelStyle={styles.cancelCustomLabelStyles}
+                />
+                <ModalButton
+                  label={"Delete"}
+                  customStyle={styles.logoutButtonStyle}
+                  customLabelStyle={styles.customLabelStyles}
+                  handleButtonPress={handleDelete}
+                />
+              </View>
+            </View>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
