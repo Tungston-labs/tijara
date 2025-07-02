@@ -67,4 +67,13 @@ export const getProductById = async ({ token, productId }) => {
   }
 };
 
+export const deleteProduct = async ({ productId, token }) => {
+  const res = await API.delete(`/product/delete-product/${productId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return res.data;
+};
+
 // Add more product-related functions as needed

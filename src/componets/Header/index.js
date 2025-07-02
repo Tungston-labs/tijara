@@ -12,6 +12,8 @@ const Header = ({
   Subtitle,
   handleEditIconPress,
   customStyle,
+  deleteIcon,
+  handleDeletePress,
 }) => {
   return (
     <View style={[styles.container, customStyle]}>
@@ -35,6 +37,27 @@ const Header = ({
               <View style={styles.rowContainer}>
                 <Icon name="pencil-sharp" size={18} color="#000000" />
                 <Text style={styles.editText}>Edit</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          {deleteIcon && (
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+
+              }}
+              onPress={handleDeletePress}
+            >
+              <View
+                style={{
+                  backgroundColor: "rgba(255, 0, 0, 0.1)", // light red tint
+                  borderRadius: 999,
+                  padding: 5,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Icon name="trash-outline" size={20} color="red" />
               </View>
             </TouchableOpacity>
           )}
