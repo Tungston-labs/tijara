@@ -106,7 +106,7 @@ const SellerProductDetailsEditScreen = () => {
                 {sellerProduct?.pricePerKg?.AED} AED / kg
               </Text>
               <Text style={styles.qty}>
-                Available Qty:{" "} 
+                Available Qty:
                 <Text style={{ fontWeight: "700",color:"#000" }}>
                   {sellerProduct?.availableKg}kg
                 </Text>
