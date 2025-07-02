@@ -70,6 +70,8 @@ const authSlice = createSlice({
       state.role = null;
       clearAuthData();
       setToken(null);
+    //  mmkvStorage.clearAll();
+
       state.verificationStatus = null;
     },
     loginFromStorage: (state, action) => {

@@ -44,6 +44,8 @@ export default function MainNavigation() {
   useEffect(() => {
     const bootstrapAsync = async () => {
       const { token, user, role } = loadAuthData();
+        console.log("token from mmkv",{token,user,role})
+
       if (token && user) {
         dispatch(loginFromStorage({ token, user, role }));
         setToken(token);
