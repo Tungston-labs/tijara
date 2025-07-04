@@ -10,7 +10,7 @@ import {
   Platform,
   PermissionsAndroid,
 } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import styles from "./styles";
 import Button from "../../componets/Button";
@@ -27,8 +27,8 @@ const RegistrationScreen = () => {
   const role = route.params?.role || "buyer";
   const location = route.params?.location || null;
   const prefillForm = route.params?.prefillForm || null;
-const prefillImage = route.params?.profileImage || null;
-const prefillCountryCode = route.params?.countryCode || "+971";
+  const prefillImage = route.params?.profileImage || null;
+  const prefillCountryCode = route.params?.countryCode || "+971";
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [passwordSecure, setPasswordSecure] = useState(true);
@@ -41,31 +41,35 @@ const prefillCountryCode = route.params?.countryCode || "+971";
     password: "",
     confirmPassword: "",
   });
-
+  
+  const { user, token,   } = useSelector(
+    (state) => state.user
+  );
+  console.log("dkadjkadkddjkkdjkda",token)
   useEffect(() => {
-  if (prefillForm) {
-    let rawPhone = prefillForm.phone || "";
+    if (prefillForm) {
+      let rawPhone = prefillForm.phone || "";
 
-    // Remove the country code if it's at the start
-    if (rawPhone.startsWith(prefillCountryCode)) {
-      rawPhone = rawPhone.slice(prefillCountryCode.length);
+      // Remove the country code if it's at the start
+      if (rawPhone.startsWith(prefillCountryCode)) {
+        rawPhone = rawPhone.slice(prefillCountryCode.length);
+      }
+      setForm({
+        name: prefillForm.name || "",
+        phone: rawPhone,
+        email: prefillForm.email || "",
+        password: prefillForm.password || "",
+        confirmPassword: prefillForm.password || "",
+      });
     }
-     setForm({
-      name: prefillForm.name || "",
-      phone: rawPhone,
-      email: prefillForm.email || "",
-      password: prefillForm.password || "",
-      confirmPassword: prefillForm.password || "",
-    });
-  }
 
-  if (prefillImage) {
-    setProfileImage(prefillImage);
-  }
-   if (prefillCountryCode) {
-    setCountryCode(prefillCountryCode);
-  }
-}, [prefillForm, prefillImage,prefillCountryCode]);
+    if (prefillImage) {
+      setProfileImage(prefillImage);
+    }
+    if (prefillCountryCode) {
+      setCountryCode(prefillCountryCode);
+    }
+  }, [prefillForm, prefillImage, prefillCountryCode]);
 
   const [loading, setLoading] = useState(false);
 
@@ -157,7 +161,7 @@ const prefillCountryCode = route.params?.countryCode || "+971";
   const isValidPhone = (phone) => /^\d{7,15}$/.test(phone);
 
   const handleButtonClick = async () => {
-     const fullPhoneNumber = `${countryCode}${form.phone}`;
+    const fullPhoneNumber = `${countryCode}${form.phone}`;
     if (
       !form.name ||
       !form.phone ||
@@ -217,7 +221,7 @@ const prefillCountryCode = route.params?.countryCode || "+971";
       navigation.navigate("SellerRegistrationSecond", {
         form: basicFormData,
         profileImage,
-        countryCode
+        countryCode,
       });
     } else {
       // Buyer: continue submission directly
@@ -236,28 +240,26 @@ const prefillCountryCode = route.params?.countryCode || "+971";
         name: profileImage.name || "profile.jpg",
       });
 
-     try {
-  setLoading(true);
-  const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
+      try {
+        setLoading(true);
+        const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
 
-   if (result?.status !== "approved") {
-  dispatch(setTemporaryUser(result));  // Set temp user for status check
-  navigation.navigate("RequestSentScreen");
-  return;
-}
+        if (result?.status !== "approved") {
+          dispatch(setTemporaryUser(result)); // Set temp user for status check
+          navigation.navigate("RequestSentScreen");
+          return;
+        }
 
-
-  // If approved (unlikely during signup), login normally
-  // dispatch(loginFromStorage({ token: result.accessToken, user: result.user, role: result.role }));
-  // navigation.navigate("HomeScreenBasedOnRole");
-
-} catch (err) {
-  Alert.alert("Signup Failed", err?.message || "Something went wrong");
-} finally {
-  setLoading(false);
-}
+        // If approved (unlikely during signup), login normally
+        // dispatch(loginFromStorage({ token: result.accessToken, user: result.user, role: result.role }));
+        // navigation.navigate("HomeScreenBasedOnRole");
+      } catch (err) {
+        Alert.alert("Signup Failed", err?.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    }
   };
-}
 
   return (
     <ScrollView>
@@ -390,6 +392,5 @@ const prefillCountryCode = route.params?.countryCode || "+971";
       </View>
     </ScrollView>
   );
-
-}
+};
 export default RegistrationScreen;

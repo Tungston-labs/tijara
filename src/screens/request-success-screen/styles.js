@@ -30,11 +30,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#000000",
   },
+
   subtitle: {
     fontSize: 18,
     textAlign: "center",
     color: "#6F6F6F",
   },
+buttonContainer: {
+  paddingBottom: 30, 
+  alignItems: "center",
+  width: "100%",
+},
   buttonContainer: {
     paddingBottom: 20,
     width: "100%",

@@ -23,7 +23,9 @@ export const buyerSignUp = async (formData) => {
         "Content-Type": "multipart/form-data",
       },
     });
+    console.log("buyer ire  nsssnsn",response)
     return response.data;
+    
   } catch (err) {
     console.error(
       "Error response:",

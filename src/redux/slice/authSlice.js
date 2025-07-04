@@ -26,7 +26,6 @@ export const SignUpThunk = createAsyncThunk(
   }
 );
 
-
 export const checkStatusThunk = createAsyncThunk(
   "user/checkStatus",
   async (userId, { rejectWithValue }) => {
@@ -93,47 +92,30 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      // .addCase(SignUpThunk.fulfilled, (state, action) => {
-      //   state.loading = false;
 
-      //   const userPayload = action.payload.buyer || action.payload.seller;
+      .addCase(SignUpThunk.fulfilled, (state, action) => {
+        state.loading = false;
 
-      //   if (userPayload) {
-      //     state.user = {
-      //       _id: userPayload._id,
-      //       name: userPayload.name,
-      //       email: userPayload.email,
-      //       role: userPayload.role,
-      //     };
-      //     state.token = action.payload.accessToken || null;
-      //     state.role = userPayload.role || null;
-      //   } else {
-      //     console.warn("SignUpThunk fulfilled but user payload is missing.");
-      //   }
-      // })
-    .addCase(SignUpThunk.fulfilled, (state, action) => {
-  state.loading = false;
+        const payload = action.payload;
 
-  const payload = action.payload;
+        const userData = payload.user || payload;
 
-  const userData = payload.user || payload;
+        if (userData && userData._id) {
+          state.user = {
+            _id: userData._id,
+            name: userData.name,
+            email: userData.email,
+            role: userData.role,
+          };
+          state.token = payload.accessToken || null;
+          state.role = userData.role || null;
 
-  if (userData && userData._id) {
-    state.user = {
-      _id: userData._id,
-      name: userData.name,
-      email: userData.email,
-      role: userData.role,
-    };
-    state.token = payload.accessToken || null;
-    state.role = userData.role || null;
-
-    if (payload.accessToken) {
-      saveAuthData(payload.accessToken, state.user, state.role);
-      setToken(payload.accessToken);
-    }
-  }
-})
+          if (payload.accessToken) {
+            saveAuthData(payload.accessToken, state.user, state.role);
+            setToken(payload.accessToken);
+          }
+        }
+      })
 
       .addCase(checkStatusThunk.pending, (state) => {
         state.loading = true;
@@ -172,11 +154,11 @@ const authSlice = createSlice({
         };
         state.token = action.payload.accessToken;
         state.role = action.payload.role;
-        saveAuthData(action.payload.accessToken, state.user, state.role, );
+        saveAuthData(action.payload.accessToken, state.user, state.role);
         setToken(action.payload.accessToken);
       });
   },
 });
 
-export const { logout, loginFromStorage,setTemporaryUser } = authSlice.actions;
+export const { logout, loginFromStorage, setTemporaryUser } = authSlice.actions;
 export default authSlice.reducer;

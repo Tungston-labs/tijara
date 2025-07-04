@@ -10,42 +10,38 @@ import { checkStatusThunk } from "../../redux/slice/authSlice";
 const RequestNotVerifiedScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { user, verificationStatus, loading } = useSelector(
+
+  const { user, token, verificationStatus, loading } = useSelector(
     (state) => state.user
   );
 
-const handleButtonClick = async () => {
-  console.log("User object from Redux:", user);
+  const handleButtonClick = async () => {
+    console.log("User before navigating:", user);
+    console.log("Token before navigating:", token);
 
-  try {
-    if (user?._id) {
-      const res = await dispatch(checkStatusThunk(user._id)).unwrap();
+    try {
+      if (user?._id) {
+        const res = await dispatch(checkStatusThunk(user._id)).unwrap();
 
-      if (res.status === "approved") {
-        if (user.role === "buyer") {
-          navigation.navigate("BuyerHomeScreen");
-        } else if (user.role === "seller") {
-          navigation.navigate("SellerHomeScreen");
+        if (res.status === "approved") {
+          navigation.replace("RequestSuccessScreen", {
+            user,
+            token,
+          });
         } else {
-          Alert.alert("Error", "Unrecognized user role.");
+          Alert.alert(
+            "Not Verified",
+            "Your account is still under review. Please try again later."
+          );
         }
       } else {
-        Alert.alert(
-          "Not Verified",
-          "Your account is still under review. Please try again later."
-        );
+        Alert.alert("Error", "Unable to check status. Please try again.");
       }
-    } else {
-      console.log("No user ID available");
-      Alert.alert("Error", "Unable to check status. Please try again later.");
+    } catch (error) {
+      console.error("Error checking status:", error);
+      Alert.alert("Error", "Failed to check verification status.");
     }
-  } catch (error) {
-    console.error("Error checking status:", error);
-    Alert.alert("Error", "Error checking status. Please try again.");
-  }
-};
-
-
+  };
 
   return (
     <View style={styles.container}>
@@ -74,5 +70,4 @@ const handleButtonClick = async () => {
     </View>
   );
 };
-
 export default RequestNotVerifiedScreen;
