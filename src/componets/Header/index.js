@@ -3,6 +3,7 @@ import React from "react";
 import styles from "./styles";
 import Icon from "react-native-vector-icons/Ionicons";
 import PropTypes from "prop-types";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Header = ({
   handleIconPress,
@@ -15,12 +16,20 @@ const Header = ({
   deleteIcon,
   handleDeletePress,
 }) => {
+  const insets = useSafeAreaInsets(); 
+
   return (
-    <View style={[styles.container, customStyle]}>
+    <View
+      style={[
+        styles.container,
+        { paddingTop: insets.top }, 
+        customStyle,
+      ]}
+    >
       <View style={styles.rowContainer}>
         <View style={styles.iconStyle}>
           {icon && (
-            <TouchableOpacity onPress={() => handleIconPress()}>
+            <TouchableOpacity onPress={handleIconPress}>
               <Icon name="chevron-back" size={28} color="#000000" />
             </TouchableOpacity>
           )}
@@ -33,7 +42,7 @@ const Header = ({
         </View>
         <View style={styles.editIconContainerStyle}>
           {editIcon && (
-            <TouchableOpacity onPress={() => handleEditIconPress()}>
+            <TouchableOpacity onPress={handleEditIconPress}>
               <View style={styles.rowContainer}>
                 <Icon name="pencil-sharp" size={18} color="#000000" />
                 <Text style={styles.editText}>Edit</Text>
@@ -42,15 +51,12 @@ const Header = ({
           )}
           {deleteIcon && (
             <TouchableOpacity
-              style={{
-                alignItems: "center",
-
-              }}
+              style={{ alignItems: "center" }}
               onPress={handleDeletePress}
             >
               <View
                 style={{
-                  backgroundColor: "rgba(255, 0, 0, 0.1)", // light red tint
+                  backgroundColor: "rgba(255, 0, 0, 0.1)",
                   borderRadius: 999,
                   padding: 5,
                   alignItems: "center",
@@ -70,6 +76,6 @@ const Header = ({
 export default Header;
 
 Header.propTypes = {
-  label: PropTypes.string.isRequired,
+  Title: PropTypes.string.isRequired,
   handleIconPress: PropTypes.func,
 };

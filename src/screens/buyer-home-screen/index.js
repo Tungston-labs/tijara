@@ -32,7 +32,7 @@ const TabScreens = ({ onTabChange }) => {
           focus: () => onTabChange("Home"),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Request"
         component={RequestStatusScreen}
         options={{
@@ -43,7 +43,7 @@ const TabScreens = ({ onTabChange }) => {
         listeners={{
           focus: () => onTabChange("Request"),
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };
