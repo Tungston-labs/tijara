@@ -145,7 +145,7 @@ const LoginScreenWithPassword = () => {
         <Text style={styles.footerText}>Don’t have an account?</Text>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("RoleSelectionScreen", { location })
+            navigation.navigate("CreateAccountScreen", { location })
           }
         >
           <Text style={styles.signUpText}> Sign Up Now</Text>

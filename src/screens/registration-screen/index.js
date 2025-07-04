@@ -19,7 +19,7 @@ import Header from "../../componets/Header";
 import TextInputField from "../../componets/TextInputField";
 import { launchImageLibrary } from "react-native-image-picker";
 import Icon from "react-native-vector-icons/Feather";
-import { SignUpThunk } from "../../redux/slice/authSlice";
+import { setTemporaryUser, SignUpThunk } from "../../redux/slice/authSlice";
 import EyeIcon from "react-native-vector-icons/Ionicons";
 
 const RegistrationScreen = () => {
@@ -236,17 +236,28 @@ const prefillCountryCode = route.params?.countryCode || "+971";
         name: profileImage.name || "profile.jpg",
       });
 
-      try {
-        setLoading(true);
-        const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
-        navigation.navigate("RequestSentScreen");
-      } catch (err) {
-        Alert.alert("Signup Failed", err?.message || "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
-    }
+     try {
+  setLoading(true);
+  const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
+
+   if (result?.status !== "approved") {
+  dispatch(setTemporaryUser(result));  // Set temp user for status check
+  navigation.navigate("RequestSentScreen");
+  return;
+}
+
+
+  // If approved (unlikely during signup), login normally
+  // dispatch(loginFromStorage({ token: result.accessToken, user: result.user, role: result.role }));
+  // navigation.navigate("HomeScreenBasedOnRole");
+
+} catch (err) {
+  Alert.alert("Signup Failed", err?.message || "Something went wrong");
+} finally {
+  setLoading(false);
+}
   };
+}
 
   return (
     <ScrollView>
@@ -379,5 +390,6 @@ const prefillCountryCode = route.params?.countryCode || "+971";
       </View>
     </ScrollView>
   );
-};
+
+}
 export default RegistrationScreen;

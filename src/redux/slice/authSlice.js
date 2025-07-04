@@ -7,6 +7,7 @@ import {
 } from "../../services/authServices";
 import { saveAuthData, clearAuthData } from "../../utils/mmkvStorage";
 import { setToken } from "../../services/config";
+
 export const SignUpThunk = createAsyncThunk(
   "user/signUp",
   async ({ formData, role }, { rejectWithValue }) => {
@@ -17,12 +18,14 @@ export const SignUpThunk = createAsyncThunk(
       } else {
         res = await buyerSignUp(formData);
       }
-      return res;
+
+      return res.user ? res.user : res;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
+
 
 export const checkStatusThunk = createAsyncThunk(
   "user/checkStatus",
@@ -70,7 +73,7 @@ const authSlice = createSlice({
       state.role = null;
       clearAuthData();
       setToken(null);
-    //  mmkvStorage.clearAll();
+      //  mmkvStorage.clearAll();
 
       state.verificationStatus = null;
     },
@@ -79,6 +82,9 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.role = action.payload.role;
       setToken(action.payload.token);
+    },
+    setTemporaryUser: (state, action) => {
+      state.user = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -105,23 +111,30 @@ const authSlice = createSlice({
       //     console.warn("SignUpThunk fulfilled but user payload is missing.");
       //   }
       // })
-      .addCase(SignUpThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        const payload = action.payload;
+    .addCase(SignUpThunk.fulfilled, (state, action) => {
+  state.loading = false;
 
-        if (payload && payload._id) {
-          state.user = {
-            _id: payload._id,
-            name: payload.name,
-            email: payload.email,
-            role: payload.role,
-          };
-          state.token = payload.accessToken || null;
-          state.role = payload.role || null;
-          saveAuthData(action.payload.accessToken, state.user, state.role);
-          setToken(action.payload.accessToken);
-        }
-      })
+  const payload = action.payload;
+
+  const userData = payload.user || payload;
+
+  if (userData && userData._id) {
+    state.user = {
+      _id: userData._id,
+      name: userData.name,
+      email: userData.email,
+      role: userData.role,
+    };
+    state.token = payload.accessToken || null;
+    state.role = userData.role || null;
+
+    if (payload.accessToken) {
+      saveAuthData(payload.accessToken, state.user, state.role);
+      setToken(payload.accessToken);
+    }
+  }
+})
+
       .addCase(checkStatusThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -155,15 +168,15 @@ const authSlice = createSlice({
         state.user = {
           name: action.payload.name,
           _id: action.payload._id,
-          profileImage: action.payload.image,
+          image: action.payload.image,
         };
         state.token = action.payload.accessToken;
         state.role = action.payload.role;
-        saveAuthData(action.payload.accessToken, state.user, state.role);
+        saveAuthData(action.payload.accessToken, state.user, state.role, );
         setToken(action.payload.accessToken);
       });
   },
 });
 
-export const { logout,loginFromStorage } = authSlice.actions;
+export const { logout, loginFromStorage,setTemporaryUser } = authSlice.actions;
 export default authSlice.reducer;

@@ -19,7 +19,7 @@ const handleButtonClick = async () => {
 
     if (user?._id) {
       const response = await dispatch(checkStatusThunk(user._id)).unwrap();
-
+    
       if (response.status === "approved") {
         navigation.replace("RequestSuccessScreen", { user: response });
       } else if (

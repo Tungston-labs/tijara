@@ -28,6 +28,7 @@ const App = () => {
     const { token, user, role } = loadAuthData();
     if (token && user) {
       dispatch(loginFromStorage({ token, user, role }));
+      
       setToken(token);
     }
   }, []);

@@ -44,7 +44,7 @@ export default function MainNavigation() {
   useEffect(() => {
     const bootstrapAsync = async () => {
       const { token, user, role } = loadAuthData();
-        console.log("token from mmkv",{token,user,role})
+      console.log("token from mmkv", { token, user, role });
 
       if (token && user) {
         dispatch(loginFromStorage({ token, user, role }));
@@ -54,6 +54,9 @@ export default function MainNavigation() {
     };
     bootstrapAsync();
   }, [dispatch]);
+  const getInitialRoute = () => {
+    return "SplashScreen";
+  };
 
   if (loading) {
     return (
@@ -68,7 +71,11 @@ export default function MainNavigation() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName="SplashScreen" 
+        >
+          <Stack.Screen name="SplashScreen" component={SplashScreen} />
           {token ? (
             // 🔑 Logged in Stack
             role === "buyer" ? (
@@ -112,15 +119,15 @@ export default function MainNavigation() {
                   name="UserListItemScreen"
                   component={UserListItemScreen}
                 />
-                 <Stack.Screen
-            name="SellerAddProductScreen"
-            component={SellerAddProductScreen}
-          />
-           <Stack.Screen
-            name="SellerEditProductScreen"
-            component={SellerEditProductScreen}
-          />
-             <Stack.Screen
+                <Stack.Screen
+                  name="SellerAddProductScreen"
+                  component={SellerAddProductScreen}
+                />
+                <Stack.Screen
+                  name="SellerEditProductScreen"
+                  component={SellerEditProductScreen}
+                />
+                <Stack.Screen
                   name="ItemDetailsScreen"
                   component={ItemDetailsScreen}
                 />
@@ -129,8 +136,11 @@ export default function MainNavigation() {
           ) : (
             // 🔒 Auth Stack
             <>
-              <Stack.Screen name="SplashScreen" component={SplashScreen} />
-              <Stack.Screen name="LoginScreenPassword" component={LoginScreenWithPassword} />
+              {/* <Stack.Screen name="SplashScreen" component={SplashScreen} /> */}
+              <Stack.Screen
+                name="LoginScreenPassword"
+                component={LoginScreenWithPassword}
+              />
               {/* <Stack.Screen
                 name="LoginScreenPassword"
                 component={LoginScreen}

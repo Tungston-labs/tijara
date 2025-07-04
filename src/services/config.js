@@ -1,4 +1,4 @@
-// api.js
+// config.js
 import axios from "axios";
 import { loadAuthData, saveAuthData, clearAuthData } from "../utils/mmkvStorage";
 import { store } from "../redux/store";
@@ -74,7 +74,7 @@ API.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axios.get(
+        const res = await axios.post(
           "http://178.248.112.16:8080/user/refresh-token",
           { withCredentials: true }
         );

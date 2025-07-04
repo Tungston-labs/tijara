@@ -32,11 +32,16 @@ console.log("user",user)
  const handleIconPress = () => {
     navigation.goBack();
   };
-const handleLogout=async()=>{
-  
-    dispatch(logout())
+const handleLogout = async () => {
+  dispatch(logout());
 
-}
+  // Ensure navigation stack resets to login screen
+  navigation.reset({
+    index: 0,
+    routes: [{ name: "LoginScreenPassword" }],
+  });
+};
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -49,7 +54,7 @@ const handleLogout=async()=>{
       </View>
 
       <View style={styles.avatarContainer}>
-        <Image source={{uri:user.profileImage}} style={styles.avatar} />
+        <Image source={{uri:user.image}} style={styles.avatar} />
         {/* <Image source={images.profile} style={styles.avatar} /> */}
       </View>
 
