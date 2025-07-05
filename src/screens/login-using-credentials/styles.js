@@ -6,7 +6,8 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingHorizontal: 20,
-    justifyContent: "center",
+    justifyContent:'center',
+    paddingVertical:20
   },
   backArrow: {
     position: "absolute",
@@ -29,14 +30,17 @@ export default StyleSheet.create({
     color: "#000",
     textAlign: "left",
     marginBottom: 5,
+    paddingHorizontal:20,
   },
   subHeading: {
     fontSize: 14,
     color: "#666",
     marginBottom: 25,
+    paddingHorizontal:20,
   },
   inputContainer: {
     marginBottom: 15,
+    paddingHorizontal:20
   },
   label: {
     fontSize: 14,
@@ -71,13 +75,15 @@ export default StyleSheet.create({
     backgroundColor: "#B7E626",
     paddingVertical: 14,
     borderRadius: 10,
-    alignItems: "center",
+    alignItems:"center",
     marginTop: 10,
+    marginHorizontal:20,
   },
 forgotContainer: {
   color: "#000",
   fontSize: 14,
   fontWeight: "500",
+  marginHorizontal: 20,
 },
 
   loginButtonText: {

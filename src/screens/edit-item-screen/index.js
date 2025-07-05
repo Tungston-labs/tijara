@@ -296,7 +296,7 @@ const SellerEditProductScreen = ({ navigation, route }) => {
                         borderWidth: 0,
                       },
                       placeholder: { color: "#888" },
-                      iconContainer: { top: 16, right: 12 },
+                      iconContainer: { top: 0, right: 12 },
                     }}
                     Icon={() => (
                       <Icon name="arrow-drop-down" size={24} color="#888" />
@@ -479,7 +479,7 @@ const SellerEditProductScreen = ({ navigation, route }) => {
                         borderWidth: 0,
                       },
                       placeholder: { color: "#888" },
-                      iconContainer: { top: 16, right: 12 },
+                      iconContainer: { top: 0, right: 12 },
                     }}
                     Icon={() => (
                       <Icon name="arrow-drop-down" size={24} color="#888" />

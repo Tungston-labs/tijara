@@ -51,7 +51,7 @@ const Header = ({
           )}
           {deleteIcon && (
             <TouchableOpacity
-              style={{ alignItems: "center" }}
+              style={{ alignItems: "center" ,marginTop:-35 }}
               onPress={handleDeletePress}
             >
               <View

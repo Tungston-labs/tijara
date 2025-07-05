@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
   },
   iconStyle: {
     width: width * 0.2,
+    marginTop:-35,
   },
   editIconContainerStyle: {
     width: width * 0.2,
@@ -28,6 +29,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     textAlign: "center",
+    marginTop:-35
   },
   titleStyle: {
     color: "#000000",

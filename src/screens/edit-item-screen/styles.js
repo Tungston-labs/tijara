@@ -11,8 +11,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     alignSelf: "flex-end",
     marginRight: 20,
-    marginBottom: 5,
-    marginTop: -50,
+    marginHorizontal: 20,
+    marginVertical:-15,
+    marginBottom: 10,
+    
   },
   uploadBox: {
     borderWidth: 1,
@@ -22,8 +24,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     alignItems: "center",
     marginHorizontal: 20,
+    marginVertical:-10,
     marginBottom: 10,
-    backgroundColor: "#fafafa",
   },
   uploadText: {
     color: "#7CB518",
