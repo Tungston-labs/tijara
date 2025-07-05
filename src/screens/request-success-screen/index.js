@@ -39,7 +39,6 @@ const RequestSuccessScreen = () => {
             </View>
           </View>
 
-          {/* ✅ Stick Button to bottom */}
           <View style={styles.buttonContainer}>
             <Button label="Login" handleButtonPress={handleLoginPress} />
           </View>

@@ -16,7 +16,7 @@ const OTPVerificationScreen = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const navigation = useNavigation();
   const route = useRoute();
-  const { email } = route.params; // ✅ Get email from previous screen
+  const { email } = route.params; 
 
   const inputs = useRef([]);
 
