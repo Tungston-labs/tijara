@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   },
   firstContainer: {
     // marginTop: 35,
-    marginBottom: 10,
+    marginBottom: 0,
   },
   searchbar: {
     justifyContent: "center",
