@@ -5,15 +5,14 @@ const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
-    //  backgroundColor: "#fff", // restored for clarity
-  },
+    marginTop: -35,
+      },
   wrapperContainer: {
     width: width * 1,
   },
   firstContainer: {
     // marginTop: 35,
-    marginBottom: 10,
+    marginBottom: 0,
   },
   searchbar: {
     justifyContent: "center",

@@ -44,6 +44,8 @@ const SellerAddProductScreen = ({ navigation }) => {
   const [subCategoryText, setSubCategoryText] = useState("");
   const [subCategorySuggestions, setSubCategorySuggestions] = useState([]);
   const [loadingSubCategory, setLoadingSubCategory] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [showSubCategorySuggestions, setShowSubCategorySuggestions] =
     useState(false);
 
@@ -146,6 +148,7 @@ const SellerAddProductScreen = ({ navigation }) => {
   const token = useSelector((state) => state.user.token); // Adjust path to your auth slice
 
   const handleAddProduct = async () => {
+    if (loading) return;
     if (images.length < 1) {
       Alert.alert("Validation Error", "At least one image is required.");
       return;
@@ -204,6 +207,7 @@ const SellerAddProductScreen = ({ navigation }) => {
     formData.append("expiryDate", expiryDate?.toISOString());
 
     try {
+       setLoading(true);
       await dispatch(addSellerProductThunk({ token, formData })).unwrap();
       Alert.alert("Success", "Product added successfully");
       navigation.goBack();
@@ -218,6 +222,9 @@ const SellerAddProductScreen = ({ navigation }) => {
           : "Failed to add product";
 
       Alert.alert("Error", message);
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -279,7 +286,6 @@ const SellerAddProductScreen = ({ navigation }) => {
                     items={[
                       { label: "Fruits", value: "fruits" },
                       { label: "Vegetables", value: "vegetables" },
-                      { label: "Dairy", value: "dairy" },
                     ]}
                     placeholder={{ label: "Item Category", value: null }}
                     value={category}
@@ -308,14 +314,6 @@ const SellerAddProductScreen = ({ navigation }) => {
                     )}
                   />
                 </View>
-
-                {/* <Text style={styles.label}>Item name</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Item name"
-              value={itemName}
-              onChangeText={setItemName}
-            /> */}
 
                 <View>
                   <Text style={styles.label}>Item name</Text>
@@ -547,33 +545,34 @@ const SellerAddProductScreen = ({ navigation }) => {
                 />
               </View>
 
-              {/* <View style={styles.buttonRow}>
-            <TouchableOpacity style={styles.cancelButton}>
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={handleAddProduct}
-            >
-              <Text style={styles.addButtonText}>Add item</Text>
-            </TouchableOpacity>
-          </View> */}
+            
             </BackgroundWrapper>
           </ScrollView>
-          <View style={styles.fixedButtonRow}>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={() => navigation.goBack()}
-            >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.addButton}
-              onPress={handleAddProduct}
-            >
-              <Text style={styles.addButtonText}>Add item</Text>
-            </TouchableOpacity>
-          </View>
+      <View style={styles.fixedButtonRow}>
+  <TouchableOpacity
+    style={styles.cancelButton}
+    onPress={() => navigation.goBack()}
+    disabled={loading} 
+  >
+    <Text style={styles.cancelButtonText}>Cancel</Text>
+  </TouchableOpacity>
+
+  <TouchableOpacity
+    style={[
+      styles.addButton,
+      loading && { opacity: 0.6 }, 
+    ]}
+    onPress={handleAddProduct}
+    disabled={loading} 
+  >
+    {loading ? (
+      <ActivityIndicator size="small" color="#fff" />
+    ) : (
+      <Text style={styles.addButtonText}>Add item</Text>
+    )}
+  </TouchableOpacity>
+</View>
+
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

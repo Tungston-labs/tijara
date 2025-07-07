@@ -182,13 +182,21 @@ const SellerEditProductScreen = ({ navigation, route }) => {
     }
   };
 
-  const handleDelete = async () => {
-    dispatch(deleteProductThunk({ productId: product._id, token }));
+const handleDelete = async () => {
+  try {
+    await dispatch(deleteProductThunk({ productId: product._id, token })).unwrap();
+
     closeModal();
     Alert.alert("Success", "Product deleted successfully");
-    dispatch(fetchProductsThunk({ token }));
+
+    await dispatch(fetchProductsThunk({ token })); 
     navigation.navigate("SellerHomeScreen");
-  };
+  } catch (err) {
+    console.error("Error deleting product:", err);
+    Alert.alert("Error", err?.message || "Failed to delete product");
+  }
+};
+
 
   return (
     <TouchableWithoutFeedback
@@ -296,7 +304,7 @@ const SellerEditProductScreen = ({ navigation, route }) => {
                         borderWidth: 0,
                       },
                       placeholder: { color: "#888" },
-                      iconContainer: { top: 16, right: 12 },
+                      iconContainer: { top: 0, right: 12 },
                     }}
                     Icon={() => (
                       <Icon name="arrow-drop-down" size={24} color="#888" />
@@ -479,7 +487,7 @@ const SellerEditProductScreen = ({ navigation, route }) => {
                         borderWidth: 0,
                       },
                       placeholder: { color: "#888" },
-                      iconContainer: { top: 16, right: 12 },
+                      iconContainer: { top: 0, right: 12 },
                     }}
                     Icon={() => (
                       <Icon name="arrow-drop-down" size={24} color="#888" />

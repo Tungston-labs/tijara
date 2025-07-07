@@ -31,6 +31,7 @@ export default StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 30,
+    paddingHorizontal:20,
   },
   otpInput: {
     width: width * 0.12,
@@ -48,6 +49,7 @@ export default StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     marginTop: 10,
+    marginHorizontal:20,
   },
   buttonText: {
     color: "#000",

@@ -43,9 +43,11 @@ const RequestSuccessScreen = () => {
             <Button label="Login" handleButtonPress={handleLoginPress} />
           </View>
         </View>
-      </BackgroundWrapper>
+      </BackgroundWrapper>	
     </View>
   );
 };
 
 export default RequestSuccessScreen;
+			
+	

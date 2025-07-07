@@ -139,7 +139,7 @@ const SellerRegistrationSecond = () => {
 
     if (prevForm.location) {
       formData.append("location", prevForm.location);
-    }
+    };
 
     if (profileImage) {
       formData.append("profileImage", {
