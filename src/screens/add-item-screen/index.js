@@ -286,7 +286,6 @@ const SellerAddProductScreen = ({ navigation }) => {
                     items={[
                       { label: "Fruits", value: "fruits" },
                       { label: "Vegetables", value: "vegetables" },
-                      { label: "Dairy", value: "dairy" },
                     ]}
                     placeholder={{ label: "Item Category", value: null }}
                     value={category}
