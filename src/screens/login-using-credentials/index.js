@@ -81,12 +81,12 @@ const LoginScreenWithPassword = () => {
         style={styles.ImageContainer}
         resizeMode="contain"
       />
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={styles.backArrow}
         onPress={() => navigation.goBack()}
       >
         <Icon name="chevron-back-outline" size={24} color="#000" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <Text style={styles.heading}>Welcome back</Text>
       <Text style={styles.subHeading}>Please enter your details to Log in</Text>
