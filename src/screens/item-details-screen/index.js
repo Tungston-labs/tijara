@@ -256,6 +256,7 @@ const handleAppStateChange = (nextAppState) => {
                     customLabelStyle={styles.label}
                   />
                   <TouchableOpacity
+                    
                     onPress={handleWhatsAppRequest}
                     style={[styles.whatsappButton, loading && { opacity: 0.5 }]}
                     disabled={loading}

@@ -272,6 +272,7 @@ const styles = StyleSheet.create({
   whatsappButton: {
     backgroundColor: "#25D366",
     padding: 12,
+    paddingHorizontal:32,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",

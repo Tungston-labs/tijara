@@ -128,7 +128,7 @@ const SellerProductDetailsEditScreen = () => {
           </View>
           {/* Description */}
           <View style={styles.descriptionBox}>
-            <Text style={styles.descriptionTitle}>Discription</Text>
+            <Text style={styles.descriptionTitle}>Description</Text>
             <Text style={styles.descriptionText}>
               {sellerProduct?.description|| "No description available."}
             </Text>
