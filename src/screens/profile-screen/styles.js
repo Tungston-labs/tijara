@@ -81,18 +81,18 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalContent: {
-    margin: 20,
+    margin: 10,
     backgroundColor: "#fff",
     padding: 25,
     borderRadius: 10,
-    alignItems: "center",
+    // alignItems: "center",
   },
   modalTitleText: {
     fontSize: 20,
     marginBottom: 15,
     width: width * 0.9,
     textAlign: "left",
-    marginLeft: 30,
+    marginLeft: 10,
     fontWeight: "600",
   },
   modalText: {
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     width: width * 0.9,
     textAlign: "left",
-    marginLeft: 30,
+    marginLeft: 15,
   },
   editButtonStyle: {
     borderColor: "#000000",
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   buttonRowContainer: {
-    width: "90%",
+    width: "60%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -139,14 +139,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flexDirection: "row",
     padding: 20,
-    marginLeft: 10,
+    marginLeft: 5,
   },
   cancelButtonStyle: {
     borderColor: "#000000",
-    backgroundColor: "#EEEEEE",
+    backgroundColor: "EEEEEE",
     borderWidth: 1,
     flexDirection: "row",
     padding: 20,
+    marginLeft:-10
   },
 });
 

@@ -223,15 +223,17 @@ modalText: {
   lineHeight: 20,          // Optional: improves readability
 },
   buttonRowContainer: {
-    width: "90%",
+    width: "60%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-  },
+    paddingLeft:24  },
   cancelButtonStyle: {
     borderColor: "#000000",
     backgroundColor: "#EEEEEE",
     borderWidth: 1,
+    marginLeft:-80,
+
     flexDirection: "row",
     padding: 20,
   },
