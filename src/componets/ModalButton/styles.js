@@ -5,11 +5,13 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#B3DB48",
     paddingVertical: 14,
+    // paddingHorizontal:,
     borderRadius: 10,
     flexDirection: "row",
-    width: "50%",
+    width: "88%",
     justifyContent: "center",
-    alignItems: "center",
+    // alignItems: "center",
+    marginLeft:2
   },
 
   label: {

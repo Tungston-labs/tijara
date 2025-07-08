@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     width: "100%",
+    // backgroundColor:"red", 
   },
 
   alignContent: {
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
+
   dataContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -237,14 +239,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
-  cancelButton: {
-    flex: 1,
-    marginRight: 8,
-    backgroundColor: "#f0f0f0",
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: "center",
-  },
+cancelButton: {
+  backgroundColor: "red", 
+  borderRadius: 8,
+  alignItems: "center",
+  justifyContent: "center",
+  minWidth: 1200,
+},
   submitButton: {
     flex: 1,
     marginLeft: 8,
@@ -253,11 +254,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
   },
-  cancelText: {
-    color: "#000",
-    fontWeight: "bold",
-    backgroundColor: "#e60b2c",
-  },
+ 
   submitText: {
     color: "#000",
     fontWeight: "bold",
@@ -272,12 +269,12 @@ const styles = StyleSheet.create({
   whatsappButton: {
     backgroundColor: "#25D366",
     padding: 12,
-    paddingHorizontal:32,
+    paddingHorizontal:54,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
-    marginLeft: 10,
+    marginLeft: 6,
     minWidth: 20,
   },
 

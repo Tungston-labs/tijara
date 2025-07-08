@@ -249,12 +249,15 @@ const handleAppStateChange = (nextAppState) => {
                   </View>
                 </View>
                 <View style={styles.rowContainer}>
+                  <View style={styles.cancelText}>
                   <ModalButton
                     label={"Cancel"}
+                    style={styles.cancelButton}
                     handleButtonPress={closeModal}
                     customStyle={styles.editButtonStyle}
                     customLabelStyle={styles.label}
                   />
+                  </View>
                   <TouchableOpacity
                     
                     onPress={handleWhatsAppRequest}
