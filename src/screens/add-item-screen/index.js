@@ -174,8 +174,8 @@ const SellerAddProductScreen = ({ navigation }) => {
       return;
     }
 
-    if (!priceAED || isNaN(priceAED)) {
-      Alert.alert("Validation Error", "Valid price is required.");
+    if (priceAED || isNaN(priceAED)) {
+      Alert.alert("Validation Error", "Price must be a valid number.");
       return;
     }
 
@@ -203,11 +203,13 @@ const SellerAddProductScreen = ({ navigation }) => {
     formData.append("description", description);
     // formData.append("availableKg", 100);
 
-    formData.append("priceAED", priceAED);
+    if (priceAED) {
+      formData.append("priceAED", priceAED);
+    }
     formData.append("expiryDate", expiryDate?.toISOString());
 
     try {
-       setLoading(true);
+      setLoading(true);
       await dispatch(addSellerProductThunk({ token, formData })).unwrap();
       Alert.alert("Success", "Product added successfully");
       navigation.goBack();
@@ -222,9 +224,8 @@ const SellerAddProductScreen = ({ navigation }) => {
           : "Failed to add product";
 
       Alert.alert("Error", message);
-    }
-    finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -520,7 +521,7 @@ const SellerAddProductScreen = ({ navigation }) => {
                   />
                 )}
 
-                <Text style={styles.label}>Price/KG</Text>
+                <Text style={styles.label}>Price/KG (optional)</Text>
                 <View style={styles.priceRow}>
                   <TextInput
                     style={styles.priceInput}
@@ -544,35 +545,29 @@ const SellerAddProductScreen = ({ navigation }) => {
                   scrollEnabled={true}
                 />
               </View>
-
-            
             </BackgroundWrapper>
           </ScrollView>
-      <View style={styles.fixedButtonRow}>
-  <TouchableOpacity
-    style={styles.cancelButton}
-    onPress={() => navigation.goBack()}
-    disabled={loading} 
-  >
-    <Text style={styles.cancelButtonText}>Cancel</Text>
-  </TouchableOpacity>
+          <View style={styles.fixedButtonRow}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => navigation.goBack()}
+              disabled={loading}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
 
-  <TouchableOpacity
-    style={[
-      styles.addButton,
-      loading && { opacity: 0.6 }, 
-    ]}
-    onPress={handleAddProduct}
-    disabled={loading} 
-  >
-    {loading ? (
-      <ActivityIndicator size="small" color="#fff" />
-    ) : (
-      <Text style={styles.addButtonText}>Add item</Text>
-    )}
-  </TouchableOpacity>
-</View>
-
+            <TouchableOpacity
+              style={[styles.addButton, loading && { opacity: 0.6 }]}
+              onPress={handleAddProduct}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator size="small" color="#fff" />
+              ) : (
+                <Text style={styles.addButtonText}>Add item</Text>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>

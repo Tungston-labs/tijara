@@ -133,7 +133,7 @@ const SellerEditProductScreen = ({ navigation, route }) => {
       !itemName.trim() ||
       !subCategoryText.trim() ||
       !country ||
-      !priceAED ||
+      // !priceAED ||
       !expiryDate
     ) {
       return Alert.alert("Error", "Please fill all fields correctly.");
@@ -518,7 +518,7 @@ const handleDelete = async () => {
                   />
                 )}
                 {/* Price */}
-                <Text style={styles.label}>Price/KG</Text>
+                <Text style={styles.label}>Price/KG (optional)</Text>
                 <View style={styles.priceRow}>
                   <TextInput
                     style={styles.priceInput}

@@ -116,7 +116,7 @@ const UserListItemScreen = () => {
             </View>
             <View style={styles.rowBetween}>
               <Text />
-              <Text style={styles.price}>AED {item.pricePerKg?.AED}</Text>
+              <Text style={styles.price}>AED {item.pricePerKg?.AED?item.pricePerKg?.AED:"---"}</Text>
             </View>
           </View>
         </View>

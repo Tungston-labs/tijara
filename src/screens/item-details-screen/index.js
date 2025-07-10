@@ -161,7 +161,7 @@ const handleAppStateChange = (nextAppState) => {
             </View>
             <View style={styles.priceContainer}>
               <Text style={styles.price}>
-                {product?.pricePerKg?.AED} AED / kg
+                {product?.pricePerKg?.AED?product?.pricePerKg?.AED:"---"} AED / kg
               </Text>
               <Text style={styles.qty}>
                 Available Qty:
