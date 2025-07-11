@@ -11,8 +11,11 @@ import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import UserListItemScreen from "../user-list-item-screen";
 import { useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
+import TradeLicenseLockScreen from "../user-list-item-lock-screen";
 
 const Tab = createBottomTabNavigator();
+
+const tradLicense=false
 
 const TabScreens = ({ onTabChange }) => {
   // const token = useSelector((state) => state.user.token);
@@ -26,7 +29,7 @@ const TabScreens = ({ onTabChange }) => {
     >
       <Tab.Screen
         name="Home"
-        component={UserListItemScreen}
+        component={tradLicense?UserListItemScreen:TradeLicenseLockScreen}
         options={{
           tabBarIcon: ({ color }) => (
             <Icon name="home-outline" size={25} color={color} />
@@ -92,6 +95,7 @@ const SellerHomeScreen = ({ navigation }) => {
               <View style={styles.wrapperContainer}>
                 <TijaraHeader navigation={navigation} />
               </View>
+              {tradLicense&&
               <View style={styles.rowContainer}>
                 <View style={styles.searchbarContainer}>
                   <SearchBar />
@@ -101,7 +105,7 @@ const SellerHomeScreen = ({ navigation }) => {
                     <Text style={styles.addIconStyle}>+</Text>
                   </View>
                 </Pressable>
-              </View>
+              </View>}
             </View>
           )}
 

@@ -33,6 +33,8 @@ import SellerEditProductScreen from "../screens/edit-item-screen";
 import ForgetPasswordScreen from "../screens/forget-password-screen";
 import OTPVerificationScreen from "../screens/forget-password-verification";
 import ResetPasswordScreen from "../screens/reset-password-screen";
+import TradeLicenseLockScreen from "../screens/user-list-item-lock-screen";
+import UploadTradeLicenseScreen from "../screens/upload-tradelicense-screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -105,6 +107,14 @@ export default function MainNavigation() {
                   name="SellerHomeScreen"
                   component={SellerHomeScreen}
                 />
+                <Stack.Screen
+                  name="TradeLicenseLockScreen"
+                  component={TradeLicenseLockScreen}
+                />
+                 <Stack.Screen
+                name="UploadTradeLicenseScreen"
+                component={UploadTradeLicenseScreen}
+              />
                 <Stack.Screen name="AddItemScreen" component={AddItemScreen} />
                 <Stack.Screen
                   name="RequestReceiveScreen"
