@@ -153,10 +153,10 @@ export default function MainNavigation() {
                 name="CreateAccountScreen"
                 component={CreateAccountScreen}
               />
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="RoleSelectionScreen"
                 component={RoleSelectionScreen}
-              />
+              /> */}
               <Stack.Screen
                 name="SellerRegistrationSecond"
                 component={SellerRegistrationSecond}

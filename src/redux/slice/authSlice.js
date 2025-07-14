@@ -1,24 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  buyerSignUp,
   checkStatus,
   Login,
-  sellerSignUp,
+  registerUser,
 } from "../../services/authServices";
 import { saveAuthData, clearAuthData } from "../../utils/mmkvStorage";
 import { setToken } from "../../services/config";
 
 export const SignUpThunk = createAsyncThunk(
   "user/signUp",
-  async ({ formData, role }, { rejectWithValue }) => {
+  async ({ formData }, { rejectWithValue }) => {
     try {
-      let res;
-      if (role === "seller") {
-        res = await sellerSignUp(formData);
-      } else {
-        res = await buyerSignUp(formData);
-      }
-
+      const res = await registerUser(formData);
       return res.user ? res.user : res;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -32,7 +25,6 @@ export const checkStatusThunk = createAsyncThunk(
     try {
       console.log("DISPATCHED checkStatusThunk WITH ID:", userId);
       const res = await checkStatus(userId);
-      console.log("DISPATCHED checkStatusThunk WITH ID:", userId);
       return res;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);

@@ -40,7 +40,7 @@ const CreateAccountScreen = () => {
   const handleButtonClick = () => {
     if (isFetching || !location || location === "Unable to fetch location")
       return;
-    navigation.navigate("RoleSelectionScreen", { location });
+    navigation.navigate("RegistrationScreen", { location });
   };
 
   return (

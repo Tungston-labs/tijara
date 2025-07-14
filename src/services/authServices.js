@@ -1,8 +1,8 @@
 import API from "./config";
 
-export const sellerSignUp = async (formData) => {
+export const registerUser = async (formData) => {
   try {
-    const response = await API.post("/seller/seller-register", formData, {
+    const response = await API.post("/user/user-sign-up", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -16,24 +16,24 @@ export const sellerSignUp = async (formData) => {
     throw err;
   }
 };
-export const buyerSignUp = async (formData) => {
-  try {
-    const response = await API.post("/buyer/buyer-sign-up", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    console.log("buyer ire  nsssnsn",response)
-    return response.data;
+// export const buyerSignUp = async (formData) => {
+//   try {
+//     const response = await API.post("/buyer/buyer-sign-up", formData, {
+//       headers: {
+//         "Content-Type": "multipart/form-data",
+//       },
+//     });
+//     console.log("buyer ire  nsssnsn",response)
+//     return response.data;
     
-  } catch (err) {
-    console.error(
-      "Error response:",
-      err?.response?.data || err?.message || "Unknown error"
-    );
-    throw err;
-  }
-};
+//   } catch (err) {
+//     console.error(
+//       "Error response:",
+//       err?.response?.data || err?.message || "Unknown error"
+//     );
+//     throw err;
+//   }
+// };
 
 export const checkStatus = async (userId) => {
   try {
