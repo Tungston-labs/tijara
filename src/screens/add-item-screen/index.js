@@ -18,7 +18,7 @@ import Header from "../../componets/Header";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import RNPickerSelect from "react-native-picker-select";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { pickerSelectStyles } from "./styles";
+// import { pickerSelectStyles } from "./styles";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { launchImageLibrary } from "react-native-image-picker";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +29,7 @@ import { ActivityIndicator } from "react-native";
 
 const SellerAddProductScreen = ({ navigation }) => {
   const [category, setCategory] = React.useState(null);
-  const [country, setCountry] = React.useState(null);
+  const [country, setCountry] = useState("");
   const [showDatePicker, setShowDatePicker] = React.useState(false);
   const [expiryDate, setExpiryDate] = React.useState(null);
   const [images, setImages] = useState([]);
@@ -460,43 +460,14 @@ const SellerAddProductScreen = ({ navigation }) => {
                       )}
                   </View>
                 </View>
-
                 <Text style={styles.label}>Country</Text>
-                <View style={styles.input}>
-                  <RNPickerSelect
-                    onValueChange={setCountry}
-                    items={[
-                      { label: "UAE", value: "uae" },
-                      { label: "India", value: "india" },
-                      { label: "USA", value: "usa" },
-                    ]}
-                    placeholder={{ label: "Select Country", value: null }}
-                    value={country}
-                    style={{
-                      inputIOS: {
-                        color: "#222",
-                        fontSize: 15,
-                        paddingVertical: 0,
-                        paddingHorizontal: 0,
-                        backgroundColor: "transparent",
-                        borderWidth: 0,
-                      },
-                      inputAndroid: {
-                        color: "#222",
-                        fontSize: 15,
-                        paddingVertical: 0,
-                        paddingHorizontal: 0,
-                        backgroundColor: "transparent",
-                        borderWidth: 0,
-                      },
-                      placeholder: { color: "#888" },
-                      iconContainer: { top: 16, right: 12 },
-                    }}
-                    Icon={() => (
-                      <Icon name="arrow-drop-down" size={24} color="#888" />
-                    )}
-                  />
-                </View>
+                <TextInput
+                  placeholder="Enter Country"
+                  placeholderTextColor="#888"
+                  value={country}
+                  onChangeText={(text) => setCountry(text)}
+                  style={styles.input}
+                />
 
                 <Text style={styles.label}>Expiry date</Text>
                 <TouchableOpacity
