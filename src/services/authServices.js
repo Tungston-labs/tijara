@@ -58,3 +58,12 @@ export const Login = async (credentials) => {
   }
 };
 
+export const getTradeLicenseStatus = async () => {
+  try {
+    const res = await API.get(`/user/check-trade-license`);
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching trade license status:", err?.response?.data || err.message);
+    throw err.response?.data || err;
+  }
+};

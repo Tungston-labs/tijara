@@ -1,9 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  checkStatus,
-  Login,
-  registerUser,
-} from "../../services/authServices";
+import { checkStatus, getTradeLicenseStatus, Login, registerUser } from "../../services/authServices";
 import { saveAuthData, clearAuthData } from "../../utils/mmkvStorage";
 import { setToken } from "../../services/config";
 
@@ -43,6 +39,19 @@ export const userLoginThunk = createAsyncThunk(
       return rejectWithValue(
         err.response?.data || { message: "Unknown error" }
       );
+    }
+  }
+);
+
+export const fetchTradeLicenseStatusThunk = createAsyncThunk(
+  "user/fetchTradeLicenseStatus",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await getTradeLicenseStatus();
+
+      return res.user.tradeLicenseStatus; // e.g., "approved", "pending", etc.
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
@@ -148,6 +157,12 @@ const authSlice = createSlice({
         state.role = action.payload.role;
         saveAuthData(action.payload.accessToken, state.user, state.role);
         setToken(action.payload.accessToken);
+      })
+      .addCase(fetchTradeLicenseStatusThunk.fulfilled, (state, action) => {
+        state.user.tradeLicenseStatus = action.payload;
+      })
+      .addCase(fetchTradeLicenseStatusThunk.rejected, (state, action) => {
+        state.error = action.payload;
       });
   },
 });

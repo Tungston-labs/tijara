@@ -13,24 +13,23 @@ import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Header from "../../componets/Header";
 import TextInputField from "../../componets/TextInputField";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { launchImageLibrary } from "react-native-image-picker";
 import Button from "../../componets/Button";
-import { SignUpThunk } from "../../redux/slice/authSlice";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import axios from "axios";
 import API from "../../services/config";
 
 const UploadTradeLicenseScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const role = useSelector((state) => state.user.role);
 
   const [form, setForm] = useState({
     companyName: "",
     tradeLicenseNumber: "",
     managerName: "",
     tradeLicenseCopy: null,
-    expiryDate: null, // New field
+    tradeLicenseExpiry: null, // New field
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -115,7 +114,7 @@ const UploadTradeLicenseScreen = () => {
       !form.companyName ||
       !form.tradeLicenseNumber ||
       !form.managerName ||
-      !form.expiryDate
+      !form.tradeLicenseExpiry
     ) {
       Alert.alert("Validation Error", "Please fill all required fields");
       return;
@@ -130,29 +129,28 @@ const UploadTradeLicenseScreen = () => {
     formData.append("companyName", form.companyName);
     formData.append("tradeLicenseNumber", form.tradeLicenseNumber);
     formData.append("managerName", form.managerName);
-    formData.append("tradeLicenseExpiry", form.expiryDate);
+    formData.append("tradeLicenseExpiry", form.tradeLicenseExpiry);
     formData.append("tradeLicenseCopy", {
       uri: form.tradeLicenseCopy.uri,
       type: form.tradeLicenseCopy.type,
       name: form.tradeLicenseCopy.name,
     });
-
     try {
       setLoading(true);
-    //   const result = await dispatch(
-    //     SignUpThunk({ formData, role: "seller" })
-    //   ).unwrap();
-    const response = await API.put("/user/add-trade-license", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    console.log( response.data);
-
-      navigation.navigate("TradeLicenseLockScreen");
+      const response = await API.put("/user/add-trade-license", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      navigation.navigate(role==="buyer"?"BuyerHomeScreen":"SellerHomeScreen");
     } catch (err) {
-      console.error("Signup failed:", err);
-      Alert.alert("Signup Failed", err?.message || "Something went wrong");
+      const status = err?.response?.status;
+      const backendMessage = err?.response?.data?.message;
+      if (status === 400 && backendMessage) {
+        Alert.alert("Upload Failed", backendMessage);
+      } else {
+        Alert.alert("Upload Failed", "Something went wrong");
+      }
     } finally {
       setLoading(false);
     }
@@ -164,7 +162,7 @@ const UploadTradeLicenseScreen = () => {
         <BackgroundWrapper style={styles.wrapperContainer}>
           <Header
             handleIconPress={() =>
-              navigation.navigate("TradeLicenseLockScreen")
+              navigation.goBack()
             }
             icon={true}
             Title={"Complete your"}
@@ -198,22 +196,31 @@ const UploadTradeLicenseScreen = () => {
               onPress={() => setShowDatePicker(true)}
               style={styles.datePickerField}
             >
-              <Text style={{ color: form.expiryDate ? "#000" : "#aaa" }}>
-                {form.expiryDate
-                  ? new Date(form.expiryDate).toLocaleDateString()
+              <Text
+                style={{ color: form.tradeLicenseExpiry ? "#000" : "#aaa" }}
+              >
+                {form.tradeLicenseExpiry
+                  ? new Date(form.tradeLicenseExpiry).toLocaleDateString()
                   : "Select Expiry Date"}
               </Text>
             </TouchableOpacity>
 
             {showDatePicker && (
               <DateTimePicker
-                value={form.expiryDate ? new Date(form.expiryDate) : new Date()}
+                value={
+                  form.tradeLicenseExpiry
+                    ? new Date(form.tradeLicenseExpiry)
+                    : new Date()
+                }
                 mode="date"
                 display="default"
                 onChange={(event, selectedDate) => {
                   setShowDatePicker(false);
                   if (event.type === "set") {
-                    handleChange("expiryDate", selectedDate.toISOString());
+                    handleChange(
+                      "tradeLicenseExpiry",
+                      selectedDate.toISOString()
+                    );
                   }
                 }}
               />

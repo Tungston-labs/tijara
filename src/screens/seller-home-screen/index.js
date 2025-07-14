@@ -1,5 +1,11 @@
-import React, { useState } from "react";
-import { Pressable, StatusBar, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  StatusBar,
+  Text,
+  View,
+} from "react-native";
 import styles from "./styles";
 import TijaraHeader from "../../componets/TijaraHeader";
 import SearchBar from "../../componets/SearchBar";
@@ -9,16 +15,27 @@ import RequestReceiveScreen from "../request-receive-screen";
 import Icon from "react-native-vector-icons/Ionicons";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import UserListItemScreen from "../user-list-item-screen";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TradeLicenseLockScreen from "../user-list-item-lock-screen";
+import TradeLicenseStatusScreen from "../tradelicense-status-screen";
+import { fetchTradeLicenseStatusThunk } from "../../redux/slice/authSlice";
 
 const Tab = createBottomTabNavigator();
 
-const tradLicense=false
+let SellComponent = TradeLicenseLockScreen;
 
 const TabScreens = ({ onTabChange }) => {
-  // const token = useSelector((state) => state.user.token);
+  const tradeLicenseStatus = useSelector(
+    (state) => state.user.user.tradeLicenseStatus
+  );
+
+  if (tradeLicenseStatus === "approved") {
+    SellComponent = UserListItemScreen;
+  } else if (["pending", "rejected","expired"].includes(tradeLicenseStatus)) {
+    SellComponent = TradeLicenseStatusScreen;
+  }
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -29,7 +46,7 @@ const TabScreens = ({ onTabChange }) => {
     >
       <Tab.Screen
         name="Home"
-        component={tradLicense?UserListItemScreen:TradeLicenseLockScreen}
+        component={SellComponent}
         options={{
           tabBarIcon: ({ color }) => (
             <Icon name="home-outline" size={25} color={color} />
@@ -39,42 +56,18 @@ const TabScreens = ({ onTabChange }) => {
           focus: () => onTabChange("Home"),
         }}
       />
-      {/* <Tab.Screen
-        name="Buy"
-        component={ListItemScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <Icon name="cart" size={25} color={color} />
-          ),
-        }}
-        listeners={{
-          focus: () => onTabChange("Buy"),
-        }}
-      /> */}
       <Tab.Screen
         name="Buy"
         children={() => <ListItemScreen />}
         options={{
           tabBarIcon: ({ color }) => (
-            <Icon name="cart" size={25} color={color} />
+            <Icon name="cart-outline" size={25} color={color} />
           ),
         }}
         listeners={{
           focus: () => onTabChange("Buy"),
         }}
       />
-      {/* <Tab.Screen
-        name="Request"
-        component={RequestReceiveScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <Icon name="person-add-sharp" size={25} color={color} />
-          ),
-        }}
-        listeners={{
-          focus: () => onTabChange("Request"),
-        }}
-      /> */}
     </Tab.Navigator>
   );
 };
@@ -85,9 +78,36 @@ const SellerHomeScreen = ({ navigation }) => {
     navigation.navigate("SellerAddProductScreen");
   };
 
+  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        dispatch(fetchTradeLicenseStatusThunk());
+      } catch (err) {
+        console.error("Failed to fetch trade license status:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStatus();
+  }, [activeTab]);
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#B3DB48" />
+      </View>
+    );
+  }
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
-      <StatusBar barStyle="dark-content" backgroundColor={"#F1F1F1"} translucent={false} />
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor={"#F1F1F1"}
+        translucent={false}
+      />
       <View style={styles.container}>
         <BackgroundWrapper>
           {activeTab !== "Request" && activeTab !== "Buy" && (
@@ -95,17 +115,18 @@ const SellerHomeScreen = ({ navigation }) => {
               <View style={styles.wrapperContainer}>
                 <TijaraHeader navigation={navigation} />
               </View>
-              {tradLicense&&
-              <View style={styles.rowContainer}>
-                <View style={styles.searchbarContainer}>
-                  <SearchBar />
-                </View>
-                <Pressable onPress={handleAddItem}>
-                  <View style={styles.addItemContainer}>
-                    <Text style={styles.addIconStyle}>+</Text>
+              {SellComponent === UserListItemScreen && (
+                <View style={styles.rowContainer}>
+                  <View style={styles.searchbarContainer}>
+                    <SearchBar />
                   </View>
-                </Pressable>
-              </View>}
+                  <Pressable onPress={handleAddItem}>
+                    <View style={styles.addItemContainer}>
+                      <Text style={styles.addIconStyle}>+</Text>
+                    </View>
+                  </Pressable>
+                </View>
+              )}
             </View>
           )}
 

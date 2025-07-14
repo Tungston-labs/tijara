@@ -131,12 +131,6 @@ const UserListItemScreen = () => {
         <View style={styles.boxTabContainer}>
           <Text style={styles.itemHeader}>All Items</Text>
         </View>
-        <Pressable
-                style={styles.button}
-                onPress={() => navigation.navigate("TradeLicenseLockScreen")}
-              >
-                <Text style={styles.buttonText}>Verify Now</Text>
-              </Pressable>
 
         {loadingSeller && page === 1 ? (
           <ActivityIndicator size="large" color="#000" />

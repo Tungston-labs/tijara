@@ -35,6 +35,7 @@ import OTPVerificationScreen from "../screens/forget-password-verification";
 import ResetPasswordScreen from "../screens/reset-password-screen";
 import TradeLicenseLockScreen from "../screens/user-list-item-lock-screen";
 import UploadTradeLicenseScreen from "../screens/upload-tradelicense-screen";
+import TradeLicenseStatusScreen from "../screens/tradelicense-status-screen";
 
 const Stack = createNativeStackNavigator();
 
@@ -98,6 +99,18 @@ export default function MainNavigation() {
                   name="SubscriptionDetailsScreen"
                   component={SubscriptionDetailsScreen}
                 />
+                <Stack.Screen
+                  name="TradeLicenseLockScreen"
+                  component={TradeLicenseLockScreen}TradeLicenseStatusScreen
+                />
+                <Stack.Screen
+                name="TradeLicenseStatusScreen"
+                component={TradeLicenseStatusScreen}
+              />
+                 <Stack.Screen
+                name="UploadTradeLicenseScreen"
+                component={UploadTradeLicenseScreen}
+              />
                 <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
                 {/* Add other buyer screens */}
               </>
@@ -111,6 +124,10 @@ export default function MainNavigation() {
                   name="TradeLicenseLockScreen"
                   component={TradeLicenseLockScreen}
                 />
+                <Stack.Screen
+                name="TradeLicenseStatusScreen"
+                component={TradeLicenseStatusScreen}
+              />
                  <Stack.Screen
                 name="UploadTradeLicenseScreen"
                 component={UploadTradeLicenseScreen}
