@@ -5,12 +5,12 @@ import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Button from "../../componets/Button";
 import { useSelector } from "react-redux";
+import Icon from "react-native-vector-icons/Ionicons"; // or MaterialCommunityIcons, FontAwesome, etc.
 
 const TradeLicenseStatusScreen = () => {
   const navigation = useNavigation();
 
   const status = useSelector((state) => state.user.user.tradeLicenseStatus);
-  const role = useSelector((state) => state.user.role);
   const handleBtnPress = (nav) => {
     navigation.navigate(nav);
   };
@@ -20,50 +20,54 @@ const TradeLicenseStatusScreen = () => {
       case "rejected":
         return {
           title: "Not Verified!",
-          icon: require("../../resources/images/status/not_verified.png"),
+          iconName: "close-circle-outline",
           subtitle:
-            "We're sorry, but your license could not be verified at this time.Please review your details or contact support for assistance.",
+            " We’re sorry, but your license could not be verified at this time. Please review your details and try again or contact support for assistance.",
           subtitle2: null,
           buttonText: null,
         };
+
       case "pending":
         return {
           title: "Thank you for your patience!",
-          icon: require("../../resources/images/status/tick.png"),
+          iconName: "time-outline",
           subtitle:
-            "Your account is under review and will be verified within 24 hours.Please check back later.",
+            "Your account is under review and will be verified within 24 hours. Please check back later.",
           subtitle2: null,
           buttonText: null,
         };
+
       case "expired":
         return {
           title: "Trade Licence Expired",
-          icon: require("../../resources/images/status/warning.png"),
+          iconName: "warning-outline",
           subtitle:
             "Your account licence has expired. Please renew it to restore access and continue using our services without interruption.",
           subtitle2: null,
           buttonText: "Upload New License",
           nav: "UploadTradeLicenseScreen",
         };
+
       case "approved":
         return {
           title: "Congratulations!",
-          icon: require("../../resources/images/status/user_tick.png"),
+          iconName: "checkmark-circle-outline",
           subtitle:
             "Your Seller account has been successfully verified and activated.",
           subtitle2: "You're all set to start selling!",
           buttonText: "Get started",
-          nav:"UserListItemScreen"
+          nav: "UserListItemScreen",
         };
+
       default:
         return {
           title: "Thank you!",
-          icon: require("../../resources/images/status/tick.png"),
+          iconName: "information-circle-outline",
           subtitle:
-            "Your account is under review and willBe verified within 24 hours. Please check back later. ",
+            "Your account is under review and will be verified shortly. Please check back later.",
           subtitle2: null,
           buttonText: "Go Back",
-          nav:role==="buyer"?"BuyerHomeScreen":"SellerHomeScreen"
+          nav: "SellerHomeScreen",
         };
     }
   };
@@ -75,15 +79,20 @@ const TradeLicenseStatusScreen = () => {
       <BackgroundWrapper>
         <View style={styles.wrapperContainer}>
           <View style={styles.contentContainer}>
-            <Image
+            {/* <Image
               source={statusContent.icon}
               style={styles.ImageContainer}
               resizeMode="contain"
+            /> */}
+            <Icon
+              name={statusContent.iconName}
+              size={160}
+              color="#B3DB48"
             />
             <View style={styles.textContainer}>
               <Text style={styles.title}>{statusContent.title}</Text>
               <Text style={styles.subtitle}>{statusContent.subtitle}</Text>
-              <Text style={styles.subtitle}>{statusContent.subtitle2}</Text>
+              <Text style={styles.subtitle2}>{statusContent.subtitle2}</Text>
             </View>
           </View>
 

@@ -18,6 +18,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import Button from "../../componets/Button";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import API from "../../services/config";
+import { uploadTradeLicenseThunk } from "../../redux/slice/authSlice";
 
 const UploadTradeLicenseScreen = () => {
   const dispatch = useDispatch();
@@ -137,12 +138,9 @@ const UploadTradeLicenseScreen = () => {
     });
     try {
       setLoading(true);
-      const response = await API.put("/user/add-trade-license", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      navigation.navigate(role==="buyer"?"BuyerHomeScreen":"SellerHomeScreen");
+      await dispatch(uploadTradeLicenseThunk(formData)).unwrap();
+      // navigation.navigate(role==="buyer"?"BuyerHomeScreen":"SellerHomeScreen");
+      navigation.navigate("SellerHomeScreen");
     } catch (err) {
       const status = err?.response?.status;
       const backendMessage = err?.response?.data?.message;

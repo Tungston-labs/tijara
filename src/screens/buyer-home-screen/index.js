@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import styles from "./styles";
 import TijaraHeader from "../../componets/TijaraHeader";
@@ -12,19 +12,23 @@ import UserListItemScreen from "../user-list-item-screen";
 import TradeLicenseStatusScreen from "../tradelicense-status-screen";
 import { fetchTradeLicenseStatusThunk } from "../../redux/slice/authSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { useFocusEffect } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
-let SellComponent = TradeLicenseLockScreen;
 
-const TabScreens = ({ onTabChange }) => {
-  const tradeLicenseStatus = useSelector(
-    (state) => state.user.user.tradeLicenseStatus
-  );
-  if (tradeLicenseStatus === "approved") {
-    SellComponent = UserListItemScreen;
-  } else if (["pending", "rejected", "expired"].includes(tradeLicenseStatus)) {
-    SellComponent = TradeLicenseStatusScreen;
-  }
+const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
+  const getSellComponent = () => {
+    if (tradeLicenseStatus === "approved") {
+      return UserListItemScreen;
+    } else if (
+      ["pending", "rejected", "expired"].includes(tradeLicenseStatus)
+    ) {
+      return TradeLicenseStatusScreen;
+    }
+    return TradeLicenseLockScreen;
+  };
+
+  const SellComponent = getSellComponent();
 
   return (
     <Tab.Navigator
@@ -63,22 +67,33 @@ const TabScreens = ({ onTabChange }) => {
 };
 
 const BuyerHomeScreen = ({ navigation }) => {
-  const [activeTab, setActiveTab] = useState("Buy");
+  const [activeTab, setActiveTab] = useState("Home");
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-
-  useEffect(() => {
+  const tradeLicenseStatus = useSelector(
+    (state) => state.user.user.tradeLicenseStatus
+  );
+  useFocusEffect(
+  useCallback(() => {
     const fetchStatus = async () => {
+      setLoading(true); // show loader while refetching
       try {
-        dispatch(fetchTradeLicenseStatusThunk());
+        await dispatch(fetchTradeLicenseStatusThunk());
       } catch (err) {
         console.error("Failed to fetch trade license status:", err);
       } finally {
         setLoading(false);
       }
     };
+
     fetchStatus();
-  }, [activeTab]);
+  }, [dispatch])
+);
+
+
+   const shouldShowSearch =
+     activeTab === "Buy" ||
+    (activeTab === "Home" && tradeLicenseStatus === "approved");
 
   if (loading) {
     return (
@@ -94,14 +109,15 @@ const BuyerHomeScreen = ({ navigation }) => {
         {activeTab !== "Request" && (
           <View style={styles.firstContainer}>
             <TijaraHeader navigation={navigation} />
-            {(activeTab === "Buy" ||
-              (activeTab === "Home" &&
-                SellComponent === UserListItemScreen)) && <SearchBar />}
+            {shouldShowSearch && <SearchBar />}
           </View>
         )}
 
         <View style={{ flex: 1 }}>
-          <TabScreens onTabChange={setActiveTab} />
+          <TabScreens
+            onTabChange={setActiveTab}
+            tradeLicenseStatus={tradeLicenseStatus}
+          />
         </View>
       </BackgroundWrapper>
     </View>

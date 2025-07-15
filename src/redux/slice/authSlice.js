@@ -1,5 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { checkStatus, getTradeLicenseStatus, Login, registerUser } from "../../services/authServices";
+import {
+  checkStatus,
+  getTradeLicenseStatus,
+  Login,
+  registerUser,
+  uploadTradeLicense,
+} from "../../services/authServices";
 import { saveAuthData, clearAuthData } from "../../utils/mmkvStorage";
 import { setToken } from "../../services/config";
 
@@ -39,6 +45,18 @@ export const userLoginThunk = createAsyncThunk(
       return rejectWithValue(
         err.response?.data || { message: "Unknown error" }
       );
+    }
+  }
+);
+
+export const uploadTradeLicenseThunk = createAsyncThunk(
+  "user/uploadTradeLicense",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const res = await uploadTradeLicense(formData);
+      return res.user; // Assuming updated user object returned from backend
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
@@ -162,6 +180,18 @@ const authSlice = createSlice({
         state.user.tradeLicenseStatus = action.payload;
       })
       .addCase(fetchTradeLicenseStatusThunk.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+      .addCase(uploadTradeLicenseThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadTradeLicenseThunk.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user.tradeLicenseStatus="pending";
+      })
+      .addCase(uploadTradeLicenseThunk.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload;
       });
   },

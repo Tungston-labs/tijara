@@ -58,6 +58,15 @@ export const Login = async (credentials) => {
   }
 };
 
+export const uploadTradeLicense = async (formData) => {
+  const res = await API.put("/user/add-trade-license", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return res;
+};
+
 export const getTradeLicenseStatus = async () => {
   try {
     const res = await API.get(`/user/check-trade-license`);

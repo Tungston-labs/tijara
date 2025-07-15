@@ -96,7 +96,7 @@ const UserListItemScreen = () => {
                   style={{ width: "100%", height: 200, marginTop: 5 }}
                   resizeMode="cover"
                 />
-                 {/* <Text style={styles.negotiableTag}>Price Negotiable</Text> */}
+                {/* <Text style={styles.negotiableTag}>Price Negotiable</Text> */}
               </View>
             )}
           />
@@ -117,7 +117,9 @@ const UserListItemScreen = () => {
             </View>
             <View style={styles.rowBetween}>
               <Text />
-              <Text style={styles.price}>AED {item.pricePerKg?.AED?item.pricePerKg?.AED:"---"}</Text>
+              <Text style={styles.price}>
+                AED {item.pricePerKg?.AED ? item.pricePerKg?.AED : "---"}
+              </Text>
             </View>
           </View>
         </View>
@@ -146,6 +148,13 @@ const UserListItemScreen = () => {
               renderItem={renderItem}
               onEndReached={handleLoadMore}
               onEndReachedThreshold={0.5}
+              ListEmptyComponent={
+                !loadingSeller ? (
+                  <Text style={{ textAlign: "center", marginTop: 20 }}>
+                    No products available.
+                  </Text>
+                ) : null
+              }
               ListFooterComponent={
                 loadingSeller && page > 1 ? (
                   <ActivityIndicator size="small" color="#000" />

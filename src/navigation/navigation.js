@@ -81,40 +81,40 @@ export default function MainNavigation() {
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
           {token ? (
             // 🔑 Logged in Stack
-            role === "buyer" ? (
-              <>
-                <Stack.Screen
-                  name="BuyerHomeScreen"
-                  component={BuyerHomeScreen}
-                />
-                <Stack.Screen
-                  name="ItemDetailsScreen"
-                  component={ItemDetailsScreen}
-                />
-                <Stack.Screen
-                  name="BuyerPaymentInfoScreen"
-                  component={BuyerPaymentInfoScreen}
-                />
-                <Stack.Screen
-                  name="SubscriptionDetailsScreen"
-                  component={SubscriptionDetailsScreen}
-                />
-                <Stack.Screen
-                  name="TradeLicenseLockScreen"
-                  component={TradeLicenseLockScreen}TradeLicenseStatusScreen
-                />
-                <Stack.Screen
-                name="TradeLicenseStatusScreen"
-                component={TradeLicenseStatusScreen}
-              />
-                 <Stack.Screen
-                name="UploadTradeLicenseScreen"
-                component={UploadTradeLicenseScreen}
-              />
-                <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-                {/* Add other buyer screens */}
-              </>
-            ) : (
+            // role === "buyer" ? (
+            //   <>
+            //     <Stack.Screen
+            //       name="BuyerHomeScreen"
+            //       component={BuyerHomeScreen}
+            //     />
+            //     <Stack.Screen
+            //       name="ItemDetailsScreen"
+            //       component={ItemDetailsScreen}
+            //     />
+            //     <Stack.Screen
+            //       name="BuyerPaymentInfoScreen"
+            //       component={BuyerPaymentInfoScreen}
+            //     />
+            //     <Stack.Screen
+            //       name="SubscriptionDetailsScreen"
+            //       component={SubscriptionDetailsScreen}
+            //     />
+            //     <Stack.Screen
+            //       name="TradeLicenseLockScreen"
+            //       component={TradeLicenseLockScreen}TradeLicenseStatusScreen
+            //     />
+            //     <Stack.Screen
+            //     name="TradeLicenseStatusScreen"
+            //     component={TradeLicenseStatusScreen}
+            //   />
+            //      <Stack.Screen
+            //     name="UploadTradeLicenseScreen"
+            //     component={UploadTradeLicenseScreen}
+            //   />
+            //     <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+            //     {/* Add other buyer screens */}
+            //   </>
+            // ) : (
               <>
                 <Stack.Screen
                   name="SellerHomeScreen"
@@ -159,7 +159,7 @@ export default function MainNavigation() {
                   component={ItemDetailsScreen}
                 />
               </>
-            )
+            // )
           ) : (
             // 🔒 Auth Stack
             <>

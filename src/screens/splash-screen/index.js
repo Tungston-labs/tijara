@@ -8,15 +8,15 @@ const SplashScreen = ({ navigation }) => {
   useEffect(() => {
     const navigationTimeout = setTimeout(() => {
       const { token, user, role } = loadAuthData();
-
+console.log("rrr",role)
       if (token && user) {
-        if (role === "buyer") {
-          navigation.replace("BuyerHomeScreen");
-        } else if (role === "seller") {
+        // if (role === "buyer") {
+        //   navigation.replace("BuyerHomeScreen");
+        // } else if (role === "seller") {
           navigation.replace("SellerHomeScreen");
-        } else {
-          navigation.replace("LoginScreenPassword");
-        }
+        // } else {
+        //   navigation.replace("LoginScreenPassword");
+        // }
       } else {
         navigation.replace("LoginScreenPassword");
       }

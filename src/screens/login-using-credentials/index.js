@@ -48,13 +48,13 @@ const LoginScreenWithPassword = () => {
 
         const userRole = res.role;
 
-        if (userRole === "buyer") {
-          navigation.replace("BuyerHomeScreen");
-        } else if (userRole === "seller") {
+        // if (userRole === "buyer") {
+        //   navigation.replace("BuyerHomeScreen");
+        // } else if (userRole === "seller") {
           navigation.replace("SellerHomeScreen");
-        } else {
-          alert("Unknown user role");
-        }
+        // } else {
+        //   alert("Unknown user role");
+        // }
         setEmail("");
         setPassword("");
       }

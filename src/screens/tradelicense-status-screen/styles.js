@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
   },
 
   subtitle: {
+    fontFamily:"Nunito",
     fontSize: 16,
     textAlign: "center",
     color: "#6F6F6F",
@@ -39,6 +40,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 25,
     marginTop: 10,
   },
+ 
   buttonContainer: {
     paddingBottom: 30,
     alignItems: "center",
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
   },
   subtitle2: {
     marginTop: 20,
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "500",
     textAlign: "center",
     color: "#000000",
