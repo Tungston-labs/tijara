@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   container: {
     height: height * 0.12,
     width: width * 1,
-    marginTop: 15,
+    marginTop: 40,
   },
   rowContainer: {
     flexDirection: "row",
