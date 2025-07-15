@@ -174,9 +174,11 @@ const SellerAddProductScreen = ({ navigation }) => {
       return;
     }
 
-    if (priceAED || isNaN(priceAED)) {
+    if (priceAED) {
+      if( isNaN(priceAED)){
       Alert.alert("Validation Error", "Price must be a valid number.");
       return;
+      }
     }
 
     if (!expiryDate) {
