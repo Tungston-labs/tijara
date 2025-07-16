@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import API from "../../services/config";
 import styles from "./styles";
@@ -7,6 +7,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 const ForgetPasswordScreen = () => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   const handleResetPassword = async () => {
@@ -14,6 +15,10 @@ const ForgetPasswordScreen = () => {
       Alert.alert("Error", "Please enter your email address.");
       return;
     }
+
+    if (loading) return;
+
+    setLoading(true);
 
     try {
       const res = await API.post(
@@ -30,6 +35,8 @@ const ForgetPasswordScreen = () => {
         "Error",
         error?.response?.data?.message || "Failed to send reset OTP"
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,7 +49,7 @@ const ForgetPasswordScreen = () => {
         <Icon name="chevron-back-outline" size={24} color="#000" />
       </TouchableOpacity>
 
-      <Text style={styles.title}>Forgot password ?</Text>
+      <Text style={styles.title}>Forgot password?</Text>
       <Text style={styles.subtitle}>
         No worries, we will send you reset instructions
       </Text>
@@ -58,8 +65,16 @@ const ForgetPasswordScreen = () => {
         onChangeText={setEmail}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
-        <Text style={styles.buttonText}>Send OTP</Text>
+      <TouchableOpacity
+        style={[styles.button, loading && { opacity: 0.6 }]}
+        onPress={handleResetPassword}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Send OTP</Text>
+        )}
       </TouchableOpacity>
     </View>
   );

@@ -11,12 +11,15 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import styles from "./styles";
 import API from "../../services/config";
+import { useEffect } from "react";
 
 const OTPVerificationScreen = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const navigation = useNavigation();
   const route = useRoute();
-  const { email } = route.params; 
+  const { email } = route.params;
+  const [resendLoading, setResendLoading] = useState(false);
+  const [timer, setTimer] = useState(60);
 
   const inputs = useRef([]);
 
@@ -29,10 +32,38 @@ const OTPVerificationScreen = () => {
       inputs.current[index + 1].focus();
     }
   };
+  useEffect(() => {
+    let interval = null;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
 
   const handleBackspace = (index) => {
     if (otp[index] === "" && index > 0) {
       inputs.current[index - 1].focus();
+    }
+  };
+  const handleResendOtp = async () => {
+    if (resendLoading || timer > 0) return;
+
+    setResendLoading(true);
+    try {
+      const res = await API.post(
+        "/user/send-otp",
+        { email },
+        { withCredentials: true }
+      );
+      Alert.alert("Success", "OTP resent to your email.");
+      setTimer(60); // Restart timer
+    } catch (error) {
+      console.log("Resend OTP error:", error);
+      Alert.alert("Error", "Failed to resend OTP.");
+    } finally {
+      setResendLoading(false);
     }
   };
 
@@ -95,6 +126,33 @@ const OTPVerificationScreen = () => {
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Continue</Text>
       </TouchableOpacity>
+      <View
+        style={{
+          marginTop: 20,
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
+        {resendLoading ? (
+          <Text style={{ color: "#999", textAlign: "center" }}>
+            Resending...
+          </Text>
+        ) : timer > 0 ? (
+          <Text style={{ color: "#000", textAlign: "center" }}>
+            Resend OTP in <Text style={{ color: "#999" }}>{timer}s</Text>
+          </Text>
+        ) : (
+          <Text style={{ textAlign: "center", color: "#000" }}>
+            Didn't receive code?{" "}
+            <Text
+              style={{ color: "#B3DB48",  }}
+              onPress={handleResendOtp}
+            >
+              Resend OTP
+            </Text>
+          </Text>
+        )}
+      </View>
     </SafeAreaView>
   );
 };

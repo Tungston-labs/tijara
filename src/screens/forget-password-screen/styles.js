@@ -14,6 +14,13 @@ backArrow: {
     left: 20,
     zIndex: 10,
   },
+  resendText: {
+  marginTop: 15,
+  textAlign: "center",
+  color: "#007bff",
+  fontWeight: "600",
+},
+
   title: {
     fontSize: 24,
     fontWeight: "bold",
