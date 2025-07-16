@@ -59,6 +59,7 @@ const Header = ({
                   backgroundColor: "rgba(255, 0, 0, 0.1)",
                   borderRadius: 999,
                   padding: 5,
+                  marginTop:30,
                   alignItems: "center",
                   justifyContent: "center",
                 }}

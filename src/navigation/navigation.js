@@ -36,6 +36,7 @@ import ResetPasswordScreen from "../screens/reset-password-screen";
 import TradeLicenseLockScreen from "../screens/user-list-item-lock-screen";
 import UploadTradeLicenseScreen from "../screens/upload-tradelicense-screen";
 import TradeLicenseStatusScreen from "../screens/tradelicense-status-screen";
+import TermsAndConditionsScreen from "../screens/terms-and-conditions'";
 
 const Stack = createNativeStackNavigator();
 
@@ -154,6 +155,9 @@ export default function MainNavigation() {
                   name="SellerEditProductScreen"
                   component={SellerEditProductScreen}
                 />
+                <Stack.Screen
+                name="TermsAndConditions"
+                component={TermsAndConditionsScreen}/>
                 <Stack.Screen
                   name="ItemDetailsScreen"
                   component={ItemDetailsScreen}

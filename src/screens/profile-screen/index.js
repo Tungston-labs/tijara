@@ -18,29 +18,28 @@ import { logout } from "../../redux/slice/authSlice";
 
 const ProfileScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const {user} = useSelector((state) => state.user);
-console.log("user",user)
-  const dispatch=useDispatch();
+  const { user } = useSelector((state) => state.user);
+  console.log("user", user);
+  const dispatch = useDispatch();
   const handleButtonClick = () => {
-
     setModalVisible(true);
   };
 
   const closeModal = () => {
     setModalVisible(false);
   };
- const handleIconPress = () => {
+  const handleIconPress = () => {
     navigation.goBack();
   };
-const handleLogout = async () => {
-  dispatch(logout());
+  const handleLogout = async () => {
+    dispatch(logout());
 
-  // Ensure navigation stack resets to login screen
-  navigation.reset({
-    index: 0,
-    routes: [{ name: "LoginScreenPassword" }],
-  });
-};
+    // Ensure navigation stack resets to login screen
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "LoginScreenPassword" }],
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -54,13 +53,16 @@ const handleLogout = async () => {
       </View>
 
       <View style={styles.avatarContainer}>
-        <Image source={{uri:user.image}} style={styles.avatar} />
+        <Image source={{ uri: user.image }} style={styles.avatar} />
         {/* <Image source={images.profile} style={styles.avatar} /> */}
       </View>
 
       <View style={styles.optionsContainer}>
-        <TouchableOpacity style={styles.optionRow}>
-          <Text style={styles.optionText}>Edit profile</Text>
+        <TouchableOpacity
+          style={styles.optionRow}
+          onPress={() => navigation.navigate("TermsAndConditions")}
+        >
+          <Text style={styles.optionText}>Terms And Conditions</Text>
           <Icon name="chevron-forward" size={20} />
         </TouchableOpacity>
 
@@ -77,7 +79,6 @@ const handleLogout = async () => {
           customLabelStyle={styles.label}
           IconColor={"red"}
           handleButtonPress={handleButtonClick}
-          
         />
       </View>
       <Modal

@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
   },
   editIconContainerStyle: {
     width: width * 0.2,
+    marginTop:-35
   },
   editText: {
     fontSize: 16,

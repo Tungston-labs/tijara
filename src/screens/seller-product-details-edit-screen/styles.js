@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 180,
     borderRadius: 10,
-    marginBottom: 10,
+    marginBottom: 100,
   },
   mainImageContainer: {
     marginHorizontal: 10,
