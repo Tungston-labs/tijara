@@ -67,6 +67,7 @@ const ProfileScreen = ({ navigation }) => {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.optionRow}>
+          onPress={() => navigation.navigate("TermsAndConditions")}
           <Text style={styles.optionText}>Privacy and policy</Text>
           <Icon name="chevron-forward" size={20} />
         </TouchableOpacity>
