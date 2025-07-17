@@ -65,7 +65,8 @@ const SellerProductDetailsEditScreen = () => {
             Title={sellerProduct?.itemName}
             editIcon={true}
             handleEditIconPress={handleEditPress}
-          /></View>
+          />
+          </View>
           <View style={styles.imageContainer}>
             <Image
               source={

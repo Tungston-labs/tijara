@@ -12,13 +12,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    width: width * 1,
-    height: height * 0.18,
-    // paddingBottom: 60,
   },
   headerTitleContainer: {
     marginTop: 55,
   },
+  customHeader: {
+  backgroundColor: "#B3DB48",
+  flexDirection: "row",
+  alignItems: "center",
+  paddingTop: 40,
+  paddingBottom: 50,
+  paddingHorizontal: 20,
+  position: "relative",
+  justifyContent: "center",
+},
+
+backIcon: {
+  position: "absolute",
+  left: 20,
+  top: 20,
+},
+
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",

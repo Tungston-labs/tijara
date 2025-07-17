@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,6 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import styles from "./styles";
-import Header from "../../componets/Header";
-import images from "../../config/images";
 import Button from "../../componets/Button";
 import ModalButton from "../../componets/ModalButton";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,22 +17,13 @@ import { logout } from "../../redux/slice/authSlice";
 const ProfileScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const { user } = useSelector((state) => state.user);
-  console.log("user", user);
   const dispatch = useDispatch();
-  const handleButtonClick = () => {
-    setModalVisible(true);
-  };
 
-  const closeModal = () => {
-    setModalVisible(false);
-  };
-  const handleIconPress = () => {
-    navigation.goBack();
-  };
+  const handleButtonClick = () => setModalVisible(true);
+  const closeModal = () => setModalVisible(false);
+
   const handleLogout = async () => {
     dispatch(logout());
-
-    // Ensure navigation stack resets to login screen
     navigation.reset({
       index: 0,
       routes: [{ name: "LoginScreenPassword" }],
@@ -43,18 +32,16 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Header
-          Title={"Profile"}
-          icon={true}
-          handleIconPress={handleIconPress}
-          customStyle={styles.headerTitleContainer}
-        />
+      {/* Custom Header */}
+      <View style={styles.customHeader}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
+          <Icon name="chevron-back" size={28} color="#000" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Profile</Text>
       </View>
 
       <View style={styles.avatarContainer}>
         <Image source={{ uri: user.image }} style={styles.avatar} />
-        {/* <Image source={images.profile} style={styles.avatar} /> */}
       </View>
 
       <View style={styles.optionsContainer}>
@@ -66,12 +53,15 @@ const ProfileScreen = ({ navigation }) => {
           <Icon name="chevron-forward" size={20} />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.optionRow}
-          onPress={() => navigation.navigate("PrivacyPolicy")}>
+        <TouchableOpacity
+          style={styles.optionRow}
+          onPress={() => navigation.navigate("PrivacyPolicy")}
+        >
           <Text style={styles.optionText}>Privacy and policy</Text>
           <Icon name="chevron-forward" size={20} />
         </TouchableOpacity>
       </View>
+
       <View style={styles.buttonContainer}>
         <Button
           label={"Log Out"}
@@ -82,6 +72,8 @@ const ProfileScreen = ({ navigation }) => {
           handleButtonPress={handleButtonClick}
         />
       </View>
+
+      {/* Logout Modal */}
       <Modal
         visible={modalVisible}
         animationType="slide"
@@ -103,10 +95,9 @@ const ProfileScreen = ({ navigation }) => {
               />
               <ModalButton
                 label={"Log out"}
-                // handleButtonPress={closeModal}
+                handleButtonPress={handleLogout}
                 customStyle={styles.logoutButtonStyle}
                 customLabelStyle={styles.customLabelStyles}
-                handleButtonPress={handleLogout}
               />
             </View>
           </View>

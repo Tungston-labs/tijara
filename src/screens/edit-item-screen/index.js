@@ -226,7 +226,7 @@ const handleDelete = async () => {
                   setModalVisible(true);
                 }}
               />{" "}
-              <Text style={styles.minImageText}>*Min 4 Image</Text>
+              <Text style={styles.minImageText}>*Max 4 Image</Text>
               <TouchableOpacity
                 style={styles.uploadBox}
                 onPress={handleSelectImages}

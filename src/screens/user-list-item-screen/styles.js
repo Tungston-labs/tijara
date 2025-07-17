@@ -107,6 +107,26 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 12,
   },
+emptyContainer: {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  paddingVertical: 40,
+  gap: 10, // adds space between image and text (works in RN 0.71+)
+},
+
+emptyImage: {
+  width: 350,
+  height: 350,
+},
+
+emptyText: {
+  fontSize: 16,
+  color: "#666",
+  textAlign: "center",
+  marginTop: 10, // fallback spacing if 'gap' doesn't work
+},
+
   rating: {
     fontSize: 12,
   },

@@ -150,9 +150,14 @@ const UserListItemScreen = () => {
               onEndReachedThreshold={0.5}
               ListEmptyComponent={
                 !loadingSeller ? (
-                  <Text style={{ textAlign: "center", marginTop: 20 }}>
-                    No products available.
-                  </Text>
+                  <View style={styles.emptyContainer}>
+                    <Image
+                      source={require("../../resources/images/empty_cart.png")} 
+                      style={styles.emptyImage}
+                      resizeMode="contain"
+                    />
+                    <Text style={styles.emptyText}>No Items yet- starts by adding one to see them here.</Text>
+                  </View>
                 ) : null
               }
               ListFooterComponent={

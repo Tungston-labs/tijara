@@ -5,32 +5,32 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     height: height * 0.12,
-    width: width * 1,
-    marginTop: 40,
+    width: width,
+    justifyContent: "center",
+    backgroundColor: "#fff",
   },
   rowContainer: {
     flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    // paddingHorizontal: 2,
   },
   iconStyle: {
     width: width * 0.2,
-    marginTop:-35,
+    alignItems: "flex-start",
   },
   editIconContainerStyle: {
     width: width * 0.2,
-    marginTop:-35
   },
   editText: {
     fontSize: 16,
     fontWeight: "500",
+    marginLeft: 5,
   },
   textContainer: {
-    alignItems: "center",
     width: width * 0.6,
-    textAlign: "center",
-  },
-  textStyle: {
-    textAlign: "center",
-    marginTop:-35
+    alignItems: "center",
+    justifyContent: "center",
   },
   titleStyle: {
     color: "#000000",
@@ -39,4 +39,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
 export default styles;

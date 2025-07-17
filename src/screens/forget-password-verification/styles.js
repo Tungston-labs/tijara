@@ -10,7 +10,7 @@ export default StyleSheet.create({
   },
  backArrow: {
     position: "absolute",
-    top: 5,
+    top: 25,
     left: 20,
     zIndex: 10,
   },

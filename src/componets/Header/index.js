@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./styles";
 import Icon from "react-native-vector-icons/Ionicons";
 import PropTypes from "prop-types";
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Header = ({
   handleIconPress,
@@ -16,13 +16,13 @@ const Header = ({
   deleteIcon,
   handleDeletePress,
 }) => {
-  const insets = useSafeAreaInsets(); 
+  const insets = useSafeAreaInsets();
 
   return (
     <View
       style={[
         styles.container,
-        { paddingTop: insets.top }, 
+        { paddingTop: insets.top },
         customStyle,
       ]}
     >
@@ -34,34 +34,32 @@ const Header = ({
             </TouchableOpacity>
           )}
         </View>
+
         <View style={styles.textContainer}>
-          <View style={styles.textStyle}>
-            {Title && <Text style={styles.titleStyle}>{Title}</Text>}
-            {Subtitle && <Text style={styles.titleStyle}>{Subtitle}</Text>}
-          </View>
+          {Title && <Text style={styles.titleStyle}>{Title}</Text>}
+          {Subtitle && <Text style={styles.titleStyle}>{Subtitle}</Text>}
         </View>
+
         <View style={styles.editIconContainerStyle}>
           {editIcon && (
             <TouchableOpacity onPress={handleEditIconPress}>
-              <View style={styles.rowContainer}>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Icon name="pencil-sharp" size={18} color="#000000" />
                 <Text style={styles.editText}>Edit</Text>
               </View>
             </TouchableOpacity>
           )}
+
           {deleteIcon && (
-            <TouchableOpacity
-              style={{ alignItems: "center" ,marginTop:-35 }}
-              onPress={handleDeletePress}
-            >
+            <TouchableOpacity onPress={handleDeletePress}>
               <View
                 style={{
                   backgroundColor: "rgba(255, 0, 0, 0.1)",
                   borderRadius: 999,
                   padding: 5,
-                  marginTop:30,
                   alignItems: "center",
                   justifyContent: "center",
+                  marginTop: 10,
                 }}
               >
                 <Icon name="trash-outline" size={20} color="red" />
