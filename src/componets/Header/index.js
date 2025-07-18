@@ -54,7 +54,6 @@ const Header = ({
             <TouchableOpacity onPress={handleDeletePress}>
               <View
                 style={{
-                  backgroundColor: "rgba(255, 0, 0, 0.1)",
                   borderRadius: 999,
                   padding: 5,
                   alignItems: "center",
