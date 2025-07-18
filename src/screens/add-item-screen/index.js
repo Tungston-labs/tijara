@@ -175,9 +175,9 @@ const SellerAddProductScreen = ({ navigation }) => {
     }
 
     if (priceAED) {
-      if( isNaN(priceAED)){
-      Alert.alert("Validation Error", "Price must be a valid number.");
-      return;
+      if (isNaN(priceAED)) {
+        Alert.alert("Validation Error", "Price must be a valid number.");
+        return;
       }
     }
 
@@ -269,7 +269,14 @@ const SellerAddProductScreen = ({ navigation }) => {
             nestedScrollEnabled={true}
           >
             <BackgroundWrapper>
-              <Header Title="Add new item" />
+              <View style={styles.header}>
+                <Header
+                  Title="Add New Item"
+                  icon={true}
+                  handleIconPress={() => navigation.goBack()}
+                  customStyle={{ height: 100 }} // reduced height only for this screen
+                />
+              </View>
 
               <Text style={styles.minImageText}>*Max 4 Image</Text>
               <TouchableOpacity
@@ -508,10 +515,10 @@ const SellerAddProductScreen = ({ navigation }) => {
                   </View>
                 </View>
 
-                <Text style={styles.label}>Discription</Text>
+                <Text style={styles.label}>Description</Text>
                 <TextInput
                   style={styles.descriptionInput}
-                  placeholder="Discription"
+                  placeholder="Description"
                   value={description}
                   onChangeText={setDescription}
                   multiline

@@ -111,22 +111,19 @@ emptyContainer: {
   flex: 1,
   justifyContent: "center",
   alignItems: "center",
-  paddingVertical: 40,
-  gap: 10, // adds space between image and text (works in RN 0.71+)
+  paddingVertical: 180,
 },
 
-emptyImage: {
-  width: 350,
-  height: 350,
-},
+
 
 emptyText: {
   fontSize: 16,
-  color: "#666",
+  color: "#000000",
   textAlign: "center",
-  marginTop: 10, // fallback spacing if 'gap' doesn't work
+  lineHeight: 24,
+  fontFamily: "Nunito",
+  padding:"auto"
 },
-
   rating: {
     fontSize: 12,
   },

@@ -17,6 +17,7 @@ import {
   resetSellerProducts,
 } from "../../redux/slice/sellerProductSlice";
 import debounce from "lodash.debounce";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const UserListItemScreen = () => {
   const token = useSelector((state) => state.user.token);
@@ -151,12 +152,11 @@ const UserListItemScreen = () => {
               ListEmptyComponent={
                 !loadingSeller ? (
                   <View style={styles.emptyContainer}>
-                    <Image
-                      source={require("../../resources/images/empty_cart.png")} 
-                      style={styles.emptyImage}
-                      resizeMode="contain"
-                    />
-                    <Text style={styles.emptyText}>No Items yet- starts by adding one to see them here.</Text>
+                    <Icon name="cart-outline" size={200} color="#B3DB48" />
+
+                    <Text style={styles.emptyText}>
+                      No items yet - start by adding{"\n"}one to see them here !
+                    </Text>
                   </View>
                 ) : null
               }

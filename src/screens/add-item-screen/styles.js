@@ -13,7 +13,10 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginRight: 20,
     marginBottom: 5,
-    marginTop: -70,
+    marginTop: 2,
+  },
+  header:{
+marginTop:2
   },
   uploadBox: {
     borderWidth: 1,

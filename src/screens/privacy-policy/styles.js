@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     marginTop: 50,
-    marginLeft: 16,
+    marginLeft: 2,
   },
 //   header: {
 //     fontSize: 0,
@@ -42,46 +42,53 @@ headerText: {
     paddingHorizontal: 16,
     paddingBottom: 20,
   },
-  title: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontWeight: 'bold',
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 6,
-    color: '#333',
-  },
-  bullet: {
-    fontSize: 14,
-    lineHeight: 22,
-    marginLeft: 10,
-    marginBottom: 6,
-  },
-  paragraph: {
-    fontSize: 14,
-    lineHeight: 22,
-    marginBottom: 12,
-  },
-  paragraphBold: {
+ title: {
+  fontWeight: 'bold',
+  fontSize: 16,
+  marginTop: 10,
+  textAlign: 'center',
+  fontFamily: 'Nunito',
+},
+subtitle: {
+  fontWeight: 'bold',
+  fontSize: 14,
+  textAlign: 'center',
+  marginBottom: 10,
+  fontFamily: 'Nunito',
+},
+sectionTitle: {
+  fontSize: 15,
+  fontWeight: 'bold',
+  marginTop: 20,
+  marginBottom: 6,
+  color: '#333',
+  fontFamily: 'Nunito',
+},
+bullet: {
+  fontSize: 14,
+  lineHeight: 22,
+  marginLeft: 10,
+  marginBottom: 6,
+  fontFamily: 'Nunito',
+},
+paragraph: {
+  fontSize: 14,
+  lineHeight: 22,
+  marginBottom: 12,
+  fontFamily: 'Nunito',
+},
+paragraphBold: {
   fontSize: 14,
   fontWeight: 'bold',
   marginBottom: 8,
+  fontFamily: 'Nunito',
 },
 label: {
   fontSize: 14,
   fontWeight: 'bold',
   marginTop: 8,
-}
+  fontFamily: 'Nunito',
+},
 
 });
 
