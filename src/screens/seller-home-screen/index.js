@@ -20,12 +20,17 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import TradeLicenseLockScreen from "../user-list-item-lock-screen";
 import TradeLicenseStatusScreen from "../tradelicense-status-screen";
 import { fetchTradeLicenseStatusThunk } from "../../redux/slice/authSlice";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect ,useIsFocused} from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
+const HomeTabContent = ({ tradeLicenseStatus }) => {
+  if (tradeLicenseStatus === "approved") return <UserListItemScreen />;
+  if (["pending", "rejected", "expired"].includes(tradeLicenseStatus))
+    return <TradeLicenseStatusScreen />;
+  return <TradeLicenseLockScreen />;
+};
 const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
-
   return (
     <Tab.Navigator
       screenOptions={{
@@ -34,24 +39,6 @@ const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
         tabBarInactiveTintColor: "#000000",
       }}
     >
-      <Tab.Screen
-        name="Home"
-        // component={SellComponent}
-        children={() => {
-          if (tradeLicenseStatus === "approved") return <UserListItemScreen />;
-          if (["pending", "rejected", "expired"].includes(tradeLicenseStatus))
-            return <TradeLicenseStatusScreen />;
-          return <TradeLicenseLockScreen />;
-        }}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <Icon name="home-outline" size={25} color={color} />
-          ),
-        }}
-        listeners={{
-          focus: () => onTabChange("Home"),
-        }}
-      />
       <Tab.Screen
         name="Buy"
         children={() => <ListItemScreen />}
@@ -62,6 +49,20 @@ const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
         }}
         listeners={{
           focus: () => onTabChange("Buy"),
+        }}
+      />
+      <Tab.Screen
+        name="Home"
+        children={() => (
+          <HomeTabContent tradeLicenseStatus={tradeLicenseStatus} />
+        )}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <Icon name="home-outline" size={25} color={color} />
+          ),
+        }}
+        listeners={{
+          focus: () => onTabChange("Home"),
         }}
       />
     </Tab.Navigator>
@@ -80,27 +81,28 @@ const SellerHomeScreen = ({ navigation }) => {
     (state) => state.user.user.tradeLicenseStatus
   );
 
-   useFocusEffect(
-    useCallback(() => {
-      if (activeTab !== "Home") return;
+ const isFocused = useIsFocused();
 
-      const fetchStatus = async () => {
-        setLoading(true);
-        try {
-          await dispatch(fetchTradeLicenseStatusThunk());
-        } catch (err) {
-          console.error("Failed to fetch trade license status:", err);
-        } finally {
-          setLoading(false);
-        }
-      };
+useEffect(() => {
+  if (!isFocused) return;
 
-      fetchStatus();
-    }, [dispatch, activeTab])
-  );
-   
+  const fetchStatus = async () => {
+    setLoading(true);
+    try {
+      await dispatch(fetchTradeLicenseStatusThunk());
+    } catch (err) {
+      console.error("Failed to fetch trade license status:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchStatus();
+}, [isFocused, dispatch]);
+
+
   const shouldShowSearch =
-    (activeTab === "Home" && tradeLicenseStatus === "approved");
+    activeTab === "Home" && tradeLicenseStatus === "approved";
 
   if (loading) {
     return (

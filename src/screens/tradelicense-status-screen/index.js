@@ -47,7 +47,7 @@ const TradeLicenseStatusScreen = () => {
           buttonText: "Upload New License",
           nav: "UploadTradeLicenseScreen",
         };
-
+ 
       case "approved":
         return {
           title: "Congratulations!",

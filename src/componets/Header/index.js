@@ -15,19 +15,14 @@ const Header = ({
   customStyle,
   deleteIcon,
   handleDeletePress,
+  iconContainerStyle,
 }) => {
   const insets = useSafeAreaInsets();
 
   return (
-    <View
-      style={[
-        styles.container,
-        { paddingTop: insets.top },
-        customStyle,
-      ]}
-    >
+    <View style={[styles.container, { paddingTop: insets.top }, customStyle]}>
       <View style={styles.rowContainer}>
-        <View style={styles.iconStyle}>
+        <View style={[styles.iconStyle, iconContainerStyle]}>
           {icon && (
             <TouchableOpacity onPress={handleIconPress}>
               <Icon name="chevron-back" size={28} color="#000000" />

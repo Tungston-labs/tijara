@@ -101,18 +101,21 @@ const ItemDetailsScreen = ({ navigation }) => {
 
   //for model close when go to whatsapp
   useEffect(() => {
-  const subscription = AppState.addEventListener("change", handleAppStateChange);
+    const subscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
 
-  return () => {
-    subscription.remove(); 
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const handleAppStateChange = (nextAppState) => {
+    if (nextAppState === "active") {
+      setModalVisible(false);
+    }
   };
-}, []);
-
-const handleAppStateChange = (nextAppState) => {
-  if (nextAppState === "active") {
-    setModalVisible(false);
-  }
-};
   return (
     <View style={styles.container}>
       <ScrollView>
@@ -121,6 +124,7 @@ const handleAppStateChange = (nextAppState) => {
             handleIconPress={handleIconPress}
             icon={true}
             Title={product?.itemName || "Loading..."}
+            iconContainerStyle={{ marginLeft: 10 }} 
           />
 
           <View style={styles.imageContainer}>
@@ -161,7 +165,8 @@ const handleAppStateChange = (nextAppState) => {
             </View>
             <View style={styles.priceContainer}>
               <Text style={styles.price}>
-                {product?.pricePerKg?.AED?product?.pricePerKg?.AED:"---"} AED / kg
+                {product?.pricePerKg?.AED ? product?.pricePerKg?.AED : "---"}{" "}
+                AED / kg
               </Text>
               <Text style={styles.qty}>
                 Available Qty:
@@ -179,7 +184,10 @@ const handleAppStateChange = (nextAppState) => {
           <View style={styles.alignContent}>
             <View style={styles.dataContainer}>
               <View style={styles.sellerBox}>
-                <Image source={{ uri: product?.addedBy?.profileImage }} style={styles.sellerImage} />
+                <Image
+                  source={{ uri: product?.addedBy?.profileImage }}
+                  style={styles.sellerImage}
+                />
                 {/* <Image source={images.profile} style={styles.sellerImage} /> */}
                 <View style={styles.textContainer}>
                   <View style={styles.sellerInfoContainer}>
@@ -250,16 +258,15 @@ const handleAppStateChange = (nextAppState) => {
                 </View>
                 <View style={styles.rowContainer}>
                   <View style={styles.cancelText}>
-                  <ModalButton
-                    label={"Cancel"}
-                    style={styles.cancelButton}
-                    handleButtonPress={closeModal}
-                    customStyle={styles.editButtonStyle}
-                    customLabelStyle={styles.label}
-                  />
+                    <ModalButton
+                      label={"Cancel"}
+                      style={styles.cancelButton}
+                      handleButtonPress={closeModal}
+                      customStyle={styles.editButtonStyle}
+                      customLabelStyle={styles.label}
+                    />
                   </View>
                   <TouchableOpacity
-                    
                     onPress={handleWhatsAppRequest}
                     style={[styles.whatsappButton, loading && { opacity: 0.5 }]}
                     disabled={loading}
