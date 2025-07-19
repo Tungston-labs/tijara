@@ -31,17 +31,17 @@ const PrivacyPolicyScreen = () => {
         {/* Sections */}
         <Text style={styles.sectionTitle}>1. What We Collect</Text>
         <Text style={styles.bullet}>
-          • Contact basics: name, email, phone, address
+           Contact basics: name, email, phone, address
         </Text>
         <Text style={styles.bullet}>
-          • Purchase & payment details: order history, shipping data, invoices
+           Purchase & payment details: order history, shipping data, invoices
         </Text>
         <Text style={styles.bullet}>
-          • App/website activity: cookie data, browsing behavior, language
+           App/website activity: cookie data, browsing behavior, language
           preferences
         </Text>
         <Text style={styles.bullet}>
-          • Your messages: customer support requests, surveys, feedback
+           Your messages: customer support requests, surveys, feedback
         </Text>
         <Text style={styles.paragraph}>
           Everything we collect has a clear purpose—and no unnecessary extras.
@@ -49,28 +49,28 @@ const PrivacyPolicyScreen = () => {
 
         <Text style={styles.sectionTitle}>2. Why We Collect It</Text>
         <Text style={styles.bullet}>
-          • Process your orders seamlessly – from payment to delivery
+           Process your orders seamlessly – from payment to delivery
         </Text>
         <Text style={styles.bullet}>
-          • Personalize your experience – tailored offers, product
+           Personalize your experience – tailored offers, product
           recommendations, relevant updates
         </Text>
         <Text style={styles.bullet}>
-          • Build better services – continuous improvements based on analytics
+           Build better services – continuous improvements based on analytics
           and feedback
         </Text>
         <Text style={styles.bullet}>
-          • Protect you – detecting fraud and complying with legal obligations
+           Protect you – detecting fraud and complying with legal obligations
         </Text>
         <Text style={styles.paragraph}>We never sell your data—ever.</Text>
 
         <Text style={styles.sectionTitle}>3. How We Protect & Share Data</Text>
         <Text style={styles.bullet}>
-          • Shared only with Thijara teams or trusted partners (e.g., payment
+           Shared only with Thijara teams or trusted partners (e.g., payment
           gateways, delivery services)
         </Text>
         <Text style={styles.bullet}>
-          • Shared only if legally required—like in response to court orders
+           Shared only if legally required—like in response to court orders
         </Text>
         <Text style={styles.paragraph}>
           We use robust security measures (encryption, firewalls, secure
@@ -79,24 +79,24 @@ const PrivacyPolicyScreen = () => {
         </Text>
 
         <Text style={styles.sectionTitle}>4. Your Control, Your Right</Text>
-        <Text style={styles.bullet}>• View the data we hold</Text>
-        <Text style={styles.bullet}>• Edit or correct inaccuracies</Text>
-        <Text style={styles.bullet}>• Ask to delete data when legal</Text>
-        <Text style={styles.bullet}>• Opt out of marketing communications</Text>
+        <Text style={styles.bullet}> View the data we hold</Text>
+        <Text style={styles.bullet}> Edit or correct inaccuracies</Text>
+        <Text style={styles.bullet}> Ask to delete data when legal</Text>
+        <Text style={styles.bullet}> Opt out of marketing communications</Text>
         <Text style={styles.bullet}>
-          • Request your data or have it transferred
+           Request your data or have it transferred
         </Text>
         <Text style={styles.paragraph}>
           Just contact our privacy team—we’ll guide you every step of the way.
         </Text>
 
         <Text style={styles.sectionTitle}>5. Cookies & Tracking</Text>
-        <Text style={styles.bullet}>• Keeping you logged in smoothly</Text>
+        <Text style={styles.bullet}> Keeping you logged in smoothly</Text>
         <Text style={styles.bullet}>
-          • Saving preferences like language and layout
+           Saving preferences like language and layout
         </Text>
         <Text style={styles.bullet}>
-          • Understanding site usage to improve features
+           Understanding site usage to improve features
         </Text>
         <Text style={styles.paragraph}>
           You can manage or disable cookies anytime—our setup puts you in
@@ -117,13 +117,13 @@ const PrivacyPolicyScreen = () => {
 
         <Text style={styles.sectionTitle}>8. Policy Updates</Text>
         <Text style={styles.bullet}>
-          • Effective date at the top will always reflect the latest version
+           Effective date at the top will always reflect the latest version
         </Text>
         <Text style={styles.bullet}>
-          • Key changes highlighted so you stay informed
+           Key changes highlighted so you stay informed
         </Text>
         <Text style={styles.bullet}>
-          • We’ll notify you on our website—or by email for major changes
+           We’ll notify you on our website—or by email for major changes
         </Text>
         <Text style={styles.paragraph}>
           We build trust by keeping you in the loop.
@@ -131,10 +131,10 @@ const PrivacyPolicyScreen = () => {
 
         <Text style={styles.sectionTitle}>9. International Data Transfers</Text>
         <Text style={styles.bullet}>
-          • We ensure legal safeguards like recognized contractual protections
+           We ensure legal safeguards like recognized contractual protections
         </Text>
         <Text style={styles.bullet}>
-          • We comply with global privacy laws (e.g., GDPR, CCPA)
+           We comply with global privacy laws (e.g., GDPR, CCPA)
         </Text>
 
         <Text style={styles.sectionTitle}>10. Privacy Built In</Text>

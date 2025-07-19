@@ -3,7 +3,6 @@ import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import styles from "./styles";
-import Header from "../../componets/Header";
 
 const TermsAndConditionsScreen = () => {
   const navigation = useNavigation();
@@ -35,11 +34,11 @@ const TermsAndConditionsScreen = () => {
 
         <Text style={styles.sectionTitle}>B. Consent & Transparency</Text>
         <Text style={styles.bullet}>
-          • Agreement by use: Simply using our Platform means you agree to
+           Agreement by use: Simply using our Platform means you agree to
           follow these Terms.
         </Text>
         <Text style={styles.bullet}>
-          • Active consent: We use a checkbox during checkout/registration to
+           Active consent: We use a checkbox during checkout/registration to
           ensure you knowingly agree—aligning with "clickwrap" best practices.
         </Text>
 
@@ -47,31 +46,31 @@ const TermsAndConditionsScreen = () => {
           1. Clear Definitions for Easy Understanding
         </Text>
         <Text style={styles.bullet}>
-          • Account – Your personal login to place Orders
+           Account – Your personal login to place Orders
         </Text>
         <Text style={styles.bullet}>
-          • Platform – Website + Mobile App where you shop
+           Platform – Website + Mobile App where you shop
         </Text>
         <Text style={styles.bullet}>
-          • Product – Items you buy, e.g., fruits and vegetables
+           Product – Items you buy, e.g., fruits and vegetables
         </Text>
-        <Text style={styles.bullet}>• Order – Your confirmed purchase</Text>
+        <Text style={styles.bullet}> Order – Your confirmed purchase</Text>
         <Text style={styles.bullet}>
-          • User Content – Reviews, photos, comments you upload
-        </Text>
-        <Text style={styles.bullet}>
-          • Thijara Content – Our branding, images, descriptions
+           User Content – Reviews, photos, comments you upload
         </Text>
         <Text style={styles.bullet}>
-          • Privacy, Refund, and Shipping Policies – Linked separately but
+           Thijara Content – Our branding, images, descriptions
+        </Text>
+        <Text style={styles.bullet}>
+           Privacy, Refund, and Shipping Policies – Linked separately but
           referenced here
         </Text>
 
         <Text style={styles.sectionTitle}>2. Eligibility & Account Safety</Text>
         <Text style={styles.bullet}>
-          • Must be 18+, with accurate registration info.
+           Must be 18+, with accurate registration info.
         </Text>
-        <Text style={styles.bullet}>• Account responsibility:</Text>
+        <Text style={styles.bullet}> Account responsibility:</Text>
         <Text style={styles.subBullet}>◦ Keep your password secure.</Text>
         <Text style={styles.subBullet}>
           ◦ Inform us of any unauthorized use.
@@ -79,7 +78,7 @@ const TermsAndConditionsScreen = () => {
         <Text style={styles.subBullet}>
           ◦ You’re responsible for all activity on your Account.
         </Text>
-        <Text style={styles.bullet}>• We may:</Text>
+        <Text style={styles.bullet}> We may:</Text>
         <Text style={styles.subBullet}>
           ◦ Modify or deactivate your Account as needed, with notice.
         </Text>
@@ -116,10 +115,10 @@ const TermsAndConditionsScreen = () => {
           5. Community Guidelines & Acceptable Use
         </Text>
         <Text style={styles.bullet}>
-          • Don’t break laws or post offensive content
+           Don’t break laws or post offensive content
         </Text>
         <Text style={styles.bullet}>
-          • Don’t hinder other users or tamper with our systems
+           Don’t hinder other users or tamper with our systems
         </Text>
         <Text style={styles.paragraph}>
           Violations may result in Account suspension or termination—without
@@ -138,12 +137,12 @@ const TermsAndConditionsScreen = () => {
           7. Warranty, Disclaimer & Liability
         </Text>
         <Text style={styles.bullet}>
-          • As‑is service: No warranties on Products or Platform.
+           As‑is service: No warranties on Products or Platform.
         </Text>
         <Text style={styles.bullet}>
-          • Liability capped: Max refund equals what you paid.
+           Liability capped: Max refund equals what you paid.
         </Text>
-        <Text style={styles.bullet}>• No liability for indirect losses.</Text>
+        <Text style={styles.bullet}> No liability for indirect losses.</Text>
         <Text style={styles.note}>
           This limited liability protects both parties and upholds fairness.
         </Text>
@@ -158,43 +157,43 @@ const TermsAndConditionsScreen = () => {
           9. Modifications & Platform Availability
         </Text>
         <Text style={styles.bullet}>
-          • We may update or discontinue features anytime, with notice.
+           We may update or discontinue features anytime, with notice.
         </Text>
         <Text style={styles.bullet}>
-          • Suspension/termination for policy violations.
+           Suspension/termination for policy violations.
         </Text>
         <Text style={styles.bullet}>
-          • Surviving clauses: Indemnity, liability limits, and dispute
+           Surviving clauses: Indemnity, liability limits, and dispute
           resolution stay active even after termination.
         </Text>
 
         <Text style={styles.sectionTitle}>10. Disputes & Governing Law</Text>
-        <Text style={styles.bullet}>• Governed by Indian law.</Text>
+        <Text style={styles.bullet}> Governed by Indian law.</Text>
         <Text style={styles.bullet}>
-          • Jurisdiction: Courts of Kochi, Kerala.
+           Jurisdiction: Courts of Kochi, Kerala.
         </Text>
 
         <Text style={styles.sectionTitle}>11. Privacy & Data Security</Text>
         <Text style={styles.bullet}>
-          • See our Privacy Policy for full data handling details.
+           See our Privacy Policy for full data handling details.
         </Text>
         <Text style={styles.bullet}>
-          • We comply with Indian privacy laws and never sell your data.
+           We comply with Indian privacy laws and never sell your data.
         </Text>
 
         <Text style={styles.sectionTitle}>12. Keeping You Updated</Text>
         <Text style={styles.bullet}>
-          • Term updates notified via email or in-app alerts.
+           Term updates notified via email or in-app alerts.
         </Text>
         <Text style={styles.bullet}>
-          • Continued use = acceptance of latest terms.
+           Continued use = acceptance of latest terms.
         </Text>
 
         <Text style={styles.sectionTitle}>13. Contact Us Anytime</Text>
-        <Text style={styles.bullet}>• Email: support@thijara.in</Text>
-        <Text style={styles.bullet}>• Phone: [Insert phone number]</Text>
+        <Text style={styles.bullet}> Email: support@thijara.in</Text>
+        <Text style={styles.bullet}> Phone: [Insert phone number]</Text>
         <Text style={styles.bullet}>
-          • Address: [Insert full address, Kochi, Kerala]
+           Address: [Insert full address, Kochi, Kerala]
         </Text>
         <Text style={styles.paragraph}>
           Accessible support boosts user confidence.
@@ -202,11 +201,11 @@ const TermsAndConditionsScreen = () => {
 
         <Text style={styles.sectionTitle}>14. Visibility & Ease of Access</Text>
         <Text style={styles.bullet}>
-          • Terms are linked in the footer, registration, and checkout screens
+           Terms are linked in the footer, registration, and checkout screens
           for discoverability.
         </Text>
         <Text style={styles.bullet}>
-          • We use a checkbox before purchase to confirm user agreement.
+           We use a checkbox before purchase to confirm user agreement.
         </Text>
 
         <Text style={styles.thankYou}>

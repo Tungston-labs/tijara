@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 backIcon: {
   position: "absolute",
   left: 5,
-  top: 25,
+  top: 35,
 },
 
   headerTitle: {
