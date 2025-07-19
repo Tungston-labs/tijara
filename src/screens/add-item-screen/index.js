@@ -93,7 +93,7 @@ const SellerAddProductScreen = ({ navigation }) => {
         const permissions = [
           PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
           PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
+          // PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
         ];
 
         const granted = await PermissionsAndroid.requestMultiple(permissions);
