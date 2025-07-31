@@ -182,21 +182,22 @@ const SellerEditProductScreen = ({ navigation, route }) => {
     }
   };
 
-const handleDelete = async () => {
-  try {
-    await dispatch(deleteProductThunk({ productId: product._id, token })).unwrap();
+  const handleDelete = async () => {
+    try {
+      await dispatch(
+        deleteProductThunk({ productId: product._id, token })
+      ).unwrap();
 
-    closeModal();
-    Alert.alert("Success", "Product deleted successfully");
+      closeModal();
+      Alert.alert("Success", "Product deleted successfully");
 
-    await dispatch(fetchProductsThunk({ token })); 
-    navigation.navigate("SellerHomeScreen");
-  } catch (err) {
-    console.error("Error deleting product:", err);
-    Alert.alert("Error", err?.message || "Failed to delete product");
-  }
-};
-
+      await dispatch(fetchProductsThunk({ token }));
+      navigation.navigate("SellerHomeScreen");
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      Alert.alert("Error", err?.message || "Failed to delete product");
+    }
+  };
 
   return (
     <TouchableWithoutFeedback
@@ -306,9 +307,9 @@ const handleDelete = async () => {
                       placeholder: { color: "#888" },
                       iconContainer: { top: 0, right: 12 },
                     }}
-                    Icon={() => (
-                      <Icon name="arrow-drop-down" size={24} color="#888" />
-                    )}
+                    // Icon={() => (
+                    //   <Icon name="arrow-drop-down" size={24} color="#888" />
+                    // )}
                   />
                 </View>
                 {/* Item Name */}
@@ -458,42 +459,13 @@ const handleDelete = async () => {
                 </View>
                 {/* Country */}
                 <Text style={styles.label}>Country</Text>
-                <View style={styles.input}>
-                  <RNPickerSelect
-                    onValueChange={setCountry}
-                    items={[
-                      { label: "UAE", value: "uae" },
-                      { label: "India", value: "india" },
-                      { label: "USA", value: "usa" },
-                    ]}
-                    value={country}
-                    placeholder={{ label: "Select Country", value: null }}
-                    // style={pickerSelectStyles}
-                    style={{
-                      inputIOS: {
-                        color: "#222",
-                        fontSize: 15,
-                        paddingVertical: 0,
-                        paddingHorizontal: 0,
-                        backgroundColor: "transparent",
-                        borderWidth: 0,
-                      },
-                      inputAndroid: {
-                        color: "#222",
-                        fontSize: 15,
-                        paddingVertical: 0,
-                        paddingHorizontal: 0,
-                        backgroundColor: "transparent",
-                        borderWidth: 0,
-                      },
-                      placeholder: { color: "#888" },
-                      iconContainer: { top: 0, right: 12 },
-                    }}
-                    Icon={() => (
-                      <Icon name="arrow-drop-down" size={24} color="#888" />
-                    )}
-                  />
-                </View>
+                <TextInput
+                  placeholder="Enter Country"
+                  placeholderTextColor="#888"
+                  value={country}
+                  onChangeText={(text) => setCountry(text)}
+                  style={styles.input}
+                />
                 {/* Expiry */}
                 <Text style={styles.label}>Expiry date</Text>
                 <TouchableOpacity

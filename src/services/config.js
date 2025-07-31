@@ -16,7 +16,7 @@ export const getToken = () => {
 
 const API = axios.create({
   withCredentials: true, 
-  baseURL: "http://178.248.112.16:8080",
+  baseURL: "https://api.thijara.me",
   headers: {
     "Content-Type": "application/json",
   },
@@ -75,7 +75,7 @@ API.interceptors.response.use(
 
       try {
         const res = await axios.post(
-          "http://178.248.112.16:8080/user/refresh-token",
+          "https://api.thijara.me/user/refresh-token",
           { withCredentials: true }
         );
 
