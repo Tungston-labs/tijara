@@ -120,11 +120,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e0e0e0",
     borderRadius: 8,
-    paddingVertical: 12,
+    paddingVertical: 16,
     paddingHorizontal: 14,
     backgroundColor: "#fafafa",
     fontSize: 15,
-    height: 100,
+    minHeight: 150,
     textAlignVertical: "top",
   },
   cancelButton: {

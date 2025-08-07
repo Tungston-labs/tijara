@@ -15,8 +15,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 2,
   },
-  header:{
-marginTop:2
+  header: {
+    marginTop: 2,
   },
   uploadBox: {
     borderWidth: 1,
@@ -51,7 +51,7 @@ marginTop:2
   },
   horizontalImageScrollContainer: {
     marginHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 30,
   },
   horizontalImageRow: {
     flexDirection: "row",
@@ -124,17 +124,21 @@ marginTop:2
     fontSize: 15,
     color: "#888",
   },
-  descriptionInput: {
+descriptionInput: {
   borderWidth: 1,
   borderColor: "#e0e0e0",
   borderRadius: 8,
-  paddingVertical: 12,
+  paddingVertical: 16,
   paddingHorizontal: 14,
   backgroundColor: "#fafafa",
   fontSize: 15,
-  height: 100,
-  textAlignVertical: "top",  // Ensures top-aligned text in Android
+  minHeight: 120, // or more
+  textAlignVertical: "top",
+  marginBottom: 20,
 },
+
+
+
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -173,20 +177,20 @@ marginTop:2
     fontWeight: "bold",
   },
   fixedButtonRow: {
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  right: 0,
-  flexDirection: "row",
-  justifyContent: "space-between",
-  paddingHorizontal: 20,
-  // paddingVertical: 20,
-  paddingTop:18,
-  paddingBottom:27,
-  backgroundColor: "#fff",
-  // borderTopWidth: 1,
-  borderTopColor: "#e0e0e0",
-},
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    // paddingVertical: 20,
+    paddingTop: 18,
+    paddingBottom: 27,
+    backgroundColor: "#fff",
+    // borderTopWidth: 1,
+    borderTopColor: "#e0e0e0",
+  },
 });
 
 const pickerInputStyle = {

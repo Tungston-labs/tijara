@@ -20,7 +20,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import TradeLicenseLockScreen from "../user-list-item-lock-screen";
 import TradeLicenseStatusScreen from "../tradelicense-status-screen";
 import { fetchTradeLicenseStatusThunk } from "../../redux/slice/authSlice";
-import { useFocusEffect ,useIsFocused} from "@react-navigation/native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
@@ -30,9 +31,10 @@ const HomeTabContent = ({ tradeLicenseStatus }) => {
     return <TradeLicenseStatusScreen />;
   return <TradeLicenseLockScreen />;
 };
-const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
+const TabScreens = ({ onTabChange, tradeLicenseStatus, initialTab }) => {
   return (
     <Tab.Navigator
+      initialRouteName={initialTab}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#B3DB48",
@@ -70,7 +72,7 @@ const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
 };
 
 const SellerHomeScreen = ({ navigation }) => {
-  const [activeTab, setActiveTab] = useState("Home");
+  const [activeTab, setActiveTab] = useState("Buy");
   const handleAddItem = () => {
     navigation.navigate("SellerAddProductScreen");
   };
@@ -81,25 +83,31 @@ const SellerHomeScreen = ({ navigation }) => {
     (state) => state.user.user.tradeLicenseStatus
   );
 
- const isFocused = useIsFocused();
+  const isFocused = useIsFocused();
+  const route = useRoute();
 
-useEffect(() => {
-  if (!isFocused) return;
-
-  const fetchStatus = async () => {
-    setLoading(true);
-    try {
-      await dispatch(fetchTradeLicenseStatusThunk());
-    } catch (err) {
-      console.error("Failed to fetch trade license status:", err);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (route.params?.goToTab) {
+      setActiveTab(route.params.goToTab);
     }
-  };
+  }, [route.params?.goToTab]);
 
-  fetchStatus();
-}, [isFocused, dispatch]);
+  useEffect(() => {
+    if (!isFocused) return;
 
+    const fetchStatus = async () => {
+      setLoading(true);
+      try {
+        await dispatch(fetchTradeLicenseStatusThunk());
+      } catch (err) {
+        console.error("Failed to fetch trade license status:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStatus();
+  }, [isFocused, dispatch]);
 
   const shouldShowSearch =
     activeTab === "Home" && tradeLicenseStatus === "approved";
@@ -151,8 +159,10 @@ useEffect(() => {
 
           <View style={{ flex: 1 }}>
             <TabScreens
+              key={activeTab}
               onTabChange={setActiveTab}
               tradeLicenseStatus={tradeLicenseStatus}
+              initialTab={activeTab}
             />
           </View>
         </BackgroundWrapper>

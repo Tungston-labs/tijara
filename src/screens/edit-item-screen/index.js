@@ -172,9 +172,9 @@ const SellerEditProductScreen = ({ navigation, route }) => {
       ).unwrap();
 
       Alert.alert("Success", "Product updated successfully");
-      navigation.navigate("SellerHomeScreen", {
-        productId: product._id,
-        shouldRefresh: true,
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "SellerHomeScreen", params: { goToTab: "Home" } }],
       });
     } catch (e) {
       console.error(e);
@@ -192,7 +192,10 @@ const SellerEditProductScreen = ({ navigation, route }) => {
       Alert.alert("Success", "Product deleted successfully");
 
       await dispatch(fetchProductsThunk({ token }));
-      navigation.navigate("SellerHomeScreen");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "SellerHomeScreen", params: { goToTab: "Home" } }],
+      });
     } catch (err) {
       console.error("Error deleting product:", err);
       Alert.alert("Error", err?.message || "Failed to delete product");
@@ -210,11 +213,12 @@ const SellerEditProductScreen = ({ navigation, route }) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
       >
         <View style={styles.container}>
           <ScrollView
             showsVerticalScrollIndicator={true}
-            contentContainerStyle={{ paddingBottom: 100 }}
+            contentContainerStyle={{ paddingBottom: 280 }}
             keyboardShouldPersistTaps="handled"
           >
             <BackgroundWrapper>

@@ -214,7 +214,10 @@ const SellerAddProductScreen = ({ navigation }) => {
       setLoading(true);
       await dispatch(addSellerProductThunk({ token, formData })).unwrap();
       Alert.alert("Success", "Product added successfully");
-      navigation.goBack();
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "SellerHomeScreen", params: { goToTab: "Home" } }],
+      });
     } catch (err) {
       console.error("Error adding product:", err);
 
@@ -230,7 +233,7 @@ const SellerAddProductScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
-
+ 
   const renderImagePreview = () => (
     <View style={styles.horizontalImageScrollContainer}>
       <ScrollView>
@@ -260,11 +263,11 @@ const SellerAddProductScreen = ({ navigation }) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={{ flex: 1 }}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 80}
       >
         <View style={styles.container}>
           <ScrollView
-            showsVerticalScrollIndicator={true}
-            contentContainerStyle={{ paddingBottom: 100 }}
+            contentContainerStyle={{ paddingBottom: 280 }}
             keyboardShouldPersistTaps="handled"
             nestedScrollEnabled={true}
           >
@@ -514,15 +517,14 @@ const SellerAddProductScreen = ({ navigation }) => {
                     <Text style={styles.priceUnit}>AED/Kg</Text>
                   </View>
                 </View>
-
                 <Text style={styles.label}>Description</Text>
                 <TextInput
                   style={styles.descriptionInput}
                   placeholder="Description"
+                  multiline
                   value={description}
                   onChangeText={setDescription}
-                  multiline
-                  scrollEnabled={true}
+                  textAlignVertical="top"
                 />
               </View>
             </BackgroundWrapper>
