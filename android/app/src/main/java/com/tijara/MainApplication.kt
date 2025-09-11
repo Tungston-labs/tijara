@@ -1,4 +1,4 @@
-package com.tijara
+package com.thijara
 
 import android.app.Application
 import com.facebook.react.PackageList

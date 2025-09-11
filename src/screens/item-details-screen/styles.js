@@ -5,8 +5,7 @@ const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+   
   },
   title: {
     fontSize: 18,
@@ -22,7 +21,7 @@ const styles = StyleSheet.create({
   },
   mainImage: {
     width: "90%",
-    height: 180,
+    height: 220,
     borderRadius: 10,
     marginBottom: 10,
   },
@@ -30,8 +29,6 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: "#EEF0E9",
     borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
     marginTop: 10,
     marginBottom: 10,
   },

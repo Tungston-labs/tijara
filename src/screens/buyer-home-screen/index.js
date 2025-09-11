@@ -15,17 +15,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFocusEffect } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
-
 const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
   const getSellComponent = () => {
     if (tradeLicenseStatus === "approved") {
-      return UserListItemScreen;
-    } else if (
-      ["pending", "rejected", "expired"].includes(tradeLicenseStatus)
-    ) {
-      return TradeLicenseStatusScreen;
+      return () => <UserListItemScreen />;
+    } else if (["pending", "rejected", "expired"].includes(tradeLicenseStatus)) {
+      return () => <TradeLicenseStatusScreen />;
     }
-    return TradeLicenseLockScreen;
+    return () => <TradeLicenseLockScreen />;
   };
 
   const SellComponent = getSellComponent();
@@ -40,7 +37,7 @@ const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
     >
       <Tab.Screen
         name="Home"
-        component={SellComponent}
+        component={SellComponent} // ✅ now a valid component
         options={{
           tabBarIcon: ({ color }) => (
             <Icon name="home-outline" size={25} color={color} />
@@ -65,6 +62,7 @@ const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
     </Tab.Navigator>
   );
 };
+
 
 const BuyerHomeScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("Home");

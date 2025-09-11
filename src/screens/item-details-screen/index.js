@@ -117,169 +117,177 @@ const ItemDetailsScreen = ({ navigation }) => {
     }
   };
   return (
-    <View style={styles.container}>
-      <ScrollView>
-        <BackgroundWrapper>
-          <Header
-            handleIconPress={handleIconPress}
-            icon={true}
-            Title={product?.itemName || "Loading..."}
-            iconContainerStyle={{ marginLeft: 10 }} 
+   <ScrollView
+  style={{ flex: 1, backgroundColor: "#fff" }}
+  contentContainerStyle={{
+    alignItems: "center",
+    justifyContent: "center",
+    paddingBottom:150
+   
+  }}
+  showsVerticalScrollIndicator={false}
+>
+      <BackgroundWrapper>
+        <Header
+          handleIconPress={handleIconPress}
+          icon={true}
+          Title={product?.itemName || "Loading..."}
+          iconContainerStyle={{ marginLeft: 10 }}
+        />
+
+        <View style={styles.imageContainer}>
+          <Image
+            source={
+              product?.images?.[selectedImageIndex]
+                ? { uri: product.images[selectedImageIndex] }
+                : images.fruit5
+            }
+            style={styles.mainImage}
           />
+        </View>
 
-          <View style={styles.imageContainer}>
-            <Image
-              source={
-                product?.images?.[selectedImageIndex]
-                  ? { uri: product.images[selectedImageIndex] }
-                  : images.fruit5
-              }
-              style={styles.mainImage}
-            />
-          </View>
-
-          <View style={styles.thumbnilImageContainer}>
-            <ScrollView horizontal style={styles.thumbnailContainer}>
-              {product?.images?.map((img, i) => (
-                <TouchableOpacity
-                  key={i}
-                  onPress={() => setSelectedImageIndex(i)}
-                >
-                  <Image
-                    source={{ uri: img }}
-                    style={[
-                      styles.thumbnail,
-                      selectedImageIndex === i && styles.selectedThumbnail, // Optional highlight
-                    ]}
-                  />
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-
-          <View style={styles.infoSection}>
-            <View>
-              <Text style={styles.productName}>{product?.itemName}</Text>
-              <Text style={styles.variant}>{product?.itemSubCategory}</Text>
-              <Text style={styles.rating}>⭐ 4.8 • {product?.country}</Text>
-            </View>
-            <View style={styles.priceContainer}>
-              <Text style={styles.price}>
-                {product?.pricePerKg?.AED ? product?.pricePerKg?.AED : "---"}{" "}
-                AED / kg
-              </Text>
-              <Text style={styles.qty}>
-                Available Qty:
-                <Text style={{ fontWeight: "bold" }}>
-                  {product?.availableKg}kg
-                </Text>
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.buttonContainer}>
-            <Button label={"Request"} handleButtonPress={handleButtonClick} />
-          </View>
-
-          <View style={styles.alignContent}>
-            <View style={styles.dataContainer}>
-              <View style={styles.sellerBox}>
+        <View style={styles.thumbnilImageContainer}>
+          <ScrollView horizontal style={styles.thumbnailContainer}>
+            {product?.images?.map((img, i) => (
+              <TouchableOpacity
+                key={i}
+                onPress={() => setSelectedImageIndex(i)}
+              >
                 <Image
-                  source={{ uri: product?.addedBy?.profileImage }}
-                  style={styles.sellerImage}
+                  source={{ uri: img }}
+                  style={[
+                    styles.thumbnail,
+                    selectedImageIndex === i && styles.selectedThumbnail, 
+                  ]}
                 />
-                {/* <Image source={images.profile} style={styles.sellerImage} /> */}
-                <View style={styles.textContainer}>
-                  <View style={styles.sellerInfoContainer}>
-                    <Text style={styles.sellerLabel}>Sold by</Text>
-                    <View style={styles.sellerRow}>
-                      <Text style={styles.sellerName}>
-                        {product?.addedBy?.name || "Seller"}
-                      </Text>
-                      <Image
-                        source={images.verify}
-                        style={styles.verifyImage}
-                      />
-                    </View>
-                  </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
 
-                  <Text style={styles.sellerStats}>Sold over 2K+ Tons</Text>
-                </View>
-              </View>
-              <Text style={styles.sellerRating}>⭐ 4.8</Text>
-            </View>
+        <View style={styles.infoSection}>
+          <View>
+            <Text style={styles.productName}>{product?.itemName}</Text>
+            <Text style={styles.variant}>{product?.itemSubCategory}</Text>
+            <Text style={styles.rating}>⭐ 4.8 • {product?.country}</Text>
           </View>
-
-          <View style={styles.descriptionBox}>
-            <Text style={styles.descriptionTitle}>Description</Text>
-            <Text style={styles.descriptionText}>
-              {product?.description || "No description available."}
+          <View style={styles.priceContainer}>
+            <Text style={styles.price}>
+              {product?.pricePerKg?.AED ? product?.pricePerKg?.AED : "---"} AED
+              / kg
+            </Text>
+            <Text style={styles.qty}>
+              Available Qty:
+              <Text style={{ fontWeight: "bold" }}>
+                {product?.availableKg}kg
+              </Text>
             </Text>
           </View>
+        </View>
 
-          <Modal
-            visible={modalVisible}
-            animationType="slide"
-            transparent={true}
-            onRequestClose={closeModal}
-          >
-            <View style={styles.modalBackground}>
-              <View style={styles.modalContent}>
-                <View style={styles.modalContentContainer}>
-                  <Text style={styles.title}>Enter Required Quantity</Text>
-                  <Text style={styles.subtitle}>in kilograms</Text>
-                  <View style={styles.quantityDataContainer}>
-                    <View style={styles.rowContainer}>
-                      <TouchableOpacity
-                        onPress={decrease}
-                        style={styles.adjustButton}
-                      >
-                        <Text style={styles.adjustButtonText}>−</Text>
-                      </TouchableOpacity>
-                      <View style={styles.inputWithUnit}>
-                        <TextInput
-                          style={styles.quantityInput}
-                          keyboardType="numeric"
-                          value={quantity.toString()}
-                          onChangeText={(text) =>
-                            setQuantity(Number(text.replace(/[^0-9]/g, "")))
-                          }
-                        />
-                        <Text style={styles.kgLabel}>Kg</Text>
-                      </View>
-                      <TouchableOpacity
-                        onPress={increase}
-                        style={styles.adjustButton}
-                      >
-                        <Text style={styles.adjustButtonText}>+</Text>
-                      </TouchableOpacity>
-                    </View>
+        <View style={styles.buttonContainer}>
+          <Button label={"Request"} handleButtonPress={handleButtonClick} />
+        </View>
+
+        <View style={styles.alignContent}>
+          <View style={styles.dataContainer}>
+            <View style={styles.sellerBox}>
+              <Image
+                source={{ uri: product?.addedBy?.profileImage }}
+                style={styles.sellerImage}
+              />
+              {/* <Image source={images.profile} style={styles.sellerImage} /> */}
+              <View style={styles.textContainer}>
+                <View style={styles.sellerInfoContainer}>
+                  <Text style={styles.sellerLabel}>Sold by</Text>
+                  <View style={styles.sellerRow}>
+                    <Text style={styles.sellerName}>
+                      {product?.addedBy?.name || "Seller"}
+                    </Text>
+                    <Image source={images.verify} style={styles.verifyImage} />
                   </View>
                 </View>
-                <View style={styles.rowContainer}>
-                  <View style={styles.cancelText}>
-                    <ModalButton
-                      label={"Cancel"}
-                      style={styles.cancelButton}
-                      handleButtonPress={closeModal}
-                      customStyle={styles.editButtonStyle}
-                      customLabelStyle={styles.label}
-                    />
-                  </View>
-                  <TouchableOpacity
-                    onPress={handleWhatsAppRequest}
-                    style={[styles.whatsappButton, loading && { opacity: 0.5 }]}
-                    disabled={loading}
-                  >
-                    <Icon name="whatsapp" size={24} color="white" />
-                  </TouchableOpacity>
-                </View>
+
+                <Text style={styles.sellerStats}>Sold over 2K+ Tons</Text>
               </View>
             </View>
-          </Modal>
-        </BackgroundWrapper>
-      </ScrollView>
-    </View>
+            <Text style={styles.sellerRating}>⭐ 4.8</Text>
+          </View>
+        </View>
+
+        <View style={styles.descriptionBox}>
+          <Text style={styles.descriptionTitle}>Description</Text>
+          <Text style={styles.descriptionText}>
+            {product?.description || "No description available."}
+          </Text>
+        </View>
+
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={closeModal}
+        >
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalContentContainer}>
+                <Text style={styles.title}>Enter Required Quantity</Text>
+                <Text style={styles.subtitle}>in kilograms</Text>
+                <View style={styles.quantityDataContainer}>
+                  <View style={styles.rowContainer}>
+                    <TouchableOpacity
+                      onPress={decrease}
+                      style={styles.adjustButton}
+                    >
+                      <Text style={styles.adjustButtonText}>−</Text>
+                    </TouchableOpacity>
+                    <View style={styles.inputWithUnit}>
+                      <TextInput
+                        style={styles.quantityInput}
+                        keyboardType="decimal-pad"
+                        value={quantity}
+                        onChangeText={(text) => {
+                          const cleaned = text.replace(/[^0-9.]/g, "");
+
+                          const valid = cleaned.replace(/(\..*?)\..*/g, "$1");
+
+                          setQuantity(valid);
+                        }}
+                      />
+                      <Text style={styles.kgLabel}>Kg</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={increase}
+                      style={styles.adjustButton}
+                    >
+                      <Text style={styles.adjustButtonText}>+</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.rowContainer}>
+                <View style={styles.cancelText}>
+                  <ModalButton
+                    label={"Cancel"}
+                    style={styles.cancelButton}
+                    handleButtonPress={closeModal}
+                    customStyle={styles.editButtonStyle}
+                    customLabelStyle={styles.label}
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={handleWhatsAppRequest}
+                  style={[styles.whatsappButton, loading && { opacity: 0.5 }]}
+                  disabled={loading}
+                >
+                  <Icon name="whatsapp" size={24} color="white" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </BackgroundWrapper>
+    </ScrollView>
   );
 };
 

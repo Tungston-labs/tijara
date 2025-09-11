@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
-  ActivityIndicator,
-  Pressable,
-  StatusBar,
-  Text,
   View,
+  StatusBar,
+  Pressable,
+  Text,
+  ActivityIndicator,
+  RefreshControl,
 } from "react-native";
 import styles from "./styles";
 import TijaraHeader from "../../componets/TijaraHeader";
@@ -20,18 +21,29 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import TradeLicenseLockScreen from "../user-list-item-lock-screen";
 import TradeLicenseStatusScreen from "../tradelicense-status-screen";
 import { fetchTradeLicenseStatusThunk } from "../../redux/slice/authSlice";
-import { useFocusEffect, useIsFocused } from "@react-navigation/native";
-import { useRoute } from "@react-navigation/native";
+import { useIsFocused, useRoute } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
-const HomeTabContent = ({ tradeLicenseStatus }) => {
-  if (tradeLicenseStatus === "approved") return <UserListItemScreen />;
+const HomeTabContent = ({
+  tradeLicenseStatus,
+  refreshing,
+  onRefresh,
+}) => {
+  if (tradeLicenseStatus === "approved")
+    return <UserListItemScreen refreshing={refreshing} onRefresh={onRefresh} />;
   if (["pending", "rejected", "expired"].includes(tradeLicenseStatus))
     return <TradeLicenseStatusScreen />;
   return <TradeLicenseLockScreen />;
 };
-const TabScreens = ({ onTabChange, tradeLicenseStatus, initialTab }) => {
+
+const TabScreens = ({
+  onTabChange,
+  tradeLicenseStatus,
+  initialTab,
+  refreshing,
+  onRefresh,
+}) => {
   return (
     <Tab.Navigator
       initialRouteName={initialTab}
@@ -43,7 +55,7 @@ const TabScreens = ({ onTabChange, tradeLicenseStatus, initialTab }) => {
     >
       <Tab.Screen
         name="Buy"
-        children={() => <ListItemScreen />}
+        component={ListItemScreen}
         options={{
           tabBarIcon: ({ color }) => (
             <Icon name="cart-outline" size={25} color={color} />
@@ -56,7 +68,11 @@ const TabScreens = ({ onTabChange, tradeLicenseStatus, initialTab }) => {
       <Tab.Screen
         name="Home"
         children={() => (
-          <HomeTabContent tradeLicenseStatus={tradeLicenseStatus} />
+          <HomeTabContent
+            tradeLicenseStatus={tradeLicenseStatus}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
         )}
         options={{
           tabBarIcon: ({ color }) => (
@@ -73,18 +89,19 @@ const TabScreens = ({ onTabChange, tradeLicenseStatus, initialTab }) => {
 
 const SellerHomeScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState("Buy");
-  const handleAddItem = () => {
-    navigation.navigate("SellerAddProductScreen");
-  };
-
+  const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+
   const dispatch = useDispatch();
   const tradeLicenseStatus = useSelector(
     (state) => state.user.user.tradeLicenseStatus
   );
-
   const isFocused = useIsFocused();
   const route = useRoute();
+
+  const handleAddItem = () => {
+    navigation.navigate("SellerAddProductScreen");
+  };
 
   useEffect(() => {
     if (route.params?.goToTab) {
@@ -92,22 +109,25 @@ const SellerHomeScreen = ({ navigation }) => {
     }
   }, [route.params?.goToTab]);
 
+  const fetchStatus = async () => {
+    try {
+      await dispatch(fetchTradeLicenseStatusThunk());
+    } catch (err) {
+      console.error("Failed to fetch trade license status:", err);
+    }
+  };
+
   useEffect(() => {
     if (!isFocused) return;
-
-    const fetchStatus = async () => {
-      setLoading(true);
-      try {
-        await dispatch(fetchTradeLicenseStatusThunk());
-      } catch (err) {
-        console.error("Failed to fetch trade license status:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStatus();
+    setLoading(true);
+    fetchStatus().finally(() => setLoading(false));
   }, [isFocused, dispatch]);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchStatus();
+    setRefreshing(false);
+  }, [dispatch]);
 
   const shouldShowSearch =
     activeTab === "Home" && tradeLicenseStatus === "approved";
@@ -119,6 +139,7 @@ const SellerHomeScreen = ({ navigation }) => {
       </View>
     );
   }
+
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
       <StatusBar
@@ -163,6 +184,8 @@ const SellerHomeScreen = ({ navigation }) => {
               onTabChange={setActiveTab}
               tradeLicenseStatus={tradeLicenseStatus}
               initialTab={activeTab}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
             />
           </View>
         </BackgroundWrapper>

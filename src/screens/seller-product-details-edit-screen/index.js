@@ -54,8 +54,15 @@ const SellerProductDetailsEditScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView>
+      <ScrollView
+     style={{ flex: 1, backgroundColor: "#fff" }}
+     contentContainerStyle={{
+       alignItems: "center",
+       justifyContent: "center", 
+       paddingBottom: 60, 
+     }}
+     showsVerticalScrollIndicator={false}
+   >
         <BackgroundWrapper>
           
           <View style={styles.mainImageContainer}>
@@ -136,7 +143,6 @@ const SellerProductDetailsEditScreen = () => {
           </View>
         </BackgroundWrapper>
       </ScrollView>
-    </View>
   );
 };
 

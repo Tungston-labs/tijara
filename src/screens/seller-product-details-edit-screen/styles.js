@@ -5,9 +5,6 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    
   },
 
   title: {
@@ -28,9 +25,6 @@ const styles = StyleSheet.create({
   thumbnilImageContainer: {
     width: "100%",
     backgroundColor: "#EEF0E9",
-    // borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
     marginVertical: 20,
 
   },
@@ -77,7 +71,8 @@ const styles = StyleSheet.create({
 
   mainImage: {
     width: 320,
-    height: 177,
+    height: 220,
+    maxHeight:230,
     width: "100%",
     borderRadius: 7,
     resizeMode: "cover",

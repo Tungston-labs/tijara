@@ -19,7 +19,7 @@ import {
 import debounce from "lodash.debounce";
 import Icon from "react-native-vector-icons/Ionicons";
 
-const UserListItemScreen = () => {
+const UserListItemScreen = ({ refreshing, onRefresh }) => {
   const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -144,6 +144,8 @@ const UserListItemScreen = () => {
         ) : (
           <View style={styles.flatListContainer}>
             <FlatList
+              refreshing={refreshing}
+              onRefresh={onRefresh}
               data={sellerProducts}
               keyExtractor={(item) => item._id}
               renderItem={renderItem}

@@ -1,4 +1,3 @@
-//Registration screen
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -25,7 +24,35 @@ import EyeIcon from "react-native-vector-icons/Ionicons";
 const RegistrationScreen = () => {
   const route = useRoute();
   const role = route.params?.role || "buyer";
-  const location = route.params?.location || null;
+
+  const coordsParam = route.params?.coords || null; 
+  const locationString = route.params?.location || null;
+  const locationName =
+    route.params?.locationName || route.params?.locationNameFromOther || null;
+
+  const getLatLngFromParams = () => {
+    if (
+      coordsParam &&
+      typeof coordsParam.latitude === "number" &&
+      typeof coordsParam.longitude === "number"
+    ) {
+      return { latitude: coordsParam.latitude, longitude: coordsParam.longitude };
+    }
+
+    if (typeof locationString === "string" && locationString.includes(",")) {
+      const parts = locationString.split(",").map((p) => p.trim());
+      const lat = parseFloat(parts[0]);
+      const lng = parseFloat(parts[1]);
+      if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+        return { latitude: lat, longitude: lng };
+      }
+    }
+
+    return null;
+  };
+
+  const resolvedCoords = getLatLngFromParams();
+
   const prefillForm = route.params?.prefillForm || null;
   const prefillImage = route.params?.profileImage || null;
   const prefillCountryCode = route.params?.countryCode || "+971";
@@ -34,6 +61,7 @@ const RegistrationScreen = () => {
   const [passwordSecure, setPasswordSecure] = useState(true);
   const [confirmPasswordSecure, setConfirmPasswordSecure] = useState(true);
   const [profileImage, setProfileImage] = useState(null);
+
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -41,16 +69,14 @@ const RegistrationScreen = () => {
     password: "",
     confirmPassword: "",
   });
-  
-  const { user, token,   } = useSelector(
-    (state) => state.user
-  );
-  console.log("dkadjkadkddjkkdjkda",token)
+
+  const { user, token } = useSelector((state) => state.user);
+  console.log("token", token);
+
   useEffect(() => {
     if (prefillForm) {
       let rawPhone = prefillForm.phone || "";
 
-      // Remove the country code if it's at the start
       if (rawPhone.startsWith(prefillCountryCode)) {
         rawPhone = rawPhone.slice(prefillCountryCode.length);
       }
@@ -84,28 +110,20 @@ const RegistrationScreen = () => {
 
   const requestPermissions = async () => {
     try {
-      if (Platform.Version >= 33) {
-        const permissions = [
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
-        ];
-
-        const granted = await PermissionsAndroid.requestMultiple(permissions);
-        return permissions.every(
-          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
-        );
-      } else {
-        const permissions = [
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        ];
-
-        const granted = await PermissionsAndroid.requestMultiple(permissions);
-        return permissions.every(
-          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
-        );
+      if (Platform.OS === "android") {
+        if (Platform.Version >= 33) {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+          );
+          return granted === PermissionsAndroid.RESULTS.GRANTED;
+        } else {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+          );
+          return granted === PermissionsAndroid.RESULTS.GRANTED;
+        }
       }
+      return true;
     } catch (error) {
       console.warn("Permission error:", error);
       return false;
@@ -144,13 +162,14 @@ const RegistrationScreen = () => {
       }
     });
   };
+
   const isStrongPassword = (password) => {
     return (
       password.length >= 8 &&
-      /[A-Z]/.test(password) && // at least one uppercase
-      /[a-z]/.test(password) && // at least one lowercase
-      /[0-9]/.test(password) && // at least one number
-      /[^A-Za-z0-9]/.test(password) // at least one special char
+      /[A-Z]/.test(password) && 
+      /[a-z]/.test(password) && 
+      /[0-9]/.test(password) && 
+      /[^A-Za-z0-9]/.test(password) 
     );
   };
   const isValidEmail = (email) => {
@@ -162,6 +181,7 @@ const RegistrationScreen = () => {
 
   const handleButtonClick = async () => {
     const fullPhoneNumber = `${countryCode}${form.phone}`;
+
     if (
       !form.name ||
       !form.phone ||
@@ -203,7 +223,13 @@ const RegistrationScreen = () => {
       return;
     }
 
-    const [lat, lng] = location.split(",").map((val) => parseFloat(val.trim()));
+    if (!resolvedCoords) {
+      Alert.alert(
+        "Location Error",
+        "Unable to detect valid coordinates. Please go back and re-select your location."
+      );
+      return;
+    }
 
     const basicFormData = {
       name: form.name,
@@ -211,10 +237,10 @@ const RegistrationScreen = () => {
       email: form.email,
       password: form.password,
       coords: {
-        latitude: lat,
-        longitude: lng,
+        latitude: resolvedCoords.latitude,
+        longitude: resolvedCoords.longitude,
       },
-      location,
+      location: locationName || `${resolvedCoords.latitude},${resolvedCoords.longitude}`,
     };
 
     if (role === "seller") {
@@ -223,41 +249,38 @@ const RegistrationScreen = () => {
         profileImage,
         countryCode,
       });
-    } else {
-      // Buyer: continue submission directly
-      const formData = new FormData();
-      formData.append("name", form.name);
-      formData.append("phone", fullPhoneNumber);
-      formData.append("email", form.email);
-      formData.append("password", form.password);
-      formData.append("coords", JSON.stringify(basicFormData.coords));
-      if (location) {
-        formData.append("location", location);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", basicFormData.name);
+    formData.append("phone", basicFormData.phone);
+    formData.append("email", basicFormData.email);
+    formData.append("password", basicFormData.password);
+    formData.append("coords", JSON.stringify(basicFormData.coords));
+    formData.append("location", basicFormData.location);
+    formData.append("profileImage", {
+      uri: profileImage.uri,
+      type: profileImage.type || "image/jpeg",
+      name: profileImage.name || "profile.jpg",
+    });
+
+    try {
+      setLoading(true);
+      const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
+
+      if (result?.status !== "approved") {
+        dispatch(setTemporaryUser(result));
+        navigation.navigate("RequestSentScreen");
+        return;
       }
-      formData.append("profileImage", {
-        uri: profileImage.uri,
-        type: profileImage.type || "image/jpeg",
-        name: profileImage.name || "profile.jpg",
-      });
 
-      try {
-        setLoading(true);
-        const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
-
-        if (result?.status !== "approved") {
-          dispatch(setTemporaryUser(result)); // Set temp user for status check
-          navigation.navigate("RequestSentScreen");
-          return;
-        }
-
-        // If approved (unlikely during signup), login normally
-        // dispatch(loginFromStorage({ token: result.accessToken, user: result.user, role: result.role }));
-        // navigation.navigate("HomeScreenBasedOnRole");
-      } catch (err) {
-        Alert.alert("Signup Failed", err?.message || "Something went wrong");
-      } finally {
-        setLoading(false);
-      }
+     
+      navigation.navigate("HomeScreen"); 
+    } catch (err) {
+      Alert.alert("Signup Failed", err?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -271,6 +294,14 @@ const RegistrationScreen = () => {
             Title={`Complete your ${role === "seller" ? "Seller" : "Buyer"}`}
             Subtitle={"Account Creation"}
           />
+
+          {/* show resolved location name for clarity */}
+          <View style={{ paddingHorizontal: 20, marginBottom: 10 }}>
+            {/* <Text style={{ color: "#555", fontSize: 14 }}>
+              Location: {locationName || (resolvedCoords ? `${resolvedCoords.latitude.toFixed(5)}, ${resolvedCoords.longitude.toFixed(5)}` : "Not set")}
+            </Text> */}
+          </View>
+
           <View style={styles.profileImageWrapper}>
             <Image
               source={
@@ -288,6 +319,7 @@ const RegistrationScreen = () => {
               <Icon name="plus-circle" size={24} color="#9AD000" />
             </TouchableOpacity>
           </View>
+
           <View style={styles.textInputcontainer}>
             <TextInputField
               placeholder="Full Name"
@@ -356,6 +388,7 @@ const RegistrationScreen = () => {
               }
             />
           </View>
+
           <View style={styles.buttonContainer}>
             {role === "seller" ? (
               <TouchableOpacity

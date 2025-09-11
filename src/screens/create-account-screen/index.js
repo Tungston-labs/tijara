@@ -9,15 +9,17 @@ import {
 import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Header from "../../componets/Header";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { getCurrentLocation } from "../../utils/geoLocation";
-// import Icon from "react-native-vector-icons/Feather";
 import Icon from "react-native-vector-icons/Ionicons";
+import { OPENCAGE_API_KEY } from "@env";
+import axios from "axios";
 
 const CreateAccountScreen = () => {
   const navigation = useNavigation();
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState(null); // human readable name
   const [isFetching, setIsFetching] = useState(true);
+  const [coords, setCoords] = useState(null); // { latitude, longitude }
 
   useEffect(() => {
     fetchLocation();
@@ -27,8 +29,22 @@ const CreateAccountScreen = () => {
     setIsFetching(true);
     try {
       const { latitude, longitude } = await getCurrentLocation();
-      const loc = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
-      setLocation(loc);
+
+      // Save coords into state
+      setCoords({ latitude, longitude });
+
+      // Call OpenCage for name (frontend only for display)
+      const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${OPENCAGE_API_KEY}`;
+      const response = await axios.get(url);
+      const components = response.data?.results?.[0]?.components;
+      const name =
+        components?.city ||
+        components?.town ||
+        components?.village ||
+        response.data?.results?.[0]?.formatted ||
+        "Unknown Location";
+
+      setLocation(name);
     } catch (err) {
       console.error("Location error:", err);
       setLocation("Unable to fetch location");
@@ -38,9 +54,24 @@ const CreateAccountScreen = () => {
   };
 
   const handleButtonClick = () => {
-    if (isFetching || !location || location === "Unable to fetch location")
+    // validate that we have usable coordinates and a location name
+    if (
+      isFetching ||
+      !location ||
+      location === "Unable to fetch location" ||
+      !coords ||
+      typeof coords.latitude !== "number" ||
+      typeof coords.longitude !== "number"
+    ) {
+      console.warn("Cannot navigate to registration: missing coords or location");
       return;
-    navigation.navigate("RegistrationScreen", { location });
+    }
+
+    // pass the structured coords and the human readable name
+    navigation.navigate("RegistrationScreen", {
+      coords, // { latitude, longitude }
+      locationName: location, // e.g. "Dubai"
+    });
   };
 
   return (
@@ -61,7 +92,9 @@ const CreateAccountScreen = () => {
 
           <View style={styles.inputContainer}>
             <Text style={styles.placeholder}>Location</Text>
-            <Text style={styles.inputText}>{location || "Fetching..."}</Text>
+            <Text style={styles.inputText}>
+              {isFetching ? "Fetching..." : location}
+            </Text>
           </View>
 
           {!isFetching && location === "Unable to fetch location" && (

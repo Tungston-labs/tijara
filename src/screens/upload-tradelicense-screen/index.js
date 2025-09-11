@@ -40,71 +40,67 @@ const UploadTradeLicenseScreen = () => {
     setForm({ ...form, [field]: value });
   };
 
-  const requestPermissions = async () => {
-    try {
+ const requestPermissions = async () => {
+  try {
+    if (Platform.OS === "android") {
       if (Platform.Version >= 33) {
-        const permissions = [
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
-        ];
-
-        const granted = await PermissionsAndroid.requestMultiple(permissions);
-        return permissions.every(
-          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
+        // Android 13+ → only request image permission
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
         );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
       } else {
-        const permissions = [
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        ];
-
-        const granted = await PermissionsAndroid.requestMultiple(permissions);
-        return permissions.every(
-          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
+        // Android 12 and below
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
         );
+        return granted === PermissionsAndroid.RESULTS.GRANTED;
       }
-    } catch (error) {
-      console.warn("Permission error:", error);
-      return false;
     }
+    return true; // iOS handles it via Info.plist
+  } catch (error) {
+    console.warn("Permission error:", error);
+    return false;
+  }
+};
+
+
+const handleFileUpload = async () => {
+  const hasPermission = await requestPermissions();
+  if (!hasPermission) {
+    Alert.alert(
+      "Permission Denied",
+      "Please grant photo permissions to upload the file."
+    );
+    return;
+  }
+
+  const options = {
+    mediaType: "photo", 
+    quality: 0.7,
   };
 
-  const handleFileUpload = async () => {
-    const hasPermission = await requestPermissions();
-    if (!hasPermission) {
-      Alert.alert(
-        "Permission Denied",
-        "Please grant storage permissions to upload the file."
-      );
+  launchImageLibrary(options, (response) => {
+    if (response.didCancel) return;
+    if (response.errorCode) {
+      Alert.alert("Error", response.errorMessage);
       return;
     }
 
-    const options = {
-      mediaType: "photo",
-      quality: 0.7,
-    };
+    const asset = response.assets?.[0];
+    if (asset) {
+      setForm({
+        ...form,
+        tradeLicenseCopy: {
+          uri: asset.uri,
+          name: asset.fileName || "trade_license.jpg",
+          type: asset.type || "image/jpeg",
+        },
+      });
+    }
+  });
+};
 
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) return;
-      if (response.errorCode) {
-        Alert.alert("Error", response.errorMessage);
-        return;
-      }
-
-      const asset = response.assets?.[0];
-      if (asset) {
-        setForm({
-          ...form,
-          tradeLicenseCopy: {
-            uri: asset.uri,
-            name: asset.fileName,
-            type: asset.type,
-          },
-        });
-      }
-    });
-  };
 
   const handleRemoveFile = () => {
     setForm({ ...form, tradeLicenseCopy: null });

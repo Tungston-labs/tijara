@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     marginTop: 5,
+   
   },
   rowContainer: {
     width: "100%",
@@ -21,6 +22,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     flexDirection: "row",
     alignItems: "center",
+    borderWidth:0.15
   },
   iconStyle: {
     marginRight: 10,

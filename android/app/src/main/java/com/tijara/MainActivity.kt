@@ -1,4 +1,4 @@
-package com.tijara
+package com.thijara
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

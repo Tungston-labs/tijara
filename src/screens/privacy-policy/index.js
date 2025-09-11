@@ -27,11 +27,15 @@ const PrivacyPolicyScreen = () => {
           Your privacy is our priority, and we’re committed to caring for your
           data with clarity and respect.
         </Text>
-
+        <View style={styles.textContent}>
         {/* Sections */}
         <Text style={styles.sectionTitle}>1. What We Collect</Text>
         <Text style={styles.bullet}>
-           Contact basics: name, email, phone, address
+          We ask for only what truly help us serve you {"\n"} better. 
+        </Text>
+        
+         <Text style={styles.bullet1}>
+          Contact basics: name, email, phone, address
         </Text>
         <Text style={styles.bullet}>
            Purchase & payment details: order history, shipping data, invoices
@@ -152,20 +156,19 @@ const PrivacyPolicyScreen = () => {
         <Text style={styles.paragraphBold}>Thijara Privacy Team</Text>
 
         <Text style={styles.paragraph}>
-          <Text style={styles.label}>Email:</Text> info@tungstonlabs.com
+          <Text style={styles.labelmail}>Email:</Text> info@tungstonlabs.com
         </Text>
 
         <Text style={styles.label}>Phone</Text>
-        <Text style={styles.paragraph}>+91 97783 77526</Text>
-        <Text style={styles.paragraph}>+91 75610 49196</Text>
-        <Text style={styles.paragraph}>+91 96337 01495</Text>
+        <Text >+971 555736021</Text>
+        <Text >+91 75610 49196</Text>
+        <Text >+91 96337 01495</Text>
 
         <Text style={styles.label}>Address:</Text>
-        <Text style={styles.paragraph}>
-          Tungston Labs, Ullampilly Building, 4th Floor,{"\n"}
-          Seaport - Airport Rd, behind Olimugal Juma Masjid,{"\n"}
-          Thrikkakara, Vazhakkala, Kakkanad, Kochi, Kerala 682030
+        <Text >
+         ARM-SBC L.L.C-FZ, Meydan Freezone, 5842+632,{"n"} Grand stand - NAD AL SHEBA, Dubai,{"n"} United Arab Emirates
         </Text>
+        </View>
       </ScrollView>
     </View>
   );

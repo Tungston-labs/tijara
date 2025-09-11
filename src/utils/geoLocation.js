@@ -20,33 +20,39 @@ export const requestLocationPermission = async () => {
       return false;
     }
   } else {
-    // iOS permission is handled in Info.plist
-    return true;
+    return true; 
   }
 };
 
 export const getCurrentLocation = async () => {
   const hasPermission = await requestLocationPermission();
 
-  return new Promise((resolve, reject) => {
-    if (!hasPermission) {
-      reject('Location permission not granted');
-      return;
-    }
+  if (!hasPermission) {
+    throw new Error('Location permission not granted');
+  }
 
+  return new Promise((resolve, reject) => {
     Geolocation.getCurrentPosition(
-      position => {
-        const { latitude, longitude } = position.coords;
-        resolve({ latitude, longitude });
+      (position) => {
+        resolve(position.coords);
       },
-      error => {
-        console.error("Geolocation error:", error);
-        reject(error.message);
+      (error) => {
+        console.warn('Cached location unavailable, trying fresh fetch:', error);
+
+        Geolocation.getCurrentPosition(
+          (position) => resolve(position.coords),
+          (err) => reject(err.message),
+          {
+            enableHighAccuracy: true,
+            timeout: 7000,  
+            maximumAge: 0,   
+          }
+        );
       },
       {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 10000,
+        enableHighAccuracy: false,
+        timeout: 5000,
+        maximumAge: 10000, 
       }
     );
   });
