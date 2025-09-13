@@ -19,7 +19,7 @@ import {
 } from "../../redux/slice/productSlice";
 import debounce from "lodash.debounce";
 
-const ListItemScreen = () => {
+const ListItemScreen = ({ refreshing, onRefresh }) => {
   const searchQuery = useSelector((state) => state.search.query);
   const { products, loading, error, page, totalPages } = useSelector(
     (state) => state.product
@@ -135,7 +135,7 @@ const ListItemScreen = () => {
                         showPagination
                         paginationStyle={{
                           position: "absolute",
-                          bottom: 70,
+                          bottom: 10,
                           alignSelf: "center",
                         }}
                         paginationStyleItem={{
@@ -151,11 +151,7 @@ const ListItemScreen = () => {
                           <View style={styles.child}>
                             <Image
                               source={{ uri: img }}
-                              style={{
-                                width: "100%",
-                                height: 200,
-                                marginTop: 10,
-                              }}
+                              style={styles.imageStyle}
                               resizeMode="cover"
                             />
                           </View>

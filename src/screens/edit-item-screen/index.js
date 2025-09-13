@@ -236,7 +236,10 @@ const SellerEditProductScreen = ({ navigation, route }) => {
                 style={styles.uploadBox}
                 onPress={handleSelectImages}
               >
-                <Text style={styles.uploadText}>+ Upload image</Text>
+                <View style={styles.plusCircle}>
+                  <Text style={styles.plus}>+</Text>
+                </View>
+                <Text style={styles.uploadText}>Upload image</Text>
               </TouchableOpacity>
               <View style={styles.horizontalImageRow}>
                 {images.map((img, i) => (

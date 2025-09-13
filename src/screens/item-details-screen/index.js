@@ -164,7 +164,7 @@ const ItemDetailsScreen = ({ navigation }) => {
             ))}
           </ScrollView>
         </View>
-
+         <View style={styles.background}>
         <View style={styles.infoSection}>
           <View>
             <Text style={styles.productName}>{product?.itemName}</Text>
@@ -214,7 +214,7 @@ const ItemDetailsScreen = ({ navigation }) => {
             <Text style={styles.sellerRating}>⭐ 4.8</Text>
           </View>
         </View>
-
+          </View>
         <View style={styles.descriptionBox}>
           <Text style={styles.descriptionTitle}>Description</Text>
           <Text style={styles.descriptionText}>

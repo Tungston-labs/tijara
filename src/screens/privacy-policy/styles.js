@@ -66,6 +66,9 @@ const styles = StyleSheet.create({
   label: {
     marginTop: 2,
   },
+  last:{
+    marginBottom:32
+  }
 });
 
 export default styles;

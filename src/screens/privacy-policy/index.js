@@ -165,7 +165,7 @@ const PrivacyPolicyScreen = () => {
         <Text >+91 96337 01495</Text>
 
         <Text style={styles.label}>Address:</Text>
-        <Text >
+        <Text style={styles.last}>
          ARM-SBC L.L.C-FZ, Meydan Freezone, 5842+632,{"n"} Grand stand - NAD AL SHEBA, Dubai,{"n"} United Arab Emirates
         </Text>
         </View>

@@ -20,8 +20,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     // alignItems: "center",
     marginInline:25,
-    marginTop:10,
-    marginBottom:5
+    marginTop:32,
   },
   tabContainer: {
     flexDirection: "row",
@@ -51,7 +50,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "500",
     textAlign: "left",
-    fontFamily:"Nunito"
   },
   flatListContainer: {
     flex: 1,
@@ -69,29 +67,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: width * 0.9,
     elevation: 5,
-    height: height * 0.3,
+    height: height * 0.35,
     padding: 10,
+    overflow: "hidden",
   },
   child: {
     width: width,
-    height: height * 0.2,
-    borderRadius: 10,
+    height: height * 0.45,
   },
-//   negotiableTag: {
-//   position: "absolute",
-//   bottom: 10,
-//   right: 10,
-//   backgroundColor: "#d4f4cf",
-//   color: "#2e7d32",
-//   paddingHorizontal: 10,
-//   paddingVertical: 4,
-//   borderRadius: 6,
-//   fontWeight: "600",
-//   fontSize: 12,
-//   overflow: "hidden",
-// },
+
   imageStyle: {
-    borderRadius: 10,
+    width: "100%",
+    height: "50%",
   },
   infoContainer: {
     padding: 8,

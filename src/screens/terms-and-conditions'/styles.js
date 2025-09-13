@@ -56,6 +56,9 @@ const styles = StyleSheet.create({
   paragraph: {
     marginTop: 12,
   },
+    last:{
+    marginBottom:32
+  }
 
 
 });

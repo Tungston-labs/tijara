@@ -51,7 +51,7 @@ const LoginScreenWithPassword = () => {
         // if (userRole === "buyer") {
         //   navigation.replace("BuyerHomeScreen");
         // } else if (userRole === "seller") {
-          navigation.replace("SellerHomeScreen");
+        navigation.replace("SellerHomeScreen");
         // } else {
         //   alert("Unknown user role");
         // }
@@ -105,6 +105,7 @@ const LoginScreenWithPassword = () => {
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Password</Text>
+
         <View style={styles.passwordContainer}>
           <TextInput
             placeholder="Password"
@@ -122,15 +123,16 @@ const LoginScreenWithPassword = () => {
             />
           </TouchableOpacity>
         </View>
+
+        {/* Forgot password placed here */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("ForgetPasswordScreen")}
+          style={styles.forgotWrapper}
+        >
+          <Text style={styles.forgotText}>Forgot password?</Text>
+        </TouchableOpacity>
       </View>
 
-      {error && <Text style={styles.error}>{error.message || error}</Text>}
-      <TouchableOpacity
-        onPress={() => navigation.navigate("ForgetPasswordScreen")}
-        style={{ alignSelf: "flex-end", marginTop: 8 }}
-      >
-        <Text style={styles.forgotContainer}>Forgot password?</Text>
-      </TouchableOpacity>
       <TouchableOpacity
         style={styles.loginButton}
         onPress={handleLogin}

@@ -13,23 +13,32 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  boxContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    elevation: 5,
-    width: "90%",
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-    flexDirection: "row",
-    alignItems: "center",
-    borderWidth:0.15
-  },
+boxContainer: {
+  backgroundColor: "#fff",
+  borderRadius: 12,
+  width: "90%",
+  paddingHorizontal: 16,
+  paddingVertical: 4,
+  flexDirection: "row",
+  alignItems: "center",
+ elevation: 5,
+  borderWidth: 1,
+  borderColor: "#ccc",
+
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 4,
+},
+
+
   iconStyle: {
     marginRight: 10,
   },
   textInput: {
     flex: 1,
   },
+  
 });
 
 export default styles;

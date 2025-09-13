@@ -56,16 +56,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: width * 0.9,
     elevation: 5,
-    height: height * 0.3,
+    height: height * 0.35,
     padding: 10,
+    overflow: "hidden",
   },
   child: {
     width: width,
-    height: height * 0.2,
-    borderRadius: 10,
+    height: height * 0.45,
   },
+
   imageStyle: {
-    borderRadius: 10,
+    width: "100%",
+    height: "50%",
   },
   infoContainer: {
     padding: 10,

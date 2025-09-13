@@ -12,24 +12,42 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginRight: 20,
     marginHorizontal: 20,
-    marginVertical:-15,
+    marginVertical: -15,
     marginBottom: 10,
-    
   },
   uploadBox: {
     borderWidth: 1,
     borderColor: "#d3d3d3",
     borderStyle: "dashed",
     borderRadius: 10,
-    paddingVertical: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     marginHorizontal: 20,
-    marginVertical:-10,
     marginBottom: 10,
+    backgroundColor: "#fafafa",
   },
+  plusCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#7CB518",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 10,
+  },
+
   uploadText: {
     color: "#7CB518",
     fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  plus: {
+    color: "#fff",
+    fontSize: 20,
     fontWeight: "bold",
   },
   imagePreviewBox: {
@@ -171,30 +189,30 @@ const styles = StyleSheet.create({
     borderTopColor: "#e0e0e0",
   },
   suggestionBox: {
-  backgroundColor: "#fff",
-  borderColor: "#ccc",
-  borderWidth: 1,
-  borderRadius: 8,
-  marginTop: 4,
-  maxHeight: 150,
-  overflow: "hidden",
-  zIndex: 999, // Ensure it renders above
-  elevation: 5, // Android shadow
-},
+    backgroundColor: "#fff",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 8,
+    marginTop: 4,
+    maxHeight: 150,
+    overflow: "hidden",
+    zIndex: 999, // Ensure it renders above
+    elevation: 5, // Android shadow
+  },
 
-suggestionItem: {
-  paddingVertical: 10,
-  paddingHorizontal: 15,
-  borderBottomWidth: 1,
-  borderBottomColor: "#eee",
-},
+  suggestionItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+  },
 
-suggestionText: {
-  fontSize: 15,
-  color: "#333",
-},
+  suggestionText: {
+    fontSize: 15,
+    color: "#333",
+  },
 
- modalBackground: {
+  modalBackground: {
     flex: 1,
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -206,33 +224,34 @@ suggestionText: {
     borderRadius: 10,
     alignItems: "center",
   },
- modalTitleText: {
-  fontSize: 20,
-  marginBottom: 15,
-  fontWeight: "600",
-  textAlign: "center",
-  width: "100%",           // Let it fill container
-},
+  modalTitleText: {
+    fontSize: 20,
+    marginBottom: 15,
+    fontWeight: "600",
+    textAlign: "center",
+    width: "100%", // Let it fill container
+  },
 
-modalText: {
-  fontSize: 14,
-  marginBottom: 15,
-  textAlign: "center",
-  width: "100%",           // Avoid fixed marginLeft
-  fontWeight: "300",
-  lineHeight: 20,          // Optional: improves readability
-},
+  modalText: {
+    fontSize: 14,
+    marginBottom: 15,
+    textAlign: "center",
+    width: "100%", // Avoid fixed marginLeft
+    fontWeight: "300",
+    lineHeight: 20, // Optional: improves readability
+  },
   buttonRowContainer: {
     width: "60%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingLeft:24  },
+    paddingLeft: 24,
+  },
   cancelButtonStyle: {
     borderColor: "#000000",
     backgroundColor: "#EEEEEE",
     borderWidth: 1,
-    marginLeft:-80,
+    marginLeft: -80,
 
     flexDirection: "row",
     padding: 20,
@@ -257,7 +276,6 @@ modalText: {
     color: "red",
     marginRight: 8,
   },
-
 });
 
 export const pickerSelectStyles = {
@@ -288,6 +306,5 @@ export const pickerSelectStyles = {
   },
   iconContainer: { top: 10, right: 12 },
 };
-
 
 export default styles;

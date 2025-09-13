@@ -5,7 +5,6 @@ const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-   
   },
   title: {
     fontSize: 18,
@@ -66,6 +65,7 @@ const styles = StyleSheet.create({
   },
   priceContainer: {
     alignItems: "flex-end",
+    marginTop:6,
   },
   rowContainer: {
     flexDirection: "row",
@@ -81,6 +81,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  background:{
+   backgroundColor:"#f1f1f1"
+  },
   imageContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -94,6 +97,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     padding: 10,
     width: width * 0.9,
+    marginTop:12,
     marginBottom: 20,
     borderRadius: 10,
   },
@@ -104,6 +108,7 @@ const styles = StyleSheet.create({
   sellerBox: {
     flexDirection: "row",
     alignItems: "center",
+    
     flex: 1,
   },
 
@@ -123,6 +128,7 @@ const styles = StyleSheet.create({
   qty: {
     fontSize: 13,
     color: "#444",
+    marginTop:12,
   },
   buttonContainer: {
     justifyContent: "center",

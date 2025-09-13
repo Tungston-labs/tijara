@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
     paddingLeft: 5,
   },
-  // ✅ New style for Expiry Date Picker
   datePickerField: {
     width: width * 0.9,
     borderRadius: 6,

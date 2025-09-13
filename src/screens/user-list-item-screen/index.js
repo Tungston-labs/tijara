@@ -78,7 +78,7 @@ const UserListItemScreen = ({ refreshing, onRefresh }) => {
             showPagination
             paginationStyle={{
               position: "absolute",
-              bottom: 70,
+              bottom: 10,
               alignSelf: "center",
             }}
             paginationStyleItem={{
@@ -90,16 +90,15 @@ const UserListItemScreen = ({ refreshing, onRefresh }) => {
             paginationActiveColor="#000000"
             paginationDefaultColor="#ccc"
             data={item.images}
-            renderItem={({ item: imageUri }) => (
-              <View style={styles.child}>
-                <Image
-                  source={{ uri: imageUri }}
-                  style={{ width: "100%", height: 200, marginTop: 5 }}
-                  resizeMode="cover"
-                />
-                {/* <Text style={styles.negotiableTag}>Price Negotiable</Text> */}
-              </View>
-            )}
+            renderItem={({ item: img }) => (
+                          <View style={styles.child}>
+                            <Image
+                              source={{ uri: img }}
+                              style={styles.imageStyle}
+                              resizeMode="cover"
+                            />
+                          </View>
+                        )}
           />
 
           <View style={styles.infoContainer}>

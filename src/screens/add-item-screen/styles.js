@@ -18,22 +18,43 @@ const styles = StyleSheet.create({
   header: {
     marginTop: 2,
   },
-  uploadBox: {
-    borderWidth: 1,
-    borderColor: "#d3d3d3",
-    borderStyle: "dashed",
-    borderRadius: 10,
-    paddingVertical: 20,
-    alignItems: "center",
-    marginHorizontal: 20,
-    marginBottom: 10,
-    backgroundColor: "#fafafa",
-  },
+uploadBox: {
+  borderWidth: 1,
+  borderColor: "#d3d3d3",
+  borderStyle: "dashed",
+  borderRadius: 10,
+  paddingVertical: 12,
+  paddingHorizontal: 16,
+  flexDirection: "row",         
+  alignItems: "center",         
+  justifyContent: "center",     
+  marginHorizontal: 20,
+  marginBottom: 10,
+  backgroundColor: "#fafafa",
+},
+plusCircle: {
+  width: 30,
+  height: 30,
+  borderRadius: 15,
+  backgroundColor: "#7CB518",
+  justifyContent: "center",
+  alignItems: "center",
+  marginRight: 10,              
+},
+
+
   uploadText: {
     color: "#7CB518",
     fontSize: 16,
     fontWeight: "bold",
   },
+
+plus: {
+  color: "#fff",
+  fontSize: 20,
+  fontWeight: "bold",
+},
+
   imagePreviewRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -47,6 +68,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#e0e0e0",
+    position:"relative",
     marginRight: 10,
   },
   horizontalImageScrollContainer: {

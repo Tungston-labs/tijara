@@ -87,35 +87,28 @@ const SellerAddProductScreen = ({ navigation }) => {
     fetchSubCategories(subCategoryText);
   }, [subCategoryText, itemName]);
 
-  const requestPermissions = async () => {
-    try {
+const requestPermissions = async () => {
+  try {
+    if (Platform.OS === "android") {
       if (Platform.Version >= 33) {
-        const permissions = [
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-          // PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
-        ];
-
-        const granted = await PermissionsAndroid.requestMultiple(permissions);
-        return permissions.every(
-          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
+        const result = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
         );
+        return result === PermissionsAndroid.RESULTS.GRANTED;
       } else {
-        const permissions = [
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        ];
-
-        const granted = await PermissionsAndroid.requestMultiple(permissions);
-        return permissions.every(
-          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
+        const result = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
         );
+        return result === PermissionsAndroid.RESULTS.GRANTED;
       }
-    } catch (error) {
-      console.warn("Permission error:", error);
-      return false;
     }
-  };
+    return true; // iOS doesn't need storage permissions
+  } catch (error) {
+    console.warn("Permission error:", error);
+    return false;
+  }
+};
+
 
   const handleSelectImages = async () => {
     const hasPermissions = await requestPermissions();
@@ -233,10 +226,13 @@ const SellerAddProductScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
- 
+  const handleRemoveImage = (index) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const renderImagePreview = () => (
     <View style={styles.horizontalImageScrollContainer}>
-      <ScrollView>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.horizontalImageRow}>
           {images.map((image, i) => (
             <View key={i} style={styles.imagePreviewBox}>
@@ -245,6 +241,12 @@ const SellerAddProductScreen = ({ navigation }) => {
                 style={{ width: "100%", height: "100%", borderRadius: 10 }}
                 resizeMode="cover"
               />
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => handleRemoveImage(i)}
+              >
+                <Text style={styles.cancelText}>×</Text>
+              </TouchableOpacity>
             </View>
           ))}
         </View>
@@ -286,7 +288,10 @@ const SellerAddProductScreen = ({ navigation }) => {
                 style={styles.uploadBox}
                 onPress={handleSelectImages}
               >
-                <Text style={styles.uploadText}>+ Upload image</Text>
+                <View style={styles.plusCircle}>
+                  <Text style={styles.plus}>+</Text>
+                </View>
+                <Text style={styles.uploadText}>Upload image</Text>
               </TouchableOpacity>
 
               {renderImagePreview()}
@@ -504,7 +509,7 @@ const SellerAddProductScreen = ({ navigation }) => {
                   />
                 )}
 
-                <Text style={styles.label}>Price/KG (optional)</Text>
+                <Text style={styles.label}>Price/KG </Text>
                 <View style={styles.priceRow}>
                   <TextInput
                     style={styles.priceInput}

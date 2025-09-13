@@ -1,12 +1,12 @@
-import { StyleSheet ,Dimensions} from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 const { width, height } = Dimensions.get("window");
 
 export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    justifyContent:'center',
-    paddingVertical:20
+    justifyContent: "center",
+    paddingVertical: 20,
   },
   backArrow: {
     position: "absolute",
@@ -29,17 +29,17 @@ export default StyleSheet.create({
     color: "#000",
     textAlign: "left",
     marginBottom: 5,
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
   },
   subHeading: {
     fontSize: 14,
     color: "#666",
     marginBottom: 25,
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
   },
   inputContainer: {
     marginBottom: 15,
-    paddingHorizontal:20
+    paddingHorizontal: 20,
   },
   label: {
     fontSize: 14,
@@ -52,8 +52,7 @@ export default StyleSheet.create({
     alignSelf: "center",
     width: width * 0.4,
     height: height * 0.1,
-   marginBottom:40
-    
+    marginBottom: 40,
   },
   input: {
     backgroundColor: "#F5F5F5",
@@ -70,20 +69,31 @@ export default StyleSheet.create({
     paddingRight: 15,
     borderRadius: 10,
   },
+  forgotWrapper: {
+  alignSelf: "flex-end",
+  marginTop: 5,
+  marginRight: 5,
+},
+forgotText: {
+  color: "#000",
+  fontSize: 14,
+  fontWeight: "500",
+},
+
   loginButton: {
     backgroundColor: "#B7E626",
     paddingVertical: 14,
     borderRadius: 10,
-    alignItems:"center",
-    marginTop: 10,
-    marginHorizontal:20,
+    alignItems: "center",
+    marginHorizontal: 20,
   },
-forgotContainer: {
-  color: "#000",
-  fontSize: 14,
-  fontWeight: "500",
-  marginHorizontal: 20,
-},
+  forgotContainer: {
+    color: "#000",
+    fontSize: 14,
+    fontWeight: "500",
+    marginBottom:10,
+    marginHorizontal: 14,
+  },
 
   loginButtonText: {
     color: "#000",

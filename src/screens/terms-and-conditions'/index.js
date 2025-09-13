@@ -221,7 +221,7 @@ const TermsAndConditionsScreen = () => {
           Your protection is our priority: These Terms are designed to empower
           you.
         </Text>
-        <Text style={styles.paragraph}>
+        <Text style={styles.last}>
           Built on integrity: Trust through transparency and accessible support.
         </Text>
       </ScrollView>
