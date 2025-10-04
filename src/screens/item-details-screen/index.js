@@ -43,8 +43,19 @@ const ItemDetailsScreen = ({ navigation }) => {
     console.log(getProductByIdThunk);
   }, [productId, token]);
 
-  const decrease = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
-  const increase = () => setQuantity((prev) => prev + 1);
+  const increase = () => {
+    setQuantity((prev) => {
+      const num = parseFloat(prev) || 0;
+      return (num + 1).toString();
+    });
+  };
+
+  const decrease = () => {
+    setQuantity((prev) => {
+      const num = parseFloat(prev) || 0;
+      return num > 0 ? (num - 1).toString() : "0";
+    });
+  };
 
   const handleIconPress = () => {
     navigation.goBack();
@@ -117,16 +128,15 @@ const ItemDetailsScreen = ({ navigation }) => {
     }
   };
   return (
-   <ScrollView
-  style={{ flex: 1, backgroundColor: "#fff" }}
-  contentContainerStyle={{
-    alignItems: "center",
-    justifyContent: "center",
-    paddingBottom:150
-   
-  }}
-  showsVerticalScrollIndicator={false}
->
+    <ScrollView
+      style={{ flex: 1, backgroundColor: "#fff" }}
+      contentContainerStyle={{
+        alignItems: "center",
+        justifyContent: "center",
+        paddingBottom: 150,
+      }}
+      showsVerticalScrollIndicator={false}
+    >
       <BackgroundWrapper>
         <Header
           handleIconPress={handleIconPress}
@@ -157,64 +167,67 @@ const ItemDetailsScreen = ({ navigation }) => {
                   source={{ uri: img }}
                   style={[
                     styles.thumbnail,
-                    selectedImageIndex === i && styles.selectedThumbnail, 
+                    selectedImageIndex === i && styles.selectedThumbnail,
                   ]}
                 />
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
-         <View style={styles.background}>
-        <View style={styles.infoSection}>
-          <View>
-            <Text style={styles.productName}>{product?.itemName}</Text>
-            <Text style={styles.variant}>{product?.itemSubCategory}</Text>
-            <Text style={styles.rating}>⭐ 4.8 • {product?.country}</Text>
-          </View>
-          <View style={styles.priceContainer}>
-            <Text style={styles.price}>
-              {product?.pricePerKg?.AED ? product?.pricePerKg?.AED : "---"} AED
-              / kg
-            </Text>
-            <Text style={styles.qty}>
-              Available Qty:
-              <Text style={{ fontWeight: "bold" }}>
-                {product?.availableKg}kg
-              </Text>
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <Button label={"Request"} handleButtonPress={handleButtonClick} />
-        </View>
-
-        <View style={styles.alignContent}>
-          <View style={styles.dataContainer}>
-            <View style={styles.sellerBox}>
-              <Image
-                source={{ uri: product?.addedBy?.profileImage }}
-                style={styles.sellerImage}
-              />
-              {/* <Image source={images.profile} style={styles.sellerImage} /> */}
-              <View style={styles.textContainer}>
-                <View style={styles.sellerInfoContainer}>
-                  <Text style={styles.sellerLabel}>Sold by</Text>
-                  <View style={styles.sellerRow}>
-                    <Text style={styles.sellerName}>
-                      {product?.addedBy?.name || "Seller"}
-                    </Text>
-                    <Image source={images.verify} style={styles.verifyImage} />
-                  </View>
-                </View>
-
-                <Text style={styles.sellerStats}>Sold over 2K+ Tons</Text>
-              </View>
+        <View style={styles.background}>
+          <View style={styles.infoSection}>
+            <View>
+              <Text style={styles.productName}>{product?.itemName}</Text>
+              <Text style={styles.variant}>{product?.itemSubCategory}</Text>
+              <Text style={styles.rating}>⭐ 4.8 • {product?.country}</Text>
             </View>
-            <Text style={styles.sellerRating}>⭐ 4.8</Text>
+            <View style={styles.priceContainer}>
+              <Text style={styles.price}>
+                {product?.pricePerKg?.AED ? product?.pricePerKg?.AED : "---"}{" "}
+                AED / kg
+              </Text>
+              <Text style={styles.qty}>
+                Available Qty:
+                <Text style={{ fontWeight: "bold" }}>
+                  {product?.availableKg}kg
+                </Text>
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <Button label={"Request"} handleButtonPress={handleButtonClick} />
+          </View>
+
+          <View style={styles.alignContent}>
+            <View style={styles.dataContainer}>
+              <View style={styles.sellerBox}>
+                <Image
+                  source={{ uri: product?.addedBy?.profileImage }}
+                  style={styles.sellerImage}
+                />
+                {/* <Image source={images.profile} style={styles.sellerImage} /> */}
+                <View style={styles.textContainer}>
+                  <View style={styles.sellerInfoContainer}>
+                    <Text style={styles.sellerLabel}>Sold by</Text>
+                    <View style={styles.sellerRow}>
+                      <Text style={styles.sellerName}>
+                        {product?.addedBy?.name || "Seller"}
+                      </Text>
+                      <Image
+                        source={images.verify}
+                        style={styles.verifyImage}
+                      />
+                    </View>
+                  </View>
+
+                  <Text style={styles.sellerStats}>Sold over 2K+ Tons</Text>
+                </View>
+              </View>
+              <Text style={styles.sellerRating}>⭐ 4.8</Text>
+            </View>
           </View>
         </View>
-          </View>
         <View style={styles.descriptionBox}>
           <Text style={styles.descriptionTitle}>Description</Text>
           <Text style={styles.descriptionText}>

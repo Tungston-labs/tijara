@@ -19,11 +19,26 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  iconStyle: {
-    width: width * 0.13,
-    paddingBottom: 15,
-    alignSelf: "flex-end",
-  },
+  avatarContainer: {
+  width: 40,
+  height: 40,
+  borderRadius: 20,   // makes it circular
+  overflow: "hidden",
+  borderWidth: 1,
+  borderColor: "#ccc",
+
+},
+
+avatar: {
+  width: "100%",
+  height: "100%",
+},
+
+iconStyle: {
+  paddingBottom: 15,
+  marginRight: 18,  // moves it left
+},
+
 });
 
 export default styles;

@@ -10,8 +10,12 @@ const TermsAndConditionsScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="chevron-back" size={28} color="#000000" />{" "}
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ padding: 8 }}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Icon name="chevron-back" size={28} color="#000000" />
         </TouchableOpacity>
         <Text style={styles.headerText}>Terms & Conditions</Text>
       </View>
@@ -192,7 +196,8 @@ const TermsAndConditionsScreen = () => {
         <Text style={styles.bullet}> Email: support@thijara.in</Text>
         <Text style={styles.bullet}> Phone: +971 555736021</Text>
         <Text style={styles.bullet}>
-          Address: ARM-SBC L.L.C-FZ, Meydan Freezone, 5842+632 Grand stand - NAD AL SHEBA, Dubai, United Arab Emirates
+          Address: ARM-SBC L.L.C-FZ, Meydan Freezone, 5842+632 Grand stand - NAD
+          AL SHEBA, Dubai, United Arab Emirates
         </Text>
         <Text style={styles.paragraph}>
           Accessible support boosts user confidence.
@@ -214,7 +219,7 @@ const TermsAndConditionsScreen = () => {
         <Text style={styles.paragraph}>
           Here's what we promise and why it matters to you: Clear and fair
           policies: From ordering and delivery to returns and data privacy, our
-          policies are easy to understand and enforceable. 
+          policies are easy to understand and enforceable.
         </Text>
 
         <Text style={styles.paragraph}>

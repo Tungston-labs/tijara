@@ -88,6 +88,7 @@ backIcon: {
     paddingBottom: 20,
     alignItems: "center",
     marginTop: 30,
+    width:"95%",
   },
   modalBackground: {
     flex: 1,
