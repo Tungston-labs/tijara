@@ -5,7 +5,6 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  Alert,
   Platform,
   PermissionsAndroid,
 } from "react-native";
@@ -20,6 +19,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import Icon from "react-native-vector-icons/Feather";
 import { setTemporaryUser, SignUpThunk } from "../../redux/slice/authSlice";
 import EyeIcon from "react-native-vector-icons/Ionicons";
+import Toast from "react-native-toast-message";
 
 const RegistrationScreen = () => {
   const route = useRoute();
@@ -129,39 +129,45 @@ const RegistrationScreen = () => {
       return false;
     }
   };
+const handleSelectImage = async () => {
+  const hasPermissions = await requestPermissions();
+  if (!hasPermissions) {
+    Toast.show({
+      type: "error",
+      text1: "Permission Required",
+      text2: "Please grant storage permissions to select an image.",
+    });
+    return;
+  }
 
-  const handleSelectImage = async () => {
-    const hasPermissions = await requestPermissions();
-    if (!hasPermissions) {
-      Alert.alert(
-        "Permission Required",
-        "Please grant storage permissions to select an image."
-      );
+  const options = {
+    mediaType: "photo",
+    quality: 0.7,
+  };
+
+  launchImageLibrary(options, (response) => {
+    if (response.didCancel) return;
+
+    if (response.errorCode) {
+      console.error("ImagePicker Error:", response.errorMessage);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to open image picker.",
+      });
       return;
     }
 
-    const options = {
-      mediaType: "photo",
-      quality: 0.7,
-    };
-
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) return;
-      if (response.errorCode) {
-        console.error("ImagePicker Error: ", response.errorMessage);
-        return;
-      }
-
-      const asset = response.assets?.[0];
-      if (asset) {
-        setProfileImage({
-          uri: asset.uri,
-          name: asset.fileName,
-          type: asset.type,
-        });
-      }
-    });
-  };
+    const asset = response.assets?.[0];
+    if (asset) {
+      setProfileImage({
+        uri: asset.uri,
+        name: asset.fileName,
+        type: asset.type,
+      });
+    }
+  });
+};
 
   const isStrongPassword = (password) => {
     return (
@@ -179,110 +185,143 @@ const RegistrationScreen = () => {
 
   const isValidPhone = (phone) => /^\d{7,15}$/.test(phone);
 
-  const handleButtonClick = async () => {
-    const fullPhoneNumber = `${countryCode}${form.phone}`;
+ const handleButtonClick = async () => {
+  const fullPhoneNumber = `${countryCode}${form.phone}`;
 
-    if (
-      !form.name ||
-      !form.phone ||
-      !form.email ||
-      !form.password ||
-      !form.confirmPassword
-    ) {
-      Alert.alert("Error", "Please fill all the fields correctly");
-      return;
-    }
-
-    if (!isStrongPassword(form.password)) {
-      Alert.alert(
-        "Weak Password",
-        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
-      );
-      return;
-    }
-    if (!isValidEmail(form.email)) {
-      Alert.alert("Invalid Email", "Please enter a valid email address.");
-      return;
-    }
-
-    if (!isValidPhone(form.phone)) {
-      Alert.alert(
-        "Invalid Phone",
-        "Please enter the correct number with respect to the country"
-      );
-      return;
-    }
-
-    if (form.password !== form.confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
-      return;
-    }
-
-    if (!profileImage) {
-      Alert.alert("Validation Error", "Please upload a profile image");
-      return;
-    }
-
-    if (!resolvedCoords) {
-      Alert.alert(
-        "Location Error",
-        "Unable to detect valid coordinates. Please go back and re-select your location."
-      );
-      return;
-    }
-
-    const basicFormData = {
-      name: form.name,
-      phone: fullPhoneNumber,
-      email: form.email,
-      password: form.password,
-      coords: {
-        latitude: resolvedCoords.latitude,
-        longitude: resolvedCoords.longitude,
-      },
-      location: locationName || `${resolvedCoords.latitude},${resolvedCoords.longitude}`,
-    };
-
-    if (role === "seller") {
-      navigation.navigate("SellerRegistrationSecond", {
-        form: basicFormData,
-        profileImage,
-        countryCode,
-      });
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("name", basicFormData.name);
-    formData.append("phone", basicFormData.phone);
-    formData.append("email", basicFormData.email);
-    formData.append("password", basicFormData.password);
-    formData.append("coords", JSON.stringify(basicFormData.coords));
-    formData.append("location", basicFormData.location);
-    formData.append("profileImage", {
-      uri: profileImage.uri,
-      type: profileImage.type || "image/jpeg",
-      name: profileImage.name || "profile.jpg",
+  if (
+    !form.name ||
+    !form.phone ||
+    !form.email ||
+    !form.password ||
+    !form.confirmPassword
+  ) {
+    Toast.show({
+      type: "error",
+      text1: "Validation Error",
+      text2: "Please fill all required fields.",
     });
+    return;
+  }
 
-    try {
-      setLoading(true);
-      const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
+  if (!isStrongPassword(form.password)) {
+    Toast.show({
+      type: "error",
+      text1: "Weak Password",
+      text2:
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
+    });
+    return;
+  }
 
-      if (result?.status !== "approved") {
-        dispatch(setTemporaryUser(result));
-        navigation.navigate("RequestSentScreen");
-        return;
-      }
+  if (!isValidEmail(form.email)) {
+    Toast.show({
+      type: "error",
+      text1: "Invalid Email",
+      text2: "Please enter a valid email address.",
+    });
+    return;
+  }
 
-     
-      navigation.navigate("HomeScreen"); 
-    } catch (err) {
-      Alert.alert("Signup Failed", err?.message || "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
+  if (!isValidPhone(form.phone)) {
+    Toast.show({
+      type: "error",
+      text1: "Invalid Phone Number",
+      text2: "Please enter a valid phone number (7-15 digits).",
+    });
+    return;
+  }
+
+  if (form.password !== form.confirmPassword) {
+    Toast.show({
+      type: "error",
+      text1: "Validation Error",
+      text2: "Passwords do not match.",
+    });
+    return;
+  }
+
+  if (!profileImage) {
+    Toast.show({
+      type: "error",
+      text1: "Missing Image",
+      text2: "Please select a profile image.",
+    });
+    return;
+  }
+
+  if (!resolvedCoords) {
+    Toast.show({
+      type: "error",
+      text1: "Location Error",
+      text2: "Please set a valid location.",
+    });
+    return;
+  }
+
+  const basicFormData = {
+    name: form.name,
+    phone: fullPhoneNumber,
+    email: form.email,
+    password: form.password,
+    coords: {
+      latitude: resolvedCoords.latitude,
+      longitude: resolvedCoords.longitude,
+    },
+    location:
+      locationName ||
+      `${resolvedCoords.latitude},${resolvedCoords.longitude}`,
   };
+
+  // Seller registration second screen
+  if (role === "seller") {
+    navigation.navigate("SellerRegistrationSecond", {
+      form: basicFormData,
+      profileImage,
+      countryCode,
+    });
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("name", basicFormData.name);
+  formData.append("phone", basicFormData.phone);
+  formData.append("email", basicFormData.email);
+  formData.append("password", basicFormData.password);
+  formData.append("coords", JSON.stringify(basicFormData.coords));
+  formData.append("location", basicFormData.location);
+  formData.append("profileImage", {
+    uri: profileImage.uri,
+    type: profileImage.type || "image/jpeg",
+    name: profileImage.name || "profile.jpg",
+  });
+
+  try {
+    setLoading(true);
+    const result = await dispatch(SignUpThunk({ formData, role })).unwrap();
+
+    if (result?.status !== "approved") {
+      dispatch(setTemporaryUser(result));
+      navigation.navigate("RequestSentScreen");
+      return;
+    }
+
+    Toast.show({
+      type: "success",
+      text1: "Welcome!",
+      text2: "Your account has been created successfully.",
+    });
+    navigation.navigate("HomeScreen");
+  } catch (err) {
+    console.error("Signup Failed:", err);
+    Toast.show({
+      type: "error",
+      text1: "Signup Failed",
+      text2: err?.message || "Something went wrong. Please try again.",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <ScrollView>

@@ -32,7 +32,6 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Custom Header */}
       <View style={styles.customHeader}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
           <Icon name="chevron-back" size={28} color="#000" />
@@ -73,7 +72,6 @@ const ProfileScreen = ({ navigation }) => {
         />
       </View>
 
-      {/* Logout Modal */}
       <Modal
         visible={modalVisible}
         animationType="slide"

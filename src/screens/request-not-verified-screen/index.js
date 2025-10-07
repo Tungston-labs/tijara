@@ -1,45 +1,55 @@
 import React from "react";
-import { View, Text, Image, Alert } from "react-native";
+import { View, Text, Image } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 import { checkStatusThunk } from "../../redux/slice/authSlice";
+import Toast from "react-native-toast-message";
 
 const RequestNotVerifiedScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-
-  const { user, token, verificationStatus, loading } = useSelector(
-    (state) => state.user
-  );
+  const { user, token, loading } = useSelector((state) => state.user);
 
   const handleButtonClick = async () => {
     console.log("User before navigating:", user);
     console.log("Token before navigating:", token);
 
-    try {
-      if (user?._id) {
-        const res = await dispatch(checkStatusThunk(user._id)).unwrap();
+    if (!user?._id) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Unable to check status. Please try again.",
+      });
+      return;
+    }
 
-        if (res.status === "approved") {
-          navigation.replace("RequestSuccessScreen", {
-            user,
-            token,
-          });
-        } else {
-          Alert.alert(
-            "Not Verified",
-            "Your account is still under review. Please try again later."
-          );
-        }
+    try {
+      const res = await dispatch(checkStatusThunk(user._id)).unwrap();
+
+      if (res.status === "approved") {
+        Toast.show({
+          type: "success",
+          text1: "Verified!",
+          text2: "Your account has been approved.",
+        });
+        navigation.replace("RequestSuccessScreen", { user, token });
       } else {
-        Alert.alert("Error", "Unable to check status. Please try again.");
+        Toast.show({
+          type: "info",
+          text1: "Not Verified Yet",
+          text2: "Your account is still under review. Please try again later.",
+        });
       }
     } catch (error) {
       console.error("Error checking status:", error);
-      Alert.alert("Error", "Failed to check verification status.");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to check verification status.",
+      });
     }
   };
 
@@ -70,4 +80,5 @@ const RequestNotVerifiedScreen = () => {
     </View>
   );
 };
+
 export default RequestNotVerifiedScreen;

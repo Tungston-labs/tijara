@@ -8,14 +8,63 @@ import { store } from "./src/redux/store.js";
 import { loadAuthData } from "./src/utils/mmkvStorage.js";
 import { loginFromStorage } from "./src/redux/slice/authSlice.js";
 import { setToken } from "./src/services/config.js";
+import Toast from "react-native-toast-message";
+import { View, Text } from "react-native"; // <-- Text imported
 
 enableScreens();
+
+const toastConfig = {
+  // custom error toast (red)
+  error: ({ text1, text2, props }) => (
+    <View
+      style={{
+        width: "95%",
+        marginTop: 10,
+        padding: 12,
+        borderRadius: 8,
+        backgroundColor: "#D93025", // red background
+        shadowColor: "#000",
+        shadowOpacity: 0.2,
+        elevation: 10,
+        zIndex: 9999,
+      }}
+    >
+      <Text style={{ color: "#fff", fontWeight: "700", marginBottom: 2 }}>
+        {text1}
+      </Text>
+      {text2 ? (
+        <Text style={{ color: "#fff", fontSize: 13 }}>{text2}</Text>
+      ) : null}
+    </View>
+  ),
+
+  // default success (greenish) — optional override
+  success: ({ text1, text2 }) => (
+    <View
+      style={{
+        width: "95%",
+        marginTop: 10,
+        padding: 12,
+        borderRadius: 8,
+        backgroundColor: "#2E7D32",
+        elevation: 10,
+        zIndex: 9999,
+      }}
+    >
+      <Text style={{ color: "#fff", fontWeight: "700", marginBottom: 2 }}>
+        {text1}
+      </Text>
+      {text2 ? <Text style={{ color: "#fff" }}>{text2}</Text> : null}
+    </View>
+  ),
+};
 
 const AppWrapper = () => {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
         <App />
+        <Toast config={toastConfig} />
       </SafeAreaProvider>
     </Provider>
   );
@@ -28,7 +77,6 @@ const App = () => {
     const { token, user, role } = loadAuthData();
     if (token && user) {
       dispatch(loginFromStorage({ token, user, role }));
-      
       setToken(token);
     }
   }, []);

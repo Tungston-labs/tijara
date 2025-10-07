@@ -7,7 +7,6 @@ import {
   TextInput,
   ScrollView,
   Image,
-  Alert,
   Platform,
   PermissionsAndroid,
   KeyboardAvoidingView,
@@ -32,6 +31,7 @@ import {
   deleteProductThunk,
   fetchProductsThunk,
 } from "../../redux/slice/productSlice";
+import Toast from "react-native-toast-message";
 
 const SellerEditProductScreen = ({ navigation, route }) => {
   const { product } = route.params;
@@ -117,90 +117,132 @@ const SellerEditProductScreen = ({ navigation, route }) => {
       if (response.assets && response.assets.length > 0) {
         const newImages = response.assets;
 
-        // Append new images to existing ones (up to 10 total)
         setImages((prevImages) => {
           const combined = [...prevImages, ...newImages];
-          const unique = combined.slice(0, 10); // Limit to 10 images if needed
+          const unique = combined.slice(0, 4);
           return unique;
         });
       }
     });
   };
 
-  const handleUpdateProduct = async () => {
-    if (
-      !category ||
-      !itemName.trim() ||
-      !subCategoryText.trim() ||
-      !country ||
-      // !priceAED ||
-      !expiryDate
-    ) {
-      return Alert.alert("Error", "Please fill all fields correctly.");
-    }
-    if (images.length === 0) {
-      return Alert.alert("Error", "Please upload at least one image.");
-    }
+ const handleUpdateProduct = async () => {
+  if (
+    !category ||
+    !itemName.trim() ||
+    !subCategoryText.trim() ||
+    !country ||
+    !expiryDate
+  ) {
+    return Toast.show({
+      type: "error",
+      text1: "Please fill all required fields.",
+    });
+  }
+if (!expiryDate || new Date(expiryDate) <= new Date()) {
+  return Toast.show({
+    type: "error",
+    text1: "Validation Error",
+    text2: "Expiry date must be a future date.",
+  });
+}
 
-    const formData = new FormData();
+  if (images.length === 0) {
+    // return so the function stops here
+    return Toast.show({
+      type: "error",
+      text1: "Validation Error",
+      text2: "At least one image is required.",
+    });
+  }
 
-    const existingImageUrls = [];
-    images.forEach((img, index) => {
-      if (img.uri.startsWith("http")) {
-        existingImageUrls.push(img.uri);
-      } else {
-        formData.append("images", {
-          uri: img.uri,
-          name: img.fileName || `image_${index}.jpg`,
-          type: img.type || "image/jpeg",
-        });
-      }
+  const formData = new FormData();
+
+  const existingImageUrls = [];
+  images.forEach((img, index) => {
+    // some img objects (from server) are { uri: "http..." }, others are local assets from picker
+    if (typeof img.uri === "string" && img.uri.startsWith("http")) {
+      existingImageUrls.push(img.uri);
+    } else {
+      formData.append("images", {
+        uri: img.uri,
+        name: img.fileName || `image_${index}.jpg`,
+        type: img.type || "image/jpeg",
+      });
+    }
+  });
+
+  formData.append("existingImages", JSON.stringify(existingImageUrls));
+  formData.append("itemCategory", category);
+  formData.append("itemName", itemName);
+  formData.append("itemSubCategory", subCategoryText);
+  formData.append("country", country);
+  formData.append("description", description);
+  formData.append("priceAED", priceAED);
+  formData.append("expiryDate", expiryDate.toISOString());
+
+  try {
+    await dispatch(
+      updateSellerProductThunk({ productId: product._id, formData, token })
+    ).unwrap();
+
+    Toast.show({
+      type: "success",
+      text1: "Success",
+      text2: "Product updated successfully",
     });
 
-    formData.append("existingImages", JSON.stringify(existingImageUrls));
-    formData.append("itemCategory", category);
-    formData.append("itemName", itemName);
-    formData.append("itemSubCategory", subCategoryText);
-    formData.append("country", country);
-    formData.append("description", description);
-    formData.append("priceAED", priceAED);
-    formData.append("expiryDate", expiryDate.toISOString());
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "SellerHomeScreen", params: { goToTab: "Sell" } }],
+    });
+  } catch (err) {
+    console.error("Update error:", err);
 
-    try {
-      await dispatch(
-        updateSellerProductThunk({ productId: product._id, formData, token })
-      ).unwrap();
+    const message =
+      (err && (err.message || err.data?.message)) ||
+      "Failed to update product";
 
-      Alert.alert("Success", "Product updated successfully");
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "SellerHomeScreen", params: { goToTab: "Home" } }],
-      });
-    } catch (e) {
-      console.error(e);
-      Alert.alert("Error", "Failed to update product");
-    }
-  };
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: message,
+    });
+  }
+};
 
-  const handleDelete = async () => {
-    try {
-      await dispatch(
-        deleteProductThunk({ productId: product._id, token })
-      ).unwrap();
+const handleDelete = async () => {
+  try {
+    await dispatch(deleteProductThunk({ productId: product._id, token })).unwrap();
 
-      closeModal();
-      Alert.alert("Success", "Product deleted successfully");
+    closeModal();
 
-      await dispatch(fetchProductsThunk({ token }));
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "SellerHomeScreen", params: { goToTab: "Home" } }],
-      });
-    } catch (err) {
-      console.error("Error deleting product:", err);
-      Alert.alert("Error", err?.message || "Failed to delete product");
-    }
-  };
+    Toast.show({
+      type: "success",
+      text1: "Success",
+      text2: "Product deleted successfully",
+    });
+
+    await dispatch(fetchProductsThunk({ token }));
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "SellerHomeScreen", params: { goToTab: "Sell" } }],
+    });
+  } catch (err) {
+    console.error("Error deleting product:", err);
+
+    const message =
+      (err && (err.message || err.data?.message)) ||
+      "Failed to delete product";
+
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: message,
+    });
+  }
+};
+
 
   return (
     <TouchableWithoutFeedback

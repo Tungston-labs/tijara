@@ -6,6 +6,7 @@ import {
   Text,
   ActivityIndicator,
   RefreshControl,
+  Image,
 } from "react-native";
 import styles from "./styles";
 import TijaraHeader from "../../componets/TijaraHeader";
@@ -25,11 +26,7 @@ import { useIsFocused, useRoute } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
-const HomeTabContent = ({
-  tradeLicenseStatus,
-  refreshing,
-  onRefresh,
-}) => {
+const HomeTabContent = ({ tradeLicenseStatus, refreshing, onRefresh }) => {
   if (tradeLicenseStatus === "approved")
     return <UserListItemScreen refreshing={refreshing} onRefresh={onRefresh} />;
   if (["pending", "rejected", "expired"].includes(tradeLicenseStatus))
@@ -65,24 +62,34 @@ const TabScreens = ({
           focus: () => onTabChange("Buy"),
         }}
       />
-      <Tab.Screen
-        name="Home"
-        children={() => (
-          <HomeTabContent
-            tradeLicenseStatus={tradeLicenseStatus}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        )}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <Icon name="home-outline" size={25} color={color} />
-          ),
-        }}
-        listeners={{
-          focus: () => onTabChange("Home"),
+<Tab.Screen
+  name="Sell"
+  children={() => (
+    <HomeTabContent
+      tradeLicenseStatus={tradeLicenseStatus}
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+    />
+  )}
+  options={{
+    tabBarIcon: ({ color, size }) => (
+      <Image
+        source={require("../../../assets/seller.png")}
+        style={{
+          width: size ?? 24,
+          height: size ?? 24,
+          tintColor: color,
+          resizeMode: "contain",
         }}
       />
+    ),
+    tabBarLabel: "Sell",
+  }}
+  listeners={{
+    focus: () => onTabChange("Sell"),
+  }}
+/>
+
     </Tab.Navigator>
   );
 };
@@ -130,7 +137,7 @@ const SellerHomeScreen = ({ navigation }) => {
   }, [dispatch]);
 
   const shouldShowSearch =
-    activeTab === "Home" && tradeLicenseStatus === "approved";
+    activeTab === "Sell" && tradeLicenseStatus === "approved";
 
   if (loading) {
     return (

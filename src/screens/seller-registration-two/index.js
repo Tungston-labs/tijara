@@ -4,7 +4,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Alert,
   Platform,
   PermissionsAndroid,
 } from "react-native";
@@ -18,13 +17,14 @@ import { useDispatch } from "react-redux";
 import { launchImageLibrary } from "react-native-image-picker";
 import Button from "../../componets/Button";
 import { SignUpThunk } from "../../redux/slice/authSlice";
+import Toast from "react-native-toast-message";
 
 const SellerRegistrationSecond = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { form: prevForm = {}, profileImage,countryCode } = route.params || {};
+  const { form: prevForm = {}, profileImage, countryCode } = route.params || {};
 
   const [form, setForm] = useState({
     companyName: "",
@@ -70,10 +70,11 @@ const SellerRegistrationSecond = () => {
   const handleFileUpload = async () => {
     const hasPermission = await requestPermissions();
     if (!hasPermission) {
-      Alert.alert(
-        "Permission Denied",
-        "Please grant storage permissions to upload the file."
-      );
+      Toast.show({
+        type: "error",
+        text1: "Permission Denied",
+        text2: "Please grant storage permissions to upload the file.",
+      });
       return;
     }
 
@@ -85,7 +86,11 @@ const SellerRegistrationSecond = () => {
     launchImageLibrary(options, (response) => {
       if (response.didCancel) return;
       if (response.errorCode) {
-        Alert.alert("Error", response.errorMessage);
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: response.errorMessage || "Failed to select image",
+        });
         return;
       }
 
@@ -109,14 +114,23 @@ const SellerRegistrationSecond = () => {
 
   const handleSubmit = async () => {
     if (!form.companyName || !form.tradeLicenseNumber || !form.managerName) {
-      Alert.alert("Validation Error", "Please fill all required fields");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Please fill all required fields",
+      });
       return;
     }
 
     if (!form.tradeLicenseCopy) {
-      Alert.alert("Validation Error", "Please upload your trade license copy");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Please upload your trade license copy",
+      });
       return;
     }
+
     console.log("Seller Form Data --->", {
       name: prevForm.name,
       email: prevForm.email,
@@ -139,7 +153,7 @@ const SellerRegistrationSecond = () => {
 
     if (prevForm.location) {
       formData.append("location", prevForm.location);
-    };
+    }
 
     if (profileImage) {
       formData.append("profileImage", {
@@ -170,7 +184,11 @@ const SellerRegistrationSecond = () => {
       });
     } catch (err) {
       console.error("Signup failed:", err);
-      Alert.alert("Signup Failed", err?.message || "Something went wrong");
+      Toast.show({
+        type: "error",
+        text1: "Signup Failed",
+        text2: err?.message || "Something went wrong",
+      });
     } finally {
       setLoading(false);
     }
@@ -185,7 +203,7 @@ const SellerRegistrationSecond = () => {
               navigation.navigate("RegistrationScreen", {
                 prefillForm: prevForm,
                 profileImage,
-                countryCode
+                countryCode,
               })
             }
             icon={true}

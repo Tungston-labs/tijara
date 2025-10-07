@@ -10,6 +10,7 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 import styles from "./styles";
 import { setToken } from "../../services/config";
 import { userLoginThunk } from "../../redux/slice/authSlice";
@@ -24,7 +25,8 @@ const LoginScreenWithPassword = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const location = route?.params?.location;
-  const { loading, error } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.user);
+
   useEffect(() => {
     if (location) {
       console.log("Location received in login:", location);
@@ -33,7 +35,11 @@ const LoginScreenWithPassword = () => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      alert("Please enter both email and password");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Please enter both email and password.",
+      });
       return;
     }
 
@@ -46,18 +52,17 @@ const LoginScreenWithPassword = () => {
         setToken(res.accessToken);
         saveAuthData(res.accessToken, res, res.role);
 
-        const userRole = res.role;
+     Toast.show({
+  type: "success",
+  text1: "Login Successful",
+  text2: "Welcome back!",
+  visibilityTime: 2000,
+  autoHide: true,
+});
 
-        // if (userRole === "buyer") {
-        //   navigation.replace("BuyerHomeScreen");
-        // } else if (userRole === "seller") {
-        navigation.replace("SellerHomeScreen");
-        // } else {
-        //   alert("Unknown user role");
-        // }
-        setEmail("");
-        setPassword("");
-      }
+setTimeout(() => {
+  navigation.replace("SellerHomeScreen");
+}, 500);}
     } catch (err) {
       const errorStatus = err?.status || err?.response?.data?.status;
       const errorMessage =
@@ -70,7 +75,14 @@ const LoginScreenWithPassword = () => {
         return;
       }
 
-      alert(typeof errorMessage === "string" ? errorMessage : "Login failed.");
+      Toast.show({
+        type: "error",
+        text1: "Login Failed",
+        text2:
+          typeof errorMessage === "string"
+            ? errorMessage
+            : "Something went wrong. Please try again.",
+      });
     }
   };
 
@@ -81,12 +93,6 @@ const LoginScreenWithPassword = () => {
         style={styles.ImageContainer}
         resizeMode="contain"
       />
-      {/* <TouchableOpacity
-        style={styles.backArrow}
-        onPress={() => navigation.goBack()}
-      >
-        <Icon name="chevron-back-outline" size={24} color="#000" />
-      </TouchableOpacity> */}
 
       <Text style={styles.heading}>Welcome back</Text>
       <Text style={styles.subHeading}>Please enter your details to Log in</Text>
@@ -124,7 +130,6 @@ const LoginScreenWithPassword = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Forgot password placed here */}
         <TouchableOpacity
           onPress={() => navigation.navigate("ForgetPasswordScreen")}
           style={styles.forgotWrapper}

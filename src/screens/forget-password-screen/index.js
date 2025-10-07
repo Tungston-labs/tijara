@@ -1,9 +1,16 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import API from "../../services/config";
 import styles from "./styles";
 import Icon from "react-native-vector-icons/Ionicons";
+import Toast from "react-native-toast-message";
 
 const ForgetPasswordScreen = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +19,11 @@ const ForgetPasswordScreen = () => {
 
   const handleResetPassword = async () => {
     if (!email.trim()) {
-      Alert.alert("Error", "Please enter your email address.");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Please enter your email address.",
+      });
       return;
     }
 
@@ -22,19 +33,29 @@ const ForgetPasswordScreen = () => {
 
     try {
       const res = await API.post(
-        "user/send-otp", 
+        "user/send-otp",
         { email },
         { withCredentials: true }
       );
 
-      Alert.alert("Success", res.data.message);
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: res.data.message || "OTP sent successfully.",
+      });
+
       navigation.navigate("OTPVerificationScreen", { email });
     } catch (error) {
-      console.log("Error sending OTP:", error?.response?.data);
-      Alert.alert(
-        "Error",
-        error?.response?.data?.message || "Failed to send reset OTP"
-      );
+      console.error("Error sending OTP:", error?.response?.data);
+
+      const message =
+        error?.response?.data?.message || "Failed to send reset OTP";
+
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: message,
+      });
     } finally {
       setLoading(false);
     }

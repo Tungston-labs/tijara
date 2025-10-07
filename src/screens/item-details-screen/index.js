@@ -19,10 +19,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRoute } from "@react-navigation/native";
 import { getProductByIdThunk } from "../../redux/slice/productSlice";
 import { createOrderThunk } from "../../redux/slice/orderSlice";
-import { Alert } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+ import Toast from "react-native-toast-message";
 import { Linking } from "react-native";
-
 const ItemDetailsScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [quantity, setQuantity] = useState(100);
@@ -70,47 +69,63 @@ const ItemDetailsScreen = ({ navigation }) => {
   };
   const { loading, order, error } = useSelector((state) => state.order);
 
-  const handleOrderRequest = async () => {
-    try {
-      console.log("Dispatching createOrderThunk");
 
-      const res = await dispatch(
-        createOrderThunk({ token, productId, quantity })
-      ).unwrap();
 
-      navigation.navigate("SuccessScreen", {
-        orderId: res.order._id,
-      });
-    } catch (err) {
-      console.error("Error placing order:", err);
-      Alert.alert("Error", err.message || "Failed to place order");
-    }
-  };
-  const handleWhatsAppRequest = () => {
-    // const quantity = 10; // or dynamically from input
-    const message = `Hello, I would like to request ${quantity} Kg of ${
-      product?.itemName || "this product"
-    }. Please let me know the next steps.`;
+const handleOrderRequest = async () => {
+  try {
+    console.log("Dispatching createOrderThunk");
 
-    const phoneNumber = product?.addedBy?.phone;
+    const res = await dispatch(
+      createOrderThunk({ token, productId, quantity })
+    ).unwrap();
 
-    if (!phoneNumber) {
-      Alert.alert("Error", "Seller phone number not available.");
-      return;
-    }
+    Toast.show({
+      type: "success",
+      text1: "Order Placed",
+      text2: "Your order has been placed successfully.",
+    });
 
-    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(
-      message
-    )}`;
-    Linking.openURL(url).catch(() =>
-      Alert.alert(
-        "Error",
-        "Could not open WhatsApp. Please make sure it's installed."
-      )
-    );
-  };
+    navigation.navigate("SuccessScreen", {
+      orderId: res.order._id,
+    });
+  } catch (err) {
+    console.error("Error placing order:", err);
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: err.message || "Failed to place order.",
+    });
+  }
+};
 
-  //for model close when go to whatsapp
+const handleWhatsAppRequest = () => {
+  const message = `Hello, I would like to request ${quantity} Kg of ${
+    product?.itemName || "this product"
+  }. Please let me know the next steps.`;
+
+  const phoneNumber = product?.addedBy?.phone;
+
+  if (!phoneNumber) {
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Seller phone number not available.",
+    });
+    return;
+  }
+
+  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+  Linking.openURL(url).catch(() => {
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Could not open WhatsApp. Please make sure it's installed.",
+    });
+  });
+};
+
+
   useEffect(() => {
     const subscription = AppState.addEventListener(
       "change",

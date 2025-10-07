@@ -9,6 +9,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { getSellerProductByIdThunk } from "../../redux/slice/sellerProductSlice";
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback } from "react";
+import Toast from "react-native-toast-message";
 
 const SellerProductDetailsEditScreen = () => {
   const route = useRoute();
@@ -44,15 +45,18 @@ const SellerProductDetailsEditScreen = () => {
   };
 
   const handleEditPress = () => {
-    if (sellerProduct) {
-      navigation.navigate("SellerEditProductScreen", {
-        product: sellerProduct,
-      });
-    } else {
-      alert("Something went wrong");
-    }
-  };
-
+  if (sellerProduct) {
+    navigation.navigate("SellerEditProductScreen", {
+      product: sellerProduct,
+    });
+  } else {
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Something went wrong. Please try again.",
+    });
+  }
+};
   return (
       <ScrollView
      style={{ flex: 1, backgroundColor: "#fff" }}

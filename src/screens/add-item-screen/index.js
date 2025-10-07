@@ -6,7 +6,6 @@ import {
   TextInput,
   ScrollView,
   Image,
-  Alert,
   Platform,
   PermissionsAndroid,
   KeyboardAvoidingView,
@@ -26,6 +25,7 @@ import { addSellerProductThunk } from "../../redux/slice/sellerProductSlice";
 import debounce from "lodash/debounce";
 import API from "../../services/config";
 import { ActivityIndicator } from "react-native";
+import Toast from "react-native-toast-message";
 
 const SellerAddProductScreen = ({ navigation }) => {
   const [category, setCategory] = React.useState(null);
@@ -87,34 +87,33 @@ const SellerAddProductScreen = ({ navigation }) => {
     fetchSubCategories(subCategoryText);
   }, [subCategoryText, itemName]);
 
-const requestPermissions = async () => {
-  try {
-    if (Platform.OS === "android") {
-      if (Platform.Version >= 33) {
-        const result = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-        );
-        return result === PermissionsAndroid.RESULTS.GRANTED;
-      } else {
-        const result = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
-        );
-        return result === PermissionsAndroid.RESULTS.GRANTED;
+  const requestPermissions = async () => {
+    try {
+      if (Platform.OS === "android") {
+        if (Platform.Version >= 33) {
+          const result = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+          );
+          return result === PermissionsAndroid.RESULTS.GRANTED;
+        } else {
+          const result = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+          );
+          return result === PermissionsAndroid.RESULTS.GRANTED;
+        }
       }
+      return true; // iOS doesn't need storage permissions
+    } catch (error) {
+      console.warn("Permission error:", error);
+      return false;
     }
-    return true; // iOS doesn't need storage permissions
-  } catch (error) {
-    console.warn("Permission error:", error);
-    return false;
-  }
-};
-
+  };
 
   const handleSelectImages = async () => {
     const hasPermissions = await requestPermissions();
 
     if (!hasPermissions) {
-      Alert.alert(
+      Toast.show(
         "Permission Required",
         "Please grant storage permissions to select images."
       );
@@ -143,45 +142,74 @@ const requestPermissions = async () => {
   const handleAddProduct = async () => {
     if (loading) return;
     if (images.length < 1) {
-      Alert.alert("Validation Error", "At least one image is required.");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "At least one image is required.",
+      });
       return;
     }
 
     if (!category) {
-      Alert.alert("Validation Error", "Please select a category.");
+      Toast.show("Validation Error", "Please select a category.");
       return;
     }
 
     if (!itemName.trim()) {
-      Alert.alert("Validation Error", "Item name is required.");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Item name is required.",
+      });
       return;
     }
 
     if (!subCategoryText.trim()) {
-      Alert.alert("Validation Error", "Sub-category is required.");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Sub-category is required.",
+      });
       return;
     }
 
     if (!country) {
-      Alert.alert("Validation Error", "Please select a country.");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Country is required.",
+      });
       return;
     }
 
     if (priceAED) {
       if (isNaN(priceAED)) {
-        Alert.alert("Validation Error", "Price must be a valid number.");
+        Toast.show({
+          type: "error",
+          text1: "Validation Error",
+          text2: " Price must be a valid number.",
+        });
         return;
       }
     }
-
+    if (!expiryDate || new Date(expiryDate) <= new Date()) {
+      return Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Expiry date must be a future date.",
+      });
+    }
     if (!expiryDate) {
-      Alert.alert("Validation Error", "Please select an expiry date.");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: " Expiry date is required.",
+      });
       return;
     }
 
     const formData = new FormData();
 
-    // Append images
     images.forEach((img, index) => {
       formData.append("images", {
         uri: img.uri,
@@ -190,7 +218,6 @@ const requestPermissions = async () => {
       });
     });
 
-    // Append other fields
     formData.append("itemCategory", category);
     formData.append("itemName", itemName);
     formData.append("itemSubCategory", subCategoryText);
@@ -206,10 +233,14 @@ const requestPermissions = async () => {
     try {
       setLoading(true);
       await dispatch(addSellerProductThunk({ token, formData })).unwrap();
-      Alert.alert("Success", "Product added successfully");
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: "Product added successfully",
+      });
       navigation.reset({
         index: 0,
-        routes: [{ name: "SellerHomeScreen", params: { goToTab: "Home" } }],
+        routes: [{ name: "SellerHomeScreen", params: { goToTab: "Sell" } }],
       });
     } catch (err) {
       console.error("Error adding product:", err);
@@ -221,7 +252,11 @@ const requestPermissions = async () => {
           ? err.message
           : "Failed to add product";
 
-      Alert.alert("Error", message);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: message,
+      });
     } finally {
       setLoading(false);
     }
@@ -258,8 +293,8 @@ const requestPermissions = async () => {
     <TouchableWithoutFeedback
       onPress={() => {
         Keyboard.dismiss();
-        setShowSuggestions(false); // hide itemName suggestions
-        setShowSubCategorySuggestions(false); // hide subCategory suggestions
+        setShowSuggestions(false);
+        setShowSubCategorySuggestions(false);
       }}
     >
       <KeyboardAvoidingView
@@ -279,7 +314,7 @@ const requestPermissions = async () => {
                   Title="Add New Item"
                   icon={true}
                   handleIconPress={() => navigation.goBack()}
-                  customStyle={{ height: 100 }} // reduced height only for this screen
+                  customStyle={{ height: 100 }} 
                 />
               </View>
 

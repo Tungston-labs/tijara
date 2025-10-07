@@ -6,6 +6,7 @@ import styles from "./styles";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import Button from "../../componets/Button";
 import { checkStatusThunk } from "../../redux/slice/authSlice";
+import Toast from "react-native-toast-message";
 
 const RequestSentScreen = () => {
     const { user,loading } = useSelector((state) => state.user);
@@ -15,26 +16,36 @@ const RequestSentScreen = () => {
  
 const handleButtonClick = async () => {
   try {
-    console.log("Current user in state:", user); // 🐛 Add this line for debug
+    console.log("Current user in state:", user); // Debug
 
     if (user?._id) {
       const response = await dispatch(checkStatusThunk(user._id)).unwrap();
-    
+
       if (response.status === "approved") {
         navigation.replace("RequestSuccessScreen", { user: response });
-      } else if (
-        response.status === "rejected" ||
-        response.status === "pending"
-      ) {
+      } else if (response.status === "rejected" || response.status === "pending") {
         navigation.replace("RequestNotVerifiedScreen");
+        Toast.show({
+          type: "info",
+          text1: "Not Verified",
+          text2: "Your account is still under review. Please try again later.",
+        });
       }
     } else {
       console.log("No user ID available");
-      alert("Unable to check status. Please try again later.");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Unable to check status. Please try again later.",
+      });
     }
   } catch (error) {
     console.error("Error checking status:", error);
-    alert("Error checking status. Please try again.");
+    Toast.show({
+      type: "error",
+      text1: "Error",
+      text2: "Failed to check verification status. Please try again.",
+    });
   }
 };
 

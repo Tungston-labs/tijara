@@ -1,37 +1,41 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   SafeAreaView,
-  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import styles from "./styles";
 import API from "../../services/config";
-import { useEffect } from "react";
+import Toast from "react-native-toast-message";
 
 const OTPVerificationScreen = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const navigation = useNavigation();
   const route = useRoute();
-  const { email } = route.params;
+  const { email } = route.params || {};
   const [resendLoading, setResendLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [timer, setTimer] = useState(60);
 
   const inputs = useRef([]);
 
   const handleChange = (text, index) => {
+    // only allow single char and numeric
+    const char = text.replace(/[^0-9]/g, "").slice(-1);
     const newOtp = [...otp];
-    newOtp[index] = text;
+    newOtp[index] = char;
     setOtp(newOtp);
 
-    if (text && index < 5) {
+    if (char && index < 5 && inputs.current[index + 1]) {
       inputs.current[index + 1].focus();
     }
   };
+
   useEffect(() => {
     let interval = null;
     if (timer > 0) {
@@ -39,41 +43,63 @@ const OTPVerificationScreen = () => {
         setTimer((prev) => prev - 1);
       }, 1000);
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [timer]);
 
   const handleBackspace = (index) => {
-    if (otp[index] === "" && index > 0) {
+    if (otp[index] === "" && index > 0 && inputs.current[index - 1]) {
       inputs.current[index - 1].focus();
     }
   };
+
   const handleResendOtp = async () => {
     if (resendLoading || timer > 0) return;
 
     setResendLoading(true);
     try {
-      const res = await API.post(
-        "/user/send-otp",
-        { email },
-        { withCredentials: true }
-      );
-      Alert.alert("Success", "OTP resent to your email.");
-      setTimer(60); // Restart timer
+      const res = await API.post("/user/send-otp", { email }, { withCredentials: true });
+
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: res?.data?.message || "OTP resent to your email.",
+        position: "top",
+        visibilityTime: 3000,
+      });
+
+      setTimer(60);
     } catch (error) {
       console.log("Resend OTP error:", error);
-      Alert.alert("Error", "Failed to resend OTP.");
+      const message = error?.response?.data?.message || "Failed to resend OTP.";
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: message,
+        position: "top",
+        visibilityTime: 4000,
+      });
     } finally {
       setResendLoading(false);
     }
   };
 
   const handleSubmit = async () => {
+    if (submitLoading) return;
+
     const enteredOtp = otp.join("");
     if (enteredOtp.length < 6) {
-      Alert.alert("Error", "Please enter the complete 6-digit OTP.");
-      return;
+      return Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please enter the complete 6-digit OTP.",
+        position: "top",
+        visibilityTime: 3000,
+      });
     }
 
+    setSubmitLoading(true);
     try {
       const res = await API.post(
         "/user/verify-otp",
@@ -81,23 +107,33 @@ const OTPVerificationScreen = () => {
         { withCredentials: true }
       );
 
-      Alert.alert("Success", res.data.message);
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: res?.data?.message || "OTP verified.",
+        position: "top",
+        visibilityTime: 2500,
+      });
+
       navigation.navigate("ResetPasswordScreen", { email });
     } catch (error) {
       console.log("OTP verification error:", error);
-      Alert.alert(
-        "Error",
-        error?.response?.data?.message || "Failed to verify OTP"
-      );
+      const message = error?.response?.data?.message || "Failed to verify OTP";
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: message,
+        position: "top",
+        visibilityTime: 4000,
+      });
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        style={styles.backArrow}
-        onPress={() => navigation.goBack()}
-      >
+      <TouchableOpacity style={styles.backArrow} onPress={() => navigation.goBack()}>
         <Icon name="chevron-back-outline" size={24} color="#000" />
       </TouchableOpacity>
 
@@ -119,24 +155,22 @@ const OTPVerificationScreen = () => {
             keyboardType="number-pad"
             maxLength={1}
             style={styles.otpInput}
+            returnKeyType="next"
           />
         ))}
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Continue</Text>
-      </TouchableOpacity>
-      <View
-        style={{
-          marginTop: 20,
-          flexDirection: "row",
-          justifyContent: "center",
-        }}
+      <TouchableOpacity
+        style={[styles.button, submitLoading && { opacity: 0.7 }]}
+        onPress={handleSubmit}
+        disabled={submitLoading}
       >
+        {submitLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Continue</Text>}
+      </TouchableOpacity>
+
+      <View style={{ marginTop: 20, flexDirection: "row", justifyContent: "center" }}>
         {resendLoading ? (
-          <Text style={{ color: "#999", textAlign: "center" }}>
-            Resending...
-          </Text>
+          <Text style={{ color: "#999", textAlign: "center" }}>Resending...</Text>
         ) : timer > 0 ? (
           <Text style={{ color: "#000", textAlign: "center" }}>
             Resend OTP in <Text style={{ color: "#999" }}>{timer}s</Text>
@@ -144,10 +178,7 @@ const OTPVerificationScreen = () => {
         ) : (
           <Text style={{ textAlign: "center", color: "#000" }}>
             Didn't receive code?{" "}
-            <Text
-              style={{ color: "#B3DB48",  }}
-              onPress={handleResendOtp}
-            >
+            <Text style={{ color: "#B3DB48" }} onPress={handleResendOtp}>
               Resend OTP
             </Text>
           </Text>

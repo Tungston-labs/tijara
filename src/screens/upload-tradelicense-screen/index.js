@@ -19,6 +19,7 @@ import Button from "../../componets/Button";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import API from "../../services/config";
 import { uploadTradeLicenseThunk } from "../../redux/slice/authSlice";
+import Toast from "react-native-toast-message";
 
 const UploadTradeLicenseScreen = () => {
   const dispatch = useDispatch();
@@ -40,67 +41,76 @@ const UploadTradeLicenseScreen = () => {
     setForm({ ...form, [field]: value });
   };
 
- const requestPermissions = async () => {
-  try {
-    if (Platform.OS === "android") {
-      if (Platform.Version >= 33) {
-        // Android 13+ → only request image permission
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-        );
-        return granted === PermissionsAndroid.RESULTS.GRANTED;
-      } else {
-        // Android 12 and below
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
-        );
-        return granted === PermissionsAndroid.RESULTS.GRANTED;
+  const requestPermissions = async () => {
+    try {
+      if (Platform.OS === "android") {
+        if (Platform.Version >= 33) {
+          // Android 13+ → only request image permission
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+          );
+          return granted === PermissionsAndroid.RESULTS.GRANTED;
+        } else {
+          // Android 12 and below
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+          );
+          return granted === PermissionsAndroid.RESULTS.GRANTED;
+        }
       }
+      return true; // iOS handles it via Info.plist
+    } catch (error) {
+      console.warn("Permission error:", error);
+      return false;
     }
-    return true; // iOS handles it via Info.plist
-  } catch (error) {
-    console.warn("Permission error:", error);
-    return false;
-  }
-};
-
-
-const handleFileUpload = async () => {
-  const hasPermission = await requestPermissions();
-  if (!hasPermission) {
-    Alert.alert(
-      "Permission Denied",
-      "Please grant photo permissions to upload the file."
-    );
-    return;
-  }
-
-  const options = {
-    mediaType: "photo", 
-    quality: 0.7,
   };
 
-  launchImageLibrary(options, (response) => {
-    if (response.didCancel) return;
-    if (response.errorCode) {
-      Alert.alert("Error", response.errorMessage);
+  const handleFileUpload = async () => {
+    const hasPermission = await requestPermissions();
+    if (!hasPermission) {
+      Toast.show({
+        type: "error",
+        text1: "Permission Denied",
+        text2: "Please grant photo permissions to upload the file.",
+      });
       return;
     }
 
-    const asset = response.assets?.[0];
-    if (asset) {
-      setForm({
-        ...form,
-        tradeLicenseCopy: {
-          uri: asset.uri,
-          name: asset.fileName || "trade_license.jpg",
-          type: asset.type || "image/jpeg",
-        },
-      });
-    }
-  });
-};
+    const options = {
+      mediaType: "photo",
+      quality: 0.7,
+    };
 
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) return;
+      if (response.errorCode) {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: response.errorMessage || "Failed to select image",
+        });
+        return;
+      }
+
+      const asset = response.assets?.[0];
+      if (asset) {
+        setForm({
+          ...form,
+          tradeLicenseCopy: {
+            uri: asset.uri,
+            name: asset.fileName || "trade_license.jpg",
+            type: asset.type || "image/jpeg",
+          },
+        });
+
+        Toast.show({
+          type: "success",
+          text1: "File Selected",
+          text2: "Trade license copy selected successfully",
+        });
+      }
+    });
+  };
 
   const handleRemoveFile = () => {
     setForm({ ...form, tradeLicenseCopy: null });
@@ -113,12 +123,20 @@ const handleFileUpload = async () => {
       !form.managerName ||
       !form.tradeLicenseExpiry
     ) {
-      Alert.alert("Validation Error", "Please fill all required fields");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Please fill all required fields",
+      });
       return;
     }
 
     if (!form.tradeLicenseCopy) {
-      Alert.alert("Validation Error", "Please upload your trade license copy");
+      Toast.show({
+        type: "error",
+        text1: "Validation Error",
+        text2: "Please upload your trade license copy",
+      });
       return;
     }
 
@@ -132,19 +150,30 @@ const handleFileUpload = async () => {
       type: form.tradeLicenseCopy.type,
       name: form.tradeLicenseCopy.name,
     });
+
     try {
       setLoading(true);
       await dispatch(uploadTradeLicenseThunk(formData)).unwrap();
-      // navigation.navigate(role==="buyer"?"BuyerHomeScreen":"SellerHomeScreen");
+
+      Toast.show({
+        type: "success",
+        text1: "Upload Successful",
+        text2: "Your trade license has been uploaded",
+      });
+
       navigation.navigate("SellerHomeScreen");
     } catch (err) {
       const status = err?.response?.status;
       const backendMessage = err?.response?.data?.message;
-      if (status === 400 && backendMessage) {
-        Alert.alert("Upload Failed", backendMessage);
-      } else {
-        Alert.alert("Upload Failed", "Something went wrong");
-      }
+
+      Toast.show({
+        type: "error",
+        text1: "Upload Failed",
+        text2:
+          status === 400 && backendMessage
+            ? backendMessage
+            : "Something went wrong",
+      });
     } finally {
       setLoading(false);
     }
@@ -155,9 +184,7 @@ const handleFileUpload = async () => {
       <View style={styles.container}>
         <BackgroundWrapper style={styles.wrapperContainer}>
           <Header
-            handleIconPress={() =>
-              navigation.goBack()
-            }
+            handleIconPress={() => navigation.goBack()}
             icon={true}
             Title={"Complete your"}
             Subtitle={"Company Details"}

@@ -36,7 +36,7 @@ const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
       }}
     >
       <Tab.Screen
-        name="Home"
+        name="Sell"
         component={SellComponent} // ✅ now a valid component
         options={{
           tabBarIcon: ({ color }) => (
@@ -44,7 +44,7 @@ const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
           ),
         }}
         listeners={{
-          focus: () => onTabChange("Home"),
+          focus: () => onTabChange("Sell"),
         }}
       />
       <Tab.Screen
@@ -65,7 +65,7 @@ const TabScreens = ({ onTabChange, tradeLicenseStatus }) => {
 
 
 const BuyerHomeScreen = ({ navigation }) => {
-  const [activeTab, setActiveTab] = useState("Home");
+  const [activeTab, setActiveTab] = useState("Sell");
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const tradeLicenseStatus = useSelector(
@@ -91,7 +91,7 @@ const BuyerHomeScreen = ({ navigation }) => {
 
    const shouldShowSearch =
      activeTab === "Buy" ||
-    (activeTab === "Home" && tradeLicenseStatus === "approved");
+    (activeTab === "Sell" && tradeLicenseStatus === "approved");
 
   if (loading) {
     return (
