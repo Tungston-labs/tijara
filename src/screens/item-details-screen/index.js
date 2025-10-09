@@ -24,7 +24,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Linking } from "react-native";
 const ItemDetailsScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [quantity, setQuantity] = useState(100);
+  const [quantity, setQuantity] = useState("100");
 
   const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();

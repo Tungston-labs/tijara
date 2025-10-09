@@ -9,7 +9,7 @@ import { loadAuthData } from "./src/utils/mmkvStorage.js";
 import { loginFromStorage } from "./src/redux/slice/authSlice.js";
 import { setToken } from "./src/services/config.js";
 import Toast from "react-native-toast-message";
-import { View, Text } from "react-native"; // <-- Text imported
+import { View, Text } from "react-native"; 
 
 enableScreens();
 
@@ -22,7 +22,7 @@ const toastConfig = {
         marginTop: 10,
         padding: 12,
         borderRadius: 8,
-        backgroundColor: "#D93025", // red background
+        backgroundColor: "#D93025", 
         shadowColor: "#000",
         shadowOpacity: 0.2,
         elevation: 10,
@@ -38,7 +38,6 @@ const toastConfig = {
     </View>
   ),
 
-  // default success (greenish) — optional override
   success: ({ text1, text2 }) => (
     <View
       style={{
@@ -46,7 +45,7 @@ const toastConfig = {
         marginTop: 10,
         padding: 12,
         borderRadius: 8,
-        backgroundColor: "#2E7D32",
+        backgroundColor: "#B3DB48",
         elevation: 10,
         zIndex: 9999,
       }}

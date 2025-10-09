@@ -25,6 +25,7 @@
     "react": "19.0.0",
     "react-hook-form": "^7.56.4",
     "react-native": "^0.79.2",
+    "react-native-android-location-enabler": "^3.0.1",
     "react-native-date-picker": "^5.0.12",
     "react-native-dotenv": "^3.4.11",
     "react-native-dropdown-picker": "^5.4.6",

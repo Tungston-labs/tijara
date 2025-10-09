@@ -8,7 +8,7 @@ export const requestLocationPermission = async () => {
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
           title: 'Location Permission',
-          message: 'This app needs access to your location for registration.',
+          message: 'This app needs access to your location for registration.Please enable GPS on your device.',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
