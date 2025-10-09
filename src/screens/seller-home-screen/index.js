@@ -5,26 +5,29 @@ import {
   Pressable,
   Text,
   ActivityIndicator,
-  RefreshControl,
   Image,
 } from "react-native";
+import { MMKV } from "react-native-mmkv";
 import styles from "./styles";
 import TijaraHeader from "../../componets/TijaraHeader";
 import SearchBar from "../../componets/SearchBar";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import ListItemScreen from "../list-item-screen";
-import RequestReceiveScreen from "../request-receive-screen";
+import TradeLicenseLockScreen from "../user-list-item-lock-screen";
+import TradeLicenseStatusScreen from "../tradelicense-status-screen";
 import Icon from "react-native-vector-icons/Ionicons";
 import BackgroundWrapper from "../../componets/BackgroundWrapper";
 import UserListItemScreen from "../user-list-item-screen";
 import { useDispatch, useSelector } from "react-redux";
 import { SafeAreaView } from "react-native-safe-area-context";
-import TradeLicenseLockScreen from "../user-list-item-lock-screen";
-import TradeLicenseStatusScreen from "../tradelicense-status-screen";
 import { fetchTradeLicenseStatusThunk } from "../../redux/slice/authSlice";
 import { useIsFocused, useRoute } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
+const LAST_ACTIVE_TAB_KEY = "LAST_ACTIVE_TAB";
+
+// create a single MMKV instance (you can also do this in a separate file)
+const storage = new MMKV();
 
 const HomeTabContent = ({ tradeLicenseStatus, refreshing, onRefresh }) => {
   if (tradeLicenseStatus === "approved")
@@ -62,42 +65,45 @@ const TabScreens = ({
           focus: () => onTabChange("Buy"),
         }}
       />
-<Tab.Screen
-  name="Sell"
-  children={() => (
-    <HomeTabContent
-      tradeLicenseStatus={tradeLicenseStatus}
-      refreshing={refreshing}
-      onRefresh={onRefresh}
-    />
-  )}
-  options={{
-    tabBarIcon: ({ color, size }) => (
-      <Image
-        source={require("../../../assets/seller.png")}
-        style={{
-          width: size ?? 24,
-          height: size ?? 24,
-          tintColor: color,
-          resizeMode: "contain",
+      <Tab.Screen
+        name="Sell"
+        children={() => (
+          <HomeTabContent
+            tradeLicenseStatus={tradeLicenseStatus}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        )}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Image
+              source={require("../../../assets/seller.png")}
+              style={{
+                width: size ?? 24,
+                height: size ?? 24,
+                tintColor: color,
+                resizeMode: "contain",
+              }}
+            />
+          ),
+          tabBarLabel: "Sell",
+        }}
+        listeners={{
+          focus: () => onTabChange("Sell"),
         }}
       />
-    ),
-    tabBarLabel: "Sell",
-  }}
-  listeners={{
-    focus: () => onTabChange("Sell"),
-  }}
-/>
-
     </Tab.Navigator>
   );
 };
 
 const SellerHomeScreen = ({ navigation }) => {
-  const [activeTab, setActiveTab] = useState("Buy");
+  // You can also initialize from storage directly:
+  // const saved = storage.getString(LAST_ACTIVE_TAB_KEY);
+  // const [activeTab, setActiveTab] = useState(saved ?? "Buy");
+  const [activeTab, setActiveTab] = useState("Buy"); // default
   const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // for tradeLicense fetch
+  const [navRestored, setNavRestored] = useState(false); // wait until nav is restored
 
   const dispatch = useDispatch();
   const tradeLicenseStatus = useSelector(
@@ -106,15 +112,47 @@ const SellerHomeScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
   const route = useRoute();
 
+  // restore last active tab from MMKV (synchronous)
+  useEffect(() => {
+    try {
+      const saved = storage.getString(LAST_ACTIVE_TAB_KEY);
+      if (saved) {
+        setActiveTab(saved);
+      }
+    } catch (err) {
+      console.warn("Failed to read last active tab from MMKV:", err);
+    } finally {
+      setNavRestored(true);
+    }
+  }, []);
+
+  // if route param asks to go to specific tab, update it and persist
+  useEffect(() => {
+    if (route.params?.goToTab) {
+      const newTab = route.params.goToTab;
+      setActiveTab(newTab);
+      try {
+        storage.set(LAST_ACTIVE_TAB_KEY, newTab);
+      } catch (e) {
+        console.warn("Failed to save tab to MMKV:", e);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [route.params?.goToTab]);
+
+  // persist tab when user changes it
+  const handleTabChange = useCallback((tabName) => {
+    setActiveTab(tabName);
+    try {
+      storage.set(LAST_ACTIVE_TAB_KEY, tabName);
+    } catch (e) {
+      console.warn("Failed to save tab to MMKV:", e);
+    }
+  }, []);
+
   const handleAddItem = () => {
     navigation.navigate("SellerAddProductScreen");
   };
-
-  useEffect(() => {
-    if (route.params?.goToTab) {
-      setActiveTab(route.params.goToTab);
-    }
-  }, [route.params?.goToTab]);
 
   const fetchStatus = async () => {
     try {
@@ -138,6 +176,14 @@ const SellerHomeScreen = ({ navigation }) => {
 
   const shouldShowSearch =
     activeTab === "Sell" && tradeLicenseStatus === "approved";
+
+  if (!navRestored) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#B3DB48" />
+      </View>
+    );
+  }
 
   if (loading) {
     return (
@@ -188,7 +234,7 @@ const SellerHomeScreen = ({ navigation }) => {
           <View style={{ flex: 1 }}>
             <TabScreens
               key={activeTab}
-              onTabChange={setActiveTab}
+              onTabChange={handleTabChange}
               tradeLicenseStatus={tradeLicenseStatus}
               initialTab={activeTab}
               refreshing={refreshing}

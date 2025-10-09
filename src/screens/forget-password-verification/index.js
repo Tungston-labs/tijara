@@ -25,7 +25,6 @@ const OTPVerificationScreen = () => {
   const inputs = useRef([]);
 
   const handleChange = (text, index) => {
-    // only allow single char and numeric
     const char = text.replace(/[^0-9]/g, "").slice(-1);
     const newOtp = [...otp];
     newOtp[index] = char;
@@ -59,7 +58,11 @@ const OTPVerificationScreen = () => {
 
     setResendLoading(true);
     try {
-      const res = await API.post("/user/send-otp", { email }, { withCredentials: true });
+      const res = await API.post(
+        "/user/send-otp",
+        { email },
+        { withCredentials: true }
+      );
 
       Toast.show({
         type: "success",
@@ -133,7 +136,10 @@ const OTPVerificationScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.backArrow} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.backArrow}
+        onPress={() => navigation.goBack()}
+      >
         <Icon name="chevron-back-outline" size={24} color="#000" />
       </TouchableOpacity>
 
@@ -165,12 +171,24 @@ const OTPVerificationScreen = () => {
         onPress={handleSubmit}
         disabled={submitLoading}
       >
-        {submitLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Continue</Text>}
+        {submitLoading ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.buttonText}>Continue</Text>
+        )}
       </TouchableOpacity>
 
-      <View style={{ marginTop: 20, flexDirection: "row", justifyContent: "center" }}>
+      <View
+        style={{
+          marginTop: 20,
+          flexDirection: "row",
+          justifyContent: "center",
+        }}
+      >
         {resendLoading ? (
-          <Text style={{ color: "#999", textAlign: "center" }}>Resending...</Text>
+          <Text style={{ color: "#999", textAlign: "center" }}>
+            Resending...
+          </Text>
         ) : timer > 0 ? (
           <Text style={{ color: "#000", textAlign: "center" }}>
             Resend OTP in <Text style={{ color: "#999" }}>{timer}s</Text>

@@ -18,6 +18,10 @@ import {
   resetProducts,
 } from "../../redux/slice/productSlice";
 import debounce from "lodash.debounce";
+import { MMKV } from "react-native-mmkv";
+
+const storage = new MMKV();
+const LAST_BUY_CATEGORY_KEY = "LAST_BUY_CATEGORY";
 
 const ListItemScreen = ({ refreshing, onRefresh }) => {
   const searchQuery = useSelector((state) => state.search.query);
@@ -28,7 +32,11 @@ const ListItemScreen = ({ refreshing, onRefresh }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const [selectedTab, setSelectedTab] = useState("vegetables");
+  // restore category from MMKV synchronously (fallback to 'vegetables')
+  const savedCategory = storage.getString(LAST_BUY_CATEGORY_KEY);
+  const [selectedTab, setSelectedTab] = useState(
+    savedCategory ?? "vegetables"
+  );
   const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
   useEffect(() => {
@@ -55,7 +63,7 @@ const ListItemScreen = ({ refreshing, onRefresh }) => {
         })
       );
     }
-  }, [selectedTab, token, debouncedSearch]);
+  }, [selectedTab, token, debouncedSearch, dispatch]);
 
   const handleTileClick = (item) => {
     navigation.navigate("ItemDetailsScreen", { productId: item._id });
@@ -73,26 +81,40 @@ const ListItemScreen = ({ refreshing, onRefresh }) => {
     }
   };
 
+  // central handler so we save to MMKV when user switches
+  const selectTab = (tabLower) => {
+    if (tabLower === selectedTab) return;
+    setSelectedTab(tabLower);
+    try {
+      storage.set(LAST_BUY_CATEGORY_KEY, tabLower);
+    } catch (e) {
+      console.warn("Failed to save buy category to MMKV:", e);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <BackgroundWrapper>
         <View style={styles.boxTabContainer}>
           <View style={styles.tabContainer}>
-            {["Fruits", "Vegetables"].map((tab) => (
-              <TouchableOpacity
-                key={tab}
-                onPress={() => setSelectedTab(tab.toLowerCase())}
-              >
-                <Text
-                  style={[
-                    styles.tabText,
-                    selectedTab === tab.toLowerCase() && styles.activeTab,
-                  ]}
+            {["Fruits", "Vegetables"].map((tab) => {
+              const tabKey = tab.toLowerCase();
+              return (
+                <TouchableOpacity
+                  key={tab}
+                  onPress={() => selectTab(tabKey)}
                 >
-                  {tab}
-                </Text>
-              </TouchableOpacity>
-            ))}
+                  <Text
+                    style={[
+                      styles.tabText,
+                      selectedTab === tabKey && styles.activeTab,
+                    ]}
+                  >
+                    {tab}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </View>
 
@@ -178,7 +200,10 @@ const ListItemScreen = ({ refreshing, onRefresh }) => {
                             </Text>
                           </Text>
                           <Text style={styles.price}>
-                            AED {item?.pricePerKg?.AED?item?.pricePerKg?.AED:"---"}
+                            AED{" "}
+                            {item?.pricePerKg?.AED
+                              ? item?.pricePerKg?.AED
+                              : "---"}
                           </Text>
                         </View>
                       </View>
