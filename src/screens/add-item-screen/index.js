@@ -87,55 +87,25 @@ const SellerAddProductScreen = ({ navigation }) => {
     fetchSubCategories(subCategoryText);
   }, [subCategoryText, itemName]);
 
-  const requestPermissions = async () => {
-    try {
-      if (Platform.OS === "android") {
-        if (Platform.Version >= 33) {
-          const result = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-          );
-          return result === PermissionsAndroid.RESULTS.GRANTED;
-        } else {
-          const result = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
-          );
-          return result === PermissionsAndroid.RESULTS.GRANTED;
-        }
-      }
-      return true; // iOS doesn't need storage permissions
-    } catch (error) {
-      console.warn("Permission error:", error);
-      return false;
-    }
+   
+const handleSelectImages = async () => {
+  const options = {
+    mediaType: "photo",
+    quality: 0.7,
+    selectionLimit: 10,
   };
 
-  const handleSelectImages = async () => {
-    const hasPermissions = await requestPermissions();
-
-    if (!hasPermissions) {
-      Toast.show(
-        "Permission Required",
-        "Please grant storage permissions to select images."
-      );
+  launchImageLibrary(options, (response) => {
+    if (response.didCancel) return;
+    if (response.errorCode) {
+      console.error("ImagePicker Error: ", response.errorMessage);
       return;
     }
+    const assets = response.assets || [];
+    setImages(assets);
+  });
+};
 
-    const options = {
-      mediaType: "photo",
-      quality: 0.7,
-      selectionLimit: 10,
-    };
-
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) return;
-      if (response.errorCode) {
-        console.error("ImagePicker Error: ", response.errorMessage);
-        return;
-      }
-      const assets = response.assets || [];
-      setImages(assets);
-    });
-  };
   const dispatch = useDispatch();
   const token = useSelector((state) => state.user.token); // Adjust path to your auth slice
 

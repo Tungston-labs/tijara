@@ -108,38 +108,8 @@ const RegistrationScreen = () => {
   };
   const [countryCode, setCountryCode] = useState("+971");
 
-  const requestPermissions = async () => {
-    try {
-      if (Platform.OS === "android") {
-        if (Platform.Version >= 33) {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-          );
-          return granted === PermissionsAndroid.RESULTS.GRANTED;
-        } else {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
-          );
-          return granted === PermissionsAndroid.RESULTS.GRANTED;
-        }
-      }
-      return true;
-    } catch (error) {
-      console.warn("Permission error:", error);
-      return false;
-    }
-  };
+ 
 const handleSelectImage = async () => {
-  const hasPermissions = await requestPermissions();
-  if (!hasPermissions) {
-    Toast.show({
-      type: "error",
-      text1: "Permission Required",
-      text2: "Please grant storage permissions to select an image.",
-    });
-    return;
-  }
-
   const options = {
     mediaType: "photo",
     quality: 0.7,

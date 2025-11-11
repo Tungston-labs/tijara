@@ -38,75 +38,37 @@ const SellerRegistrationSecond = () => {
   const handleChange = (field, value) => {
     setForm({ ...form, [field]: value });
   };
-  const requestPermissions = async () => {
-    try {
-      if (Platform.Version >= 33) {
-        const permissions = [
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_VIDEO,
-          PermissionsAndroid.PERMISSIONS.READ_MEDIA_AUDIO,
-        ];
-
-        const granted = await PermissionsAndroid.requestMultiple(permissions);
-        return permissions.every(
-          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
-        );
-      } else {
-        const permissions = [
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        ];
-
-        const granted = await PermissionsAndroid.requestMultiple(permissions);
-        return permissions.every(
-          (p) => granted[p] === PermissionsAndroid.RESULTS.GRANTED
-        );
-      }
-    } catch (error) {
-      console.warn("Permission error:", error);
-      return false;
-    }
+const handleFileUpload = () => {
+  const options = {
+    mediaType: "photo",
+    quality: 0.7,
   };
-  const handleFileUpload = async () => {
-    const hasPermission = await requestPermissions();
-    if (!hasPermission) {
+
+  launchImageLibrary(options, (response) => {
+    if (response.didCancel) return;
+    if (response.errorCode) {
       Toast.show({
         type: "error",
-        text1: "Permission Denied",
-        text2: "Please grant storage permissions to upload the file.",
+        text1: "Error",
+        text2: response.errorMessage || "Failed to select image",
       });
       return;
     }
 
-    const options = {
-      mediaType: "photo",
-      quality: 0.7,
-    };
+    const asset = response.assets?.[0];
+    if (asset) {
+      setForm({
+        ...form,
+        tradeLicenseCopy: {
+          uri: asset.uri,
+          name: asset.fileName,
+          type: asset.type,
+        },
+      });
+    }
+  });
+};
 
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) return;
-      if (response.errorCode) {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: response.errorMessage || "Failed to select image",
-        });
-        return;
-      }
-
-      const asset = response.assets?.[0];
-      if (asset) {
-        setForm({
-          ...form,
-          tradeLicenseCopy: {
-            uri: asset.uri,
-            name: asset.fileName,
-            type: asset.type,
-          },
-        });
-      }
-    });
-  };
 
   const handleRemoveFile = () => {
     setForm({ ...form, tradeLicenseCopy: null });

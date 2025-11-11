@@ -41,41 +41,9 @@ const UploadTradeLicenseScreen = () => {
     setForm({ ...form, [field]: value });
   };
 
-  const requestPermissions = async () => {
-    try {
-      if (Platform.OS === "android") {
-        if (Platform.Version >= 33) {
-          // Android 13+ → only request image permission
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
-          );
-          return granted === PermissionsAndroid.RESULTS.GRANTED;
-        } else {
-          // Android 12 and below
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
-          );
-          return granted === PermissionsAndroid.RESULTS.GRANTED;
-        }
-      }
-      return true; // iOS handles it via Info.plist
-    } catch (error) {
-      console.warn("Permission error:", error);
-      return false;
-    }
-  };
+
 
   const handleFileUpload = async () => {
-    const hasPermission = await requestPermissions();
-    if (!hasPermission) {
-      Toast.show({
-        type: "error",
-        text1: "Permission Denied",
-        text2: "Please grant photo permissions to upload the file.",
-      });
-      return;
-    }
-
     const options = {
       mediaType: "photo",
       quality: 0.7,
