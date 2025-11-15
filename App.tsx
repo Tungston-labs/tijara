@@ -1,6 +1,13 @@
 // App.js
 import React, { useEffect } from "react";
 import { Provider, useDispatch } from "react-redux";
+import { 
+  KeyboardAvoidingView, // Import KeyboardAvoidingView
+  Platform,             // Import Platform
+  StyleSheet,           // Import StyleSheet
+  View, 
+  Text 
+} from "react-native";
 import MainNavigation from "./src/navigation/navigation.js";
 import { enableScreens } from "react-native-screens";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -9,7 +16,6 @@ import { loadAuthData } from "./src/utils/mmkvStorage.js";
 import { loginFromStorage } from "./src/redux/slice/authSlice.js";
 import { setToken } from "./src/services/config.js";
 import Toast from "react-native-toast-message";
-import { View, Text } from "react-native"; 
 
 enableScreens();
 
@@ -62,8 +68,16 @@ const AppWrapper = () => {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-        <App />
-        <Toast config={toastConfig} />
+        {/* Wrap both App and Toast with the KeyboardAvoidingView */}
+        <KeyboardAvoidingView
+          style={styles.container} // Essential for flex: 1
+          behavior={Platform.OS === "ios" ? "padding" : "height"} // Behavior based on OS
+          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0} 
+        >
+          <App />
+          {/* Toast needs to be rendered within the same view structure to position correctly */}
+          <Toast config={toastConfig} />
+        </KeyboardAvoidingView>
       </SafeAreaProvider>
     </Provider>
   );
@@ -82,5 +96,11 @@ const App = () => {
 
   return <MainNavigation />;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
 export default AppWrapper;
