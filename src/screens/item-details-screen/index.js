@@ -8,6 +8,7 @@ import {
   Modal,
   TextInput,
   AppState,
+    RefreshControl,
 } from "react-native";
 import styles from "./styles";
 import Header from "../../componets/Header";
@@ -48,7 +49,18 @@ const ItemDetailsScreen = ({ navigation }) => {
       return (num + 1).toString();
     });
   };
+const [refreshing, setRefreshing] = useState(false);
 
+const handleRefresh = async () => {
+  if (!token || !productId) return;
+  setRefreshing(true); // start spinner
+  try {
+    await dispatch(getProductByIdThunk({ token, productId })).unwrap();
+  } catch (err) {
+    console.error("Failed to refresh product:", err);
+  }
+  setRefreshing(false); 
+};
   const decrease = () => {
     setQuantity((prev) => {
       const num = parseFloat(prev) || 0;
@@ -143,7 +155,7 @@ const handleWhatsAppRequest = () => {
     }
   };
   return (
-    <ScrollView
+     <ScrollView
       style={{ flex: 1, backgroundColor: "#fff" }}
       contentContainerStyle={{
         alignItems: "center",
@@ -151,6 +163,14 @@ const handleWhatsAppRequest = () => {
         paddingBottom: 150,
       }}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh} 
+          tintColor="#B3DB48"
+          colors={["#B3DB48"]}
+        />
+      }
     >
       <BackgroundWrapper>
         <Header

@@ -23,7 +23,7 @@ import { MMKV } from "react-native-mmkv";
 const storage = new MMKV();
 const LAST_BUY_CATEGORY_KEY = "LAST_BUY_CATEGORY";
 
-const ListItemScreen = ({ refreshing, onRefresh }) => {
+const ListItemScreen = () => {
   const searchQuery = useSelector((state) => state.search.query);
   const { products, loading, error, page, totalPages } = useSelector(
     (state) => state.product
@@ -32,26 +32,22 @@ const ListItemScreen = ({ refreshing, onRefresh }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  // restore category from MMKV synchronously (fallback to 'vegetables')
+  const [refreshing, setRefreshing] = useState(false);
+
   const savedCategory = storage.getString(LAST_BUY_CATEGORY_KEY);
-  const [selectedTab, setSelectedTab] = useState(
-    savedCategory ?? "vegetables"
-  );
+  const [selectedTab, setSelectedTab] = useState(savedCategory ?? "vegetables");
   const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
 
+  // Debounce search
   useEffect(() => {
     const handler = debounce(() => {
       setDebouncedSearch(searchQuery);
     }, 300);
-
     handler();
-
-    return () => {
-      handler.cancel();
-    };
+    return () => handler.cancel();
   }, [searchQuery]);
 
-  // Fetch on tab/category change
+  // Fetch products
   useEffect(() => {
     if (token) {
       dispatch(resetProducts());
@@ -64,6 +60,24 @@ const ListItemScreen = ({ refreshing, onRefresh }) => {
       );
     }
   }, [selectedTab, token, debouncedSearch, dispatch]);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      dispatch(resetProducts());
+      await dispatch(
+        fetchProductsThunk({
+          token,
+          filters: { itemCategory: selectedTab, search: debouncedSearch },
+          page: 1,
+        })
+      ).unwrap();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const handleTileClick = (item) => {
     navigation.navigate("ItemDetailsScreen", { productId: item._id });
@@ -81,7 +95,6 @@ const ListItemScreen = ({ refreshing, onRefresh }) => {
     }
   };
 
-  // central handler so we save to MMKV when user switches
   const selectTab = (tabLower) => {
     if (tabLower === selectedTab) return;
     setSelectedTab(tabLower);
@@ -95,15 +108,13 @@ const ListItemScreen = ({ refreshing, onRefresh }) => {
   return (
     <View style={styles.container}>
       <BackgroundWrapper>
+        {/* Tabs */}
         <View style={styles.boxTabContainer}>
           <View style={styles.tabContainer}>
             {["Fruits", "Vegetables"].map((tab) => {
               const tabKey = tab.toLowerCase();
               return (
-                <TouchableOpacity
-                  key={tab}
-                  onPress={() => selectTab(tabKey)}
-                >
+                <TouchableOpacity key={tab} onPress={() => selectTab(tabKey)}>
                   <Text
                     style={[
                       styles.tabText,
@@ -122,101 +133,71 @@ const ListItemScreen = ({ refreshing, onRefresh }) => {
           <Text style={styles.itemHeader}>Popular Items</Text>
         </View>
 
-        <View style={styles.flatListContainer}>
-          {loading && page === 1 ? (
-            <Text style={{ textAlign: "center", marginTop: 20 }}>
-              Loading...
-            </Text>
-          ) : error ? (
-            <Text style={{ textAlign: "center", marginTop: 20 }}>
-              Failed to load products.
-            </Text>
-          ) : products.length === 0 ? (
-            <Text style={{ textAlign: "center", marginTop: 20 }}>
-              No items found.
-            </Text>
-          ) : (
-            <FlatList
-              data={products}
-              keyExtractor={(item) => item._id}
-              onEndReached={handleLoadMore}
-              onEndReachedThreshold={0.5}
-              ListFooterComponent={
-                loading && page > 1 ? (
-                  <Text style={{ textAlign: "center" }}>Loading more...</Text>
-                ) : null
-              }
-              renderItem={({ item }) => (
-                <Pressable onPress={() => handleTileClick(item)}>
-                  <View style={styles.flatItem}>
-                    <View style={styles.card}>
-                      <SwiperFlatList
-                        autoplay
-                        autoplayDelay={2}
-                        autoplayLoop
-                        showPagination
-                        paginationStyle={{
-                          position: "absolute",
-                          bottom: 10,
-                          alignSelf: "center",
-                        }}
-                        paginationStyleItem={{
-                          width: 7,
-                          height: 7,
-                          borderRadius: 5,
-                          marginHorizontal: 3,
-                        }}
-                        paginationActiveColor="#000000"
-                        paginationDefaultColor="#ccc"
-                        data={item.images}
-                        renderItem={({ item: img }) => (
-                          <View style={styles.child}>
-                            <Image
-                              source={{ uri: img }}
-                              style={styles.imageStyle}
-                              resizeMode="cover"
-                            />
-                          </View>
-                        )}
-                      />
-                      <View style={styles.infoContainer}>
-                        <View style={styles.rowBetween}>
-                          <Text style={styles.author}>
-                            {item?.addedBy?.name || "Seller"}
-                          </Text>
-                          <Text style={styles.title}>{item?.itemName}</Text>
-                        </View>
-                        <View style={styles.rowBetween}>
-                          <Text style={styles.rating}>⭐ 4.8 (54)</Text>
-                          <Text style={styles.subtitle}>
-                            {item?.itemSubCategory}
-                          </Text>
-                        </View>
-                        <View style={styles.rowBetween}>
-                          <Text style={styles.quantity}>
-                            Qty Available{"\n"}
-                            <Text style={{ fontWeight: "bold" }}>
-                              {item?.availableKg} Kg
-                            </Text>
-                          </Text>
-                          <Text style={styles.price}>
-                            AED{" "}
-                            {item?.pricePerKg?.AED
-                              ? item?.pricePerKg?.AED
-                              : "---"}
-                          </Text>
-                        </View>
+        {/* FlatList */}
+        <FlatList
+          data={products}
+          keyExtractor={(item) => item._id}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          refreshing={refreshing}
+          onRefresh={handleRefresh} // <-- this now works!
+          ListFooterComponent={
+            loading && page > 1 ? (
+              <Text style={{ textAlign: "center" }}>Loading more...</Text>
+            ) : null
+          }
+          renderItem={({ item }) => (
+            <Pressable onPress={() => handleTileClick(item)}>
+              <View style={styles.flatItem}>
+                <View style={styles.card}>
+                  <SwiperFlatList
+                    autoplay
+                    autoplayDelay={2}
+                    autoplayLoop
+                    showPagination
+                    paginationStyle={{ position: "absolute", bottom: 10, alignSelf: "center" }}
+                    paginationStyleItem={{ width: 7, height: 7, borderRadius: 5, marginHorizontal: 3 }}
+                    paginationActiveColor="#000000"
+                    paginationDefaultColor="#ccc"
+                    data={item.images}
+                    renderItem={({ item: img }) => (
+                      <View style={styles.child}>
+                        <Image
+                          source={{ uri: img }}
+                          style={styles.imageStyle}
+                          resizeMode="cover"
+                        />
                       </View>
+                    )}
+                  />
+                  <View style={styles.infoContainer}>
+                    <View style={styles.rowBetween}>
+                      <Text style={styles.author}>{item?.addedBy?.name || "Seller"}</Text>
+                      <Text style={styles.title}>{item?.itemName}</Text>
+                    </View>
+                    <View style={styles.rowBetween}>
+                      <Text style={styles.rating}>⭐ 4.8 (54)</Text>
+                      <Text style={styles.subtitle}>{item?.itemSubCategory}</Text>
+                    </View>
+                    <View style={styles.rowBetween}>
+                      <Text style={styles.quantity}>
+                        Qty Available{"\n"}
+                        <Text style={{ fontWeight: "bold" }}>{item?.availableKg} Kg</Text>
+                      </Text>
+                      <Text style={styles.price}>
+                        AED {item?.pricePerKg?.AED ? item?.pricePerKg?.AED : "---"}
+                      </Text>
                     </View>
                   </View>
-                </Pressable>
-              )}
-            />
+                </View>
+              </View>
+            </Pressable>
           )}
-        </View>
+        />
       </BackgroundWrapper>
     </View>
   );
 };
 
 export default ListItemScreen;
+

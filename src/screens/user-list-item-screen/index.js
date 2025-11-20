@@ -127,52 +127,49 @@ const UserListItemScreen = ({ refreshing, onRefresh }) => {
     </Pressable>
   );
 
-  return (
-    <View style={styles.container}>
-      <BackgroundWrapper>
-        <View style={styles.boxTabContainer}>
-          <Text style={styles.itemHeader}>All Items</Text>
-        </View>
+return (
+  <View style={styles.container}>
+    <BackgroundWrapper>
+      <View style={styles.boxTabContainer}>
+        <Text style={styles.itemHeader}>All Items</Text>
+      </View>
 
-        {loadingSeller && page === 1 ? (
-          <ActivityIndicator size="large" color="#000" />
-        ) : errorSeller ? (
-          <Text style={{ color: "red", textAlign: "center" }}>
-            {errorSeller}
-          </Text>
-        ) : (
-          <View style={styles.flatListContainer}>
-            <FlatList
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              data={sellerProducts}
-              keyExtractor={(item) => item._id}
-              renderItem={renderItem}
-              onEndReached={handleLoadMore}
-              onEndReachedThreshold={0.5}
-              ListEmptyComponent={
-                !loadingSeller ? (
-                  <View style={styles.emptyContainer}>
-                    <Icon name="cart-outline" size={200} color="#B3DB48" />
+      {loadingSeller && page === 1 ? (
+        <ActivityIndicator size="large" color="#000" />
+      ) : errorSeller ? (
+        <Text style={{ color: "red", textAlign: "center" }}>{errorSeller}</Text>
+      ) : (
+        <FlatList
+          contentContainerStyle={{ paddingBottom: 40 }}
+          data={sellerProducts}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={
+            !loadingSeller ? (
+              <View style={styles.emptyContainer}>
+                <Icon name="cart-outline" size={200} color="#B3DB48" />
+                <Text style={styles.emptyText}>
+                  No items yet - start by adding{"\n"}one to see them here !
+                </Text>
+              </View>
+            ) : null
+          }
+          ListFooterComponent={
+            loadingSeller && page > 1 ? (
+              <ActivityIndicator size="small" color="#000" />
+            ) : null
+          }
+        />
+      )}
+    </BackgroundWrapper>
+  </View>
+);
 
-                    <Text style={styles.emptyText}>
-                      No items yet - start by adding{"\n"}one to see them here !
-                    </Text>
-                  </View>
-                ) : null
-              }
-              ListFooterComponent={
-                loadingSeller && page > 1 ? (
-                  <ActivityIndicator size="small" color="#000" />
-                ) : null
-              }
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-        )}
-      </BackgroundWrapper>
-    </View>
-  );
 };
 
 export default UserListItemScreen;

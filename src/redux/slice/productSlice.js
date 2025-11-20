@@ -79,6 +79,9 @@ const productSlice = createSlice({
       state.total = 0;
       state.error = null;
     },
+      resetSelectedProduct: (state) => {
+    state.selectedProduct = null;
+  },
   },
   extraReducers: (builder) => {
     builder

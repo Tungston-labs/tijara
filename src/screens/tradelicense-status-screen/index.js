@@ -6,6 +6,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import Button from "../../componets/Button";
 import { useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/Ionicons"; // or MaterialCommunityIcons, FontAwesome, etc.
+import PullToRefreshWrapper from "../../componets/Refresh/PullToRefreshWrapper";
 
 const TradeLicenseStatusScreen = () => {
   const navigation = useNavigation();
@@ -75,36 +76,38 @@ const TradeLicenseStatusScreen = () => {
   const statusContent = getStatusDisplay(status);
 
   return (
-    <View style={styles.container}>
+   <View style={styles.container}>
       <BackgroundWrapper>
-        <View style={styles.wrapperContainer}>
-          <View style={styles.contentContainer}>
-            {/* <Image
-              source={statusContent.icon}
-              style={styles.ImageContainer}
-              resizeMode="contain"
-            /> */}
-            <Icon
-              name={statusContent.iconName}
-              size={160}
-              color="#B3DB48"
-            />
-            <View style={styles.textContainer}>
-              <Text style={styles.title}>{statusContent.title}</Text>
-              <Text style={styles.subtitle}>{statusContent.subtitle}</Text>
-              <Text style={styles.subtitle2}>{statusContent.subtitle2}</Text>
-            </View>
-          </View>
+        <PullToRefreshWrapper
+          onReload={() => {}}
+          contentContainerStyle={{ flexGrow: 1, justifyContent: "space-between" }}
+        >
+          <View style={styles.wrapperContainer}>
+            <View style={styles.contentContainer}>
 
-          {statusContent.buttonText && (
-            <View style={styles.buttonContainer}>
-              <Button
-                label={statusContent.buttonText}
-                handleButtonPress={() => handleBtnPress(statusContent?.nav)}
+              <Icon
+                name={statusContent.iconName}
+                size={160}
+                color="#B3DB48"
               />
+
+              <View style={styles.textContainer}>
+                <Text style={styles.title}>{statusContent.title}</Text>
+                <Text style={styles.subtitle}>{statusContent.subtitle}</Text>
+                <Text style={styles.subtitle2}>{statusContent.subtitle2}</Text>
+              </View>
             </View>
-          )}
-        </View>
+
+            {statusContent.buttonText && (
+              <View style={styles.buttonContainer}>
+                <Button
+                  label={statusContent.buttonText}
+                  handleButtonPress={() => handleBtnPress(statusContent?.nav)}
+                />
+              </View>
+            )}
+          </View>
+        </PullToRefreshWrapper>
       </BackgroundWrapper>
     </View>
   );
