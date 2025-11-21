@@ -1,12 +1,11 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet,Platform, Dimensions } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    marginTop:50
-  },
+marginTop: Platform.OS === "ios" ? 10 : 50,  },
   ImageContainer: {
     justifyContent: "flex-start",
     alignSelf: "flex-start",

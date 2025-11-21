@@ -284,7 +284,7 @@ const handleSelectImages = async () => {
                   Title="Add New Item"
                   icon={true}
                   handleIconPress={() => navigation.goBack()}
-                  customStyle={{ height: 100 }} 
+                    customStyle={{ height: 100 }} 
                 />
               </View>
 
@@ -330,7 +330,7 @@ const handleSelectImages = async () => {
                         borderWidth: 0,
                       },
                       placeholder: { color: "#888" },
-                      iconContainer: { top: 16, right: 12 },
+                      iconContainer: { top: Platform.OS === "ios" ? 1 : 16, right: 12 },
                     }}
                     Icon={() => (
                       <Icon name="arrow-drop-down" size={24} color="#888" />

@@ -20,7 +20,7 @@ const Header = ({
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }, customStyle]}>
+    <View style={[styles.container, { marginTop: Platform.OS === "ios" ? -20 : 0 }, customStyle]}>
       <View style={styles.rowContainer}>
         <View style={[styles.iconStyle, iconContainerStyle]}>
           {icon && (

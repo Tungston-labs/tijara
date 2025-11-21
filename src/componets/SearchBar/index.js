@@ -1,43 +1,35 @@
-import { View, TextInput, TouchableOpacity } from "react-native";
-import { React, useState } from "react";
-import styles from "./styles";
+import { View, TextInput, TouchableOpacity, Platform } from "react-native";
+import React from "react";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchQuery } from "../../redux/slice/searchSlice";
+import styles from "./styles";
 
-// const SearchBar = ({
-//   onChangeText,
-
-//   value,
-//   ...props
-// }) => {
-  // const [text, setText] = useState(value || "");
-
-  // const handleTextChange = (newText) => {
-  //   setText(newText);
-  //   if (onChangeText) {
-  //     onChangeText(newText);
-  //   }
-  // };
-const SearchBar = (props) => {
-   const dispatch = useDispatch();
+const SearchBar = ({ ...props }) => {
+  const dispatch = useDispatch();
   const query = useSelector((state) => state.search.query);
+
   const handleTextChange = (newText) => {
     dispatch(setSearchQuery(newText));
   };
+
+  const height = Platform.OS === "ios" ? 50 : 25; // higher on iOS, lower on Android
+  const iconSize = Platform.OS === "ios" ? 40 : 25;
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { height }]}>
       <View style={styles.rowContainer}>
-        <View style={styles.boxContainer}>
+        <View style={[styles.boxContainer, { height }]}>
           <View style={styles.iconStyle}>
             <TouchableOpacity>
-              <Icon name="search-outline" size={25} color="#000000" />
+              <Icon name="search-outline" size={iconSize} color="#000000" />
             </TouchableOpacity>
           </View>
-          <View style={styles.textInput}>
+          <View style={[styles.textInput, { height }]}>
             <TextInput
               onChangeText={handleTextChange}
               value={query}
+              style={{ height, paddingVertical: 0 }} // ensures input fills container
               {...props}
             />
           </View>
