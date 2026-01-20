@@ -18,7 +18,7 @@ boxContainer: {
   borderRadius: 12,
   width: "90%",
   paddingHorizontal: 16,
-  paddingVertical: 4,
+  paddingVertical: 10,
   flexDirection: "row",
   alignItems: "center",
  elevation: 5,

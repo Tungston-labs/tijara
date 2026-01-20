@@ -22,9 +22,9 @@ const PullToRefreshWrapper = ({
 
   return (
     <ScrollView
-      style={style}                                // 👈 ADDED
-      contentContainerStyle={contentContainerStyle} // 👈 ADDED
-      showsVerticalScrollIndicator={showsVerticalScrollIndicator} // 👈 ADDED
+      style={style}                                //  ADDED
+      contentContainerStyle={contentContainerStyle} // ADDED
+      showsVerticalScrollIndicator={showsVerticalScrollIndicator} // ADDED
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }

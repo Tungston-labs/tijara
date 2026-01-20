@@ -316,7 +316,7 @@ const handleSelectImages = async () => {
                       inputIOS: {
                         color: "#222",
                         fontSize: 15,
-                        paddingVertical: 0,
+                        paddingVertical: 22,
                         paddingHorizontal: 0,
                         backgroundColor: "transparent",
                         borderWidth: 0,
