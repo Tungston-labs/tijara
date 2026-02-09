@@ -104,6 +104,20 @@ const ListItemScreen = () => {
       console.warn("Failed to save buy category to MMKV:", e);
     }
   };
+const renderEmptyComponent = () => {
+  if (loading) return null; // don't show during loading
+
+  return (
+    <View style={{ marginTop: 60, alignItems: "center" }}>
+      <Text style={{ fontSize: 16, color: "#666", fontWeight: "500" }}>
+        No products found
+      </Text>
+      <Text style={{ fontSize: 13, color: "#999", marginTop: 6 }}>
+        Try changing category or search keywords
+      </Text>
+    </View>
+  );
+};
 
   return (
     <View style={styles.container}>
@@ -140,7 +154,8 @@ const ListItemScreen = () => {
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}
           refreshing={refreshing}
-          onRefresh={handleRefresh} // <-- this now works!
+          onRefresh={handleRefresh} 
+          ListEmptyComponent={renderEmptyComponent}  
           ListFooterComponent={
             loading && page > 1 ? (
               <Text style={{ textAlign: "center" }}>Loading more...</Text>

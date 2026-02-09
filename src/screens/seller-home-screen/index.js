@@ -26,7 +26,6 @@ import { useIsFocused, useRoute } from "@react-navigation/native";
 const Tab = createBottomTabNavigator();
 const LAST_ACTIVE_TAB_KEY = "LAST_ACTIVE_TAB";
 
-// create a single MMKV instance (you can also do this in a separate file)
 const storage = new MMKV();
 
 const HomeTabContent = ({ tradeLicenseStatus, refreshing, onRefresh }) => {
