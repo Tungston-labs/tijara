@@ -49,12 +49,6 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 <string>We need your location to personalize your experience.</string>
 
-<key>NSLocationAlwaysUsageDescription</key>
-<string>We use your location for better service delivery.</string>
-
-<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-<string>We use your location to provide location-based services.</string>
-
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

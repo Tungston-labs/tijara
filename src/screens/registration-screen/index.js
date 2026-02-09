@@ -219,14 +219,7 @@ const handleSelectImage = async () => {
     return;
   }
 
-  if (!resolvedCoords) {
-    Toast.show({
-      type: "error",
-      text1: "Location Error",
-      text2: "Please set a valid location.",
-    });
-    return;
-  }
+
 
   const basicFormData = {
     name: form.name,
@@ -336,15 +329,18 @@ const handleSelectImage = async () => {
               value={form.name}
               onChangeText={(text) => handleChange("name", text)}
             />
-            <TextInputField
-              placeholder="Phone Number"
-              customStyle={styles.inputContainer}
-              value={form.phone}
-              countryCode={countryCode}
-              setCountryCode={setCountryCode}
-              onChangeText={(text) => handleChange("phone", text)}
-              keyboardType="phone-pad"
-            />
+          <View style={{ zIndex: 1000, elevation: 1000, width:400,marginLeft:40 }}>
+  <TextInputField
+    placeholder="Phone Number"
+    customStyle={styles.inputContainer}
+    value={form.phone}
+    countryCode={countryCode}
+    setCountryCode={setCountryCode}
+    onChangeText={(text) => handleChange("phone", text)}
+    keyboardType="phone-pad"
+  />
+</View>
+
 
             <TextInputField
               placeholder="Email"

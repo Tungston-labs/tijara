@@ -8,7 +8,8 @@ export const requestLocationPermission = async () => {
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
           title: 'Location Permission',
-          message: 'This app needs access to your location for registration.Please enable GPS on your device.',
+          message:
+            'Allow location access to see nearby vegetable and fruit sellers and delivery options.',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
@@ -16,43 +17,33 @@ export const requestLocationPermission = async () => {
       );
       return granted === PermissionsAndroid.RESULTS.GRANTED;
     } catch (err) {
-      console.warn(err);
+      console.warn('Permission error:', err);
       return false;
     }
-  } else {
-    return true; 
   }
+
+  return true;
 };
 
 export const getCurrentLocation = async () => {
   const hasPermission = await requestLocationPermission();
 
   if (!hasPermission) {
-    throw new Error('Location permission not granted');
+    return null;
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     Geolocation.getCurrentPosition(
       (position) => {
         resolve(position.coords);
       },
-      (error) => {
-        console.warn('Cached location unavailable, trying fresh fetch:', error);
-
-        Geolocation.getCurrentPosition(
-          (position) => resolve(position.coords),
-          (err) => reject(err.message),
-          {
-            enableHighAccuracy: true,
-            timeout: 7000,  
-            maximumAge: 0,   
-          }
-        );
+      () => {
+        resolve(null);
       },
       {
         enableHighAccuracy: false,
         timeout: 5000,
-        maximumAge: 10000, 
+        maximumAge: 10000,
       }
     );
   });

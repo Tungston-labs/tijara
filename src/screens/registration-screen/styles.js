@@ -10,11 +10,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textInputcontainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: width,
-    paddingBottom:20
-  },
+  alignItems: "center",
+  width: width,
+  paddingBottom: 20,
+},
+
   inputContainer: {
     width: width * 0.9,
     color: "#000",
