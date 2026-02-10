@@ -74,10 +74,12 @@ API.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const res = await axios.post(
-          "https://api.thijara.me/user/refresh-token",
-          { withCredentials: true }
-        );
+       const res = await axios.post(
+  "https://api.thijara.me/user/refresh-token",
+  {},
+  { withCredentials: true }
+);
+
 
         const newAccessToken = res.data.accessToken;
 

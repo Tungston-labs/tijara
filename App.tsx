@@ -68,7 +68,6 @@ const AppWrapper = () => {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-        {/* Wrap both App and Toast with the KeyboardAvoidingView */}
         <KeyboardAvoidingView
           style={styles.container} // Essential for flex: 1
           behavior={Platform.OS === "ios" ? "padding" : "height"} // Behavior based on OS

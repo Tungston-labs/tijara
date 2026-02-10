@@ -79,5 +79,20 @@ const styles = StyleSheet.create({
     color: "#94D82D",
     fontWeight: "600",
   },
+  infoBox: {
+  backgroundColor: "#F5F7FA",
+  padding: 12,
+  borderRadius: 10,
+  marginHorizontal: 20,
+  marginBottom: 20,
+},
+
+infoText: {
+  fontSize: 13,
+  color: "#444",
+  textAlign: "center",
+  lineHeight: 18,
+},
+
 });
 export default styles;

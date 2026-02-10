@@ -41,6 +41,21 @@ export default StyleSheet.create({
     marginBottom: 15,
     paddingHorizontal: 20,
   },
+  infoBox: {
+  backgroundColor: "#F5F7FA",
+  padding: 12,
+  borderRadius: 10,
+  marginHorizontal: 20,
+  marginBottom: 20,
+},
+
+infoText: {
+  fontSize: 13,
+  color: "#444",
+  textAlign: "center",
+  lineHeight: 18,
+},
+
   label: {
     fontSize: 14,
     fontWeight: "500",

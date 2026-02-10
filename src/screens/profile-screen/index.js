@@ -13,11 +13,34 @@ import Button from "../../componets/Button";
 import ModalButton from "../../componets/ModalButton";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slice/authSlice";
+import API from "../../services/config";
 
 const ProfileScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+
+  const handleDeleteAccount = async () => {
+  try {
+    await API.delete("/user/delete-account");
+
+    dispatch(logout());
+
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "LoginScreenPassword" }],
+    });
+  } catch (error) {
+    console.log("Delete account error:", error?.response?.data || error.message);
+
+    Alert.alert(
+      "Delete Failed",
+      error?.response?.data?.message || "Unable to delete account. Please try again."
+    );
+  }
+};
+
 
   const handleButtonClick = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
@@ -59,7 +82,49 @@ const ProfileScreen = ({ navigation }) => {
           <Text style={styles.optionText}>Privacy and policy</Text>
           <Icon name="chevron-forward" size={20} />
         </TouchableOpacity>
+        <TouchableOpacity
+  style={styles.optionRow}
+  onPress={() => setDeleteModalVisible(true)}
+>
+  <Text style={[styles.optionText, { color: "red" }]}>
+    Delete Account
+  </Text>
+  <Icon name="trash-outline" size={20} color="red" />
+</TouchableOpacity>
       </View>
+
+
+<Modal
+  visible={deleteModalVisible}
+  transparent
+  animationType="fade"
+  onRequestClose={() => setDeleteModalVisible(false)}
+>
+  <View style={styles.modalBackground}>
+    <View style={styles.modalContent}>
+      <Text style={styles.modalTitleText}>Delete Account?</Text>
+      <Text style={styles.modalText}>
+        This will permanently delete your account and all associated data.
+        This action cannot be undone.
+      </Text>
+
+      <View style={styles.buttonRowContainer}>
+        <ModalButton
+          label="Cancel"
+          handleButtonPress={() => setDeleteModalVisible(false)}
+          customStyle={styles.cancelButtonStyle}
+          customLabelStyle={styles.cancelCustomLabelStyles}
+        />
+        <ModalButton
+          label="Delete"
+          handleButtonPress={handleDeleteAccount}
+          customStyle={styles.logoutButtonStyle}
+          customLabelStyle={styles.customLabelStyles}
+        />
+      </View>
+    </View>
+  </View>
+</Modal>
 
       <View style={styles.buttonContainer}>
         <Button

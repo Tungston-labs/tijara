@@ -107,7 +107,7 @@ const handleSelectImages = async () => {
 };
 
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.user.token); // Adjust path to your auth slice
+  const token = useSelector((state) => state.user.token); 
 
   const handleAddProduct = async () => {
     if (loading) return;

@@ -28,7 +28,7 @@ const LoginScreen = ({ navigation }) => {
                 style={styles.ImageContainer}
                 resizeMode="contain"
               />
-
+            
               <View style={styles.textContainer}>
                 <Text style={styles.title}>Enter your mobile number</Text>
                 <Text style={styles.subtitle}>

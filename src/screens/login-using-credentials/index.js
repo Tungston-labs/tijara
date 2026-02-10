@@ -93,7 +93,12 @@ setTimeout(() => {
         style={styles.ImageContainer}
         resizeMode="contain"
       />
-
+  <View style={styles.infoBox}>
+                <Text style={styles.infoText}>
+                  Access to products and pricing is available only for registered business users.
+                  Please log in to continue.
+                </Text>
+              </View>
       <Text style={styles.heading}>Welcome back</Text>
       <Text style={styles.subHeading}>Please enter your details to Log in</Text>
 
