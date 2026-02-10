@@ -221,19 +221,19 @@ const handleSelectImage = async () => {
 
 
 
-  const basicFormData = {
-    name: form.name,
-    phone: fullPhoneNumber,
-    email: form.email,
-    password: form.password,
-    coords: {
-      latitude: resolvedCoords.latitude,
-      longitude: resolvedCoords.longitude,
-    },
-    location:
-      locationName ||
-      `${resolvedCoords.latitude},${resolvedCoords.longitude}`,
-  };
+const basicFormData = {
+  name: form.name,
+  phone: fullPhoneNumber,
+  email: form.email,
+  password: form.password,
+  coords: resolvedCoords
+    ? {
+        latitude: resolvedCoords.latitude,
+        longitude: resolvedCoords.longitude,
+      }
+    : null,
+  location: locationName || null,
+};
 
   // Seller registration second screen
   if (role === "seller") {
@@ -250,8 +250,14 @@ const handleSelectImage = async () => {
   formData.append("phone", basicFormData.phone);
   formData.append("email", basicFormData.email);
   formData.append("password", basicFormData.password);
+  if (basicFormData.coords) {
   formData.append("coords", JSON.stringify(basicFormData.coords));
+}
+
+if (basicFormData.location) {
   formData.append("location", basicFormData.location);
+}
+
   formData.append("profileImage", {
     uri: profileImage.uri,
     type: profileImage.type || "image/jpeg",

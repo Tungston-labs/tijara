@@ -47,7 +47,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-<string>We need your location to personalize your experience.</string>
+<string>Your location is used to show nearby products, sellers, and accurate delivery availability.</string>
 
 	<key>UIAppFonts</key>
 	<array>
