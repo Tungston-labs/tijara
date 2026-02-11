@@ -1,12 +1,12 @@
 // App.js
 import React, { useEffect } from "react";
-import { Provider, useDispatch } from "react-redux";
-import { 
-  KeyboardAvoidingView, // Import KeyboardAvoidingView
-  Platform,             // Import Platform
-  StyleSheet,           // Import StyleSheet
-  View, 
-  Text 
+import { Provider, useDispatch, useSelector } from "react-redux";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View,
+  Text,
 } from "react-native";
 import MainNavigation from "./src/navigation/navigation.js";
 import { enableScreens } from "react-native-screens";
@@ -16,31 +16,26 @@ import { loadAuthData } from "./src/utils/mmkvStorage.js";
 import { loginFromStorage } from "./src/redux/slice/authSlice.js";
 import { setToken } from "./src/services/config.js";
 import Toast from "react-native-toast-message";
+import { getAddressesThunk } from "./src/redux/slice/addressSlice";
 
 enableScreens();
 
 const toastConfig = {
-  // custom error toast (red)
-  error: ({ text1, text2, props }) => (
+  error: ({ text1, text2 }) => (
     <View
       style={{
         width: "95%",
         marginTop: 10,
         padding: 12,
         borderRadius: 8,
-        backgroundColor: "#D93025", 
-        shadowColor: "#000",
-        shadowOpacity: 0.2,
+        backgroundColor: "#D93025",
         elevation: 10,
-        zIndex: 9999,
       }}
     >
-      <Text style={{ color: "#fff", fontWeight: "700", marginBottom: 2 }}>
-        {text1}
-      </Text>
-      {text2 ? (
+      <Text style={{ color: "#fff", fontWeight: "700" }}>{text1}</Text>
+      {text2 && (
         <Text style={{ color: "#fff", fontSize: 13 }}>{text2}</Text>
-      ) : null}
+      )}
     </View>
   ),
 
@@ -53,13 +48,10 @@ const toastConfig = {
         borderRadius: 8,
         backgroundColor: "#B3DB48",
         elevation: 10,
-        zIndex: 9999,
       }}
     >
-      <Text style={{ color: "#fff", fontWeight: "700", marginBottom: 2 }}>
-        {text1}
-      </Text>
-      {text2 ? <Text style={{ color: "#fff" }}>{text2}</Text> : null}
+      <Text style={{ color: "#fff", fontWeight: "700" }}>{text1}</Text>
+      {text2 && <Text style={{ color: "#fff" }}>{text2}</Text>}
     </View>
   ),
 };
@@ -69,12 +61,10 @@ const AppWrapper = () => {
     <Provider store={store}>
       <SafeAreaProvider>
         <KeyboardAvoidingView
-          style={styles.container} // Essential for flex: 1
-          behavior={Platform.OS === "ios" ? "padding" : "height"} // Behavior based on OS
-          keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0} 
+          style={styles.container}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
         >
           <App />
-          {/* Toast needs to be rendered within the same view structure to position correctly */}
           <Toast config={toastConfig} />
         </KeyboardAvoidingView>
       </SafeAreaProvider>
@@ -84,6 +74,7 @@ const AppWrapper = () => {
 
 const App = () => {
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.user.token);
 
   useEffect(() => {
     const { token, user, role } = loadAuthData();
@@ -91,7 +82,13 @@ const App = () => {
       dispatch(loginFromStorage({ token, user, role }));
       setToken(token);
     }
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getAddressesThunk(token));
+    }
+  }, [dispatch, token]);
 
   return <MainNavigation />;
 };

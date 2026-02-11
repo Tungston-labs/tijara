@@ -23,6 +23,8 @@ import { createOrderThunk } from "../../redux/slice/orderSlice";
 import Icon from "react-native-vector-icons/FontAwesome";
  import Toast from "react-native-toast-message";
 import { Linking } from "react-native";
+import { getAddressesThunk } from "../../redux/slice/addressSlice";
+
 const ItemDetailsScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [quantity, setQuantity] = useState("100");
@@ -31,9 +33,22 @@ const ItemDetailsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const route = useRoute();
   const { productId } = route.params;
+const { addresses } = useSelector((state) => state.addresses);
+const selectedAddress = addresses?.find(addr => addr.isDefault);
 
   const product = useSelector((state) => state.product.selectedProduct);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+const formatAddress = (address) => {
+  if (!address) return "No address provided";
+
+  return `
+Name: ${address.fullName}
+Phone: ${address.phone}
+${address.street}, ${address.area || ""}
+${address.city}, ${address.state} - ${address.postalCode}
+${address.country}
+  `;
+};
 
   useEffect(() => {
     if (productId && token) {
@@ -111,9 +126,14 @@ const handleOrderRequest = async () => {
 };
 
 const handleWhatsAppRequest = () => {
-  const message = `Hello, I would like to request ${quantity} Kg of ${
-    product?.itemName || "this product"
-  }. Please let me know the next steps.`;
+  if (!selectedAddress) {
+    Toast.show({
+      type: "error",
+      text1: "Address Required",
+      text2: "Please add a delivery address first.",
+    });
+    return;
+  }
 
   const phoneNumber = product?.addedBy?.phone;
 
@@ -126,16 +146,29 @@ const handleWhatsAppRequest = () => {
     return;
   }
 
+  const message = `
+🛒 *New Order Request*
+
+Product: ${product?.itemName}
+Quantity: ${quantity} Kg
+
+📍 *Delivery Address*
+${formatAddress(selectedAddress)}
+
+Please confirm availability.
+  `;
+
   const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
   Linking.openURL(url).catch(() => {
     Toast.show({
       type: "error",
       text1: "Error",
-      text2: "Could not open WhatsApp. Please make sure it's installed.",
+      text2: "Could not open WhatsApp.",
     });
   });
 };
+
 
 
   useEffect(() => {

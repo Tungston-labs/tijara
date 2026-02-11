@@ -105,7 +105,7 @@ const ListItemScreen = () => {
     }
   };
 const renderEmptyComponent = () => {
-  if (loading) return null; // don't show during loading
+  if (loading) return null;
 
   return (
     <View style={{ marginTop: 60, alignItems: "center" }}>

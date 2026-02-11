@@ -4,7 +4,7 @@ import orderReducer from "./slice/orderSlice";
 import sellerProductReducer from "./slice/sellerProductSlice";
 import authReducer from "./slice/authSlice";
 import searchReducer from "./slice/searchSlice";
-
+import addressReducer from "./slice/addressSlice"
 export const store = configureStore({
   reducer: {
     product: productReducer,
@@ -12,6 +12,7 @@ export const store = configureStore({
     sellerProduct: sellerProductReducer,
     user: authReducer,
     search: searchReducer,
+    addresses:addressReducer,
   },
   devTools: __DEV__,
 });

@@ -82,6 +82,13 @@ const ProfileScreen = ({ navigation }) => {
           <Text style={styles.optionText}>Privacy and policy</Text>
           <Icon name="chevron-forward" size={20} />
         </TouchableOpacity>
+         <TouchableOpacity
+          style={styles.optionRow}
+          onPress={() => navigation.navigate("AddressScreen")}
+        >
+          <Text style={styles.optionText}>My addresses</Text>
+          <Icon name="chevron-forward" size={20} />
+        </TouchableOpacity>
         <TouchableOpacity
   style={styles.optionRow}
   onPress={() => setDeleteModalVisible(true)}

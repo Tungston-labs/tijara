@@ -38,7 +38,7 @@ import UploadTradeLicenseScreen from "../screens/upload-tradelicense-screen";
 import TradeLicenseStatusScreen from "../screens/tradelicense-status-screen";
 import TermsAndConditionsScreen from "../screens/terms-and-conditions'";
 import PrivacyPolicyScreen from "../screens/privacy-policy";
-
+import AddressScreen from "../screens/address";
 const Stack = createNativeStackNavigator();
 
 export default function MainNavigation() {
@@ -117,6 +117,10 @@ export default function MainNavigation() {
                 <Stack.Screen
                   name="SellerAddProductScreen"
                   component={SellerAddProductScreen}
+                />
+                 <Stack.Screen
+                  name="AddressScreen"
+                  component={AddressScreen}
                 />
                 <Stack.Screen
                 name="PrivacyPolicy"
