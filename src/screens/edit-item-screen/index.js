@@ -272,7 +272,7 @@ const handleDelete = async () => {
                 handleDeletePress={() => {
                   setModalVisible(true);
                 }}
-              />{" "}
+              />
               <Text style={styles.minImageText}>*Max 4 Image</Text>
               <TouchableOpacity
                 style={styles.uploadBox}
