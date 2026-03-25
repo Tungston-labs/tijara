@@ -5,7 +5,7 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    marginTop:50
+    marginTop:30
   },
   ImageContainer: {
     justifyContent: "flex-start",

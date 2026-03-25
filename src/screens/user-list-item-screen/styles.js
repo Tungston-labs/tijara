@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     // alignItems: "center",
-    marginInline:25,
+marginHorizontal: 25,
     marginTop:32,
   },
   tabContainer: {
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#B3DB48",
   },
   itemHeaderContainer: {
-    marginLeft: 20,
+    marginLeft: 40,
     marginTop: 10,
   },
   itemHeader: {

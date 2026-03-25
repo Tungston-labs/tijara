@@ -111,7 +111,7 @@ const ProfileScreen = ({ navigation }) => {
     style={styles.avatar}
   />
 
-  <Text style={{ textAlign: "center", marginTop: 5, color: "#666" }}>
+  <Text style={{ textAlign: "center", marginTop: 5, color: "#000" }}>
     Edit Photo
   </Text>
 </TouchableOpacity>

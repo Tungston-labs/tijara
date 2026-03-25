@@ -25,7 +25,7 @@ const TijaraHeader = ({ navigation }) => {
           <TouchableOpacity onPress={handleIconPress}>
             <View style={styles.avatarContainer}>
               <Image
-                source={{ uri: user?.image }}
+                source={{ uri: user?.profileImage || user?.image }}
                 style={styles.avatar}
                 resizeMode="cover"
               />
