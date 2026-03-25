@@ -104,6 +104,12 @@ const authSlice = createSlice({
     setTemporaryUser: (state, action) => {
       state.user = action.payload;
     },
+      setUser: (state, action) => {
+    state.user = {
+      ...state.user,
+      ...action.payload, // merge new data
+    };
+  },
   },
   extraReducers: (builder) => {
     builder
@@ -197,5 +203,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, loginFromStorage, setTemporaryUser } = authSlice.actions;
+export const { logout, loginFromStorage, setTemporaryUser,setUser } = authSlice.actions;
 export default authSlice.reducer;

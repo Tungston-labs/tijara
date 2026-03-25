@@ -14,7 +14,9 @@ import ModalButton from "../../componets/ModalButton";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/slice/authSlice";
 import API from "../../services/config";
-
+import { Alert } from "react-native";
+import { launchImageLibrary } from "react-native-image-picker";
+import { setUser } from "../../redux/slice/authSlice";
 const ProfileScreen = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const { user } = useSelector((state) => state.user);
@@ -22,26 +24,64 @@ const ProfileScreen = ({ navigation }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
   const handleDeleteAccount = async () => {
-  try {
-    await API.delete("/user/delete-account");
+    try {
+      await API.delete("/user/delete-account");
 
-    dispatch(logout());
+      dispatch(logout());
 
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "LoginScreenPassword" }],
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "LoginScreenPassword" }],
+      });
+    } catch (error) {
+      console.log("Delete account error:", error?.response?.data || error.message);
+
+      Alert.alert(
+        "Delete Failed",
+        error?.response?.data?.message || "Unable to delete account. Please try again."
+      );
+    }
+  };
+
+  const handleEditProfileImage = async () => {
+    const options = {
+      mediaType: "photo",
+      quality: 0.7,
+    };
+
+    launchImageLibrary(options, async (response) => {
+      if (response.didCancel) return;
+
+      if (response.errorCode) {
+        Alert.alert("Error", response.errorMessage);
+        return;
+      }
+
+      const image = response.assets[0];
+      console.log("IMAGE:", image);
+      const formData = new FormData();
+      formData.append("profileImage", {
+        uri: image.uri,
+        type: image.type,
+        name: image.fileName || "profile.jpg",
+      });
+
+      try {
+        const res = await API.put("/user/update-profile-image", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        Alert.alert("Success", "Profile image updated!");
+
+       dispatch(setUser(res.data.user));
+      } catch (error) {
+        console.log("Upload error:", error?.response?.data || error.message);
+        Alert.alert("Error", "Failed to update profile image");
+      }
     });
-  } catch (error) {
-    console.log("Delete account error:", error?.response?.data || error.message);
-
-    Alert.alert(
-      "Delete Failed",
-      error?.response?.data?.message || "Unable to delete account. Please try again."
-    );
-  }
-};
-
-
+  };
   const handleButtonClick = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
@@ -63,7 +103,18 @@ const ProfileScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.avatarContainer}>
-        <Image source={{ uri: user.image }} style={styles.avatar} />
+       <TouchableOpacity onPress={handleEditProfileImage}>
+  <Image
+    source={{
+      uri: (user?.profileImage || user?.image || "") + `?t=${Date.now()}`,
+    }}
+    style={styles.avatar}
+  />
+
+  <Text style={{ textAlign: "center", marginTop: 5, color: "#666" }}>
+    Edit Photo
+  </Text>
+</TouchableOpacity>
       </View>
 
       <View style={styles.optionsContainer}>
@@ -82,7 +133,7 @@ const ProfileScreen = ({ navigation }) => {
           <Text style={styles.optionText}>Privacy and policy</Text>
           <Icon name="chevron-forward" size={20} />
         </TouchableOpacity>
-         <TouchableOpacity
+        <TouchableOpacity
           style={styles.optionRow}
           onPress={() => navigation.navigate("AddressScreen")}
         >
@@ -90,48 +141,48 @@ const ProfileScreen = ({ navigation }) => {
           <Icon name="chevron-forward" size={20} />
         </TouchableOpacity>
         <TouchableOpacity
-  style={styles.optionRow}
-  onPress={() => setDeleteModalVisible(true)}
->
-  <Text style={[styles.optionText, { color: "red" }]}>
-    Delete Account
-  </Text>
-  <Icon name="trash-outline" size={20} color="red" />
-</TouchableOpacity>
+          style={styles.optionRow}
+          onPress={() => setDeleteModalVisible(true)}
+        >
+          <Text style={[styles.optionText, { color: "red" }]}>
+            Delete Account
+          </Text>
+          <Icon name="trash-outline" size={20} color="red" />
+        </TouchableOpacity>
       </View>
 
 
-<Modal
-  visible={deleteModalVisible}
-  transparent
-  animationType="fade"
-  onRequestClose={() => setDeleteModalVisible(false)}
->
-  <View style={styles.modalBackground}>
-    <View style={styles.modalContent}>
-      <Text style={styles.modalTitleText}>Delete Account?</Text>
-      <Text style={styles.modalText}>
-        This will permanently delete your account and all associated data.
-        This action cannot be undone.
-      </Text>
+      <Modal
+        visible={deleteModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setDeleteModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitleText}>Delete Account?</Text>
+            <Text style={styles.modalText}>
+              This will permanently delete your account and all associated data.
+              This action cannot be undone.
+            </Text>
 
-      <View style={styles.buttonRowContainer}>
-        <ModalButton
-          label="Cancel"
-          handleButtonPress={() => setDeleteModalVisible(false)}
-          customStyle={styles.cancelButtonStyle}
-          customLabelStyle={styles.cancelCustomLabelStyles}
-        />
-        <ModalButton
-          label="Delete"
-          handleButtonPress={handleDeleteAccount}
-          customStyle={styles.logoutButtonStyle}
-          customLabelStyle={styles.customLabelStyles}
-        />
-      </View>
-    </View>
-  </View>
-</Modal>
+            <View style={styles.buttonRowContainer}>
+              <ModalButton
+                label="Cancel"
+                handleButtonPress={() => setDeleteModalVisible(false)}
+                customStyle={styles.cancelButtonStyle}
+                customLabelStyle={styles.cancelCustomLabelStyles}
+              />
+              <ModalButton
+                label="Delete"
+                handleButtonPress={handleDeleteAccount}
+                customStyle={styles.logoutButtonStyle}
+                customLabelStyle={styles.customLabelStyles}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       <View style={styles.buttonContainer}>
         <Button
