@@ -35,7 +35,6 @@ export const updateAddressService = async (token, addressId, payload) => {
 };
 
 
-
 export const deleteAddressService = async (token, addressId) => {
   const response = await API.delete(`/addresses/${addressId}`, {
     headers: {
