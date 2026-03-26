@@ -1,42 +1,62 @@
 // src/storage/storage.js
 import { MMKV } from 'react-native-mmkv';
 
-export const storage = new MMKV();
+let storage = null;
+
+const getStorage = () => {
+  if (!storage) {
+    storage = new MMKV();
+  }
+  return storage;
+};
+
 export const saveAuthData = (token, user, role) => {
-  console.log(" Saving auth data:", { token, user, role });
+  console.log("Saving auth data:", { token, user, role });
 
   if (typeof token !== "string") {
-    console.error(" Token must be string, got:", typeof token, token);
+    console.error("Token must be string, got:", typeof token, token);
   }
 
   if (typeof role !== "string") {
-    console.error(" Role must be string, got:", typeof role, role);
+    console.error("Role must be string, got:", typeof role, role);
   }
 
   try {
+    const storage = getStorage();
     storage.set('token', token);
     storage.set('user', JSON.stringify(user));
     storage.set('role', role);
   } catch (err) {
-    console.error(" MMKV storage error:", err);
+    console.error("MMKV storage error:", err);
   }
 };
 
-
 export const clearAuthData = () => {
-  storage.delete('token');
-  storage.delete('user');
-  storage.delete('role');
+  try {
+    const storage = getStorage();
+    storage.delete('token');
+    storage.delete('user');
+    storage.delete('role');
+  } catch (err) {
+    console.error("MMKV clear error:", err);
+  }
 };
 
 export const loadAuthData = () => {
-  const token = storage.getString('token');
-  const user = storage.getString('user');
-  const role = storage.getString('role');
+  try {
+    const storage = getStorage();
 
-  return {
-    token,
-    user: user ? JSON.parse(user) : null,
-    role,
-  };
+    const token = storage.getString('token');
+    const user = storage.getString('user');
+    const role = storage.getString('role');
+
+    return {
+      token,
+      user: user ? JSON.parse(user) : null,
+      role,
+    };
+  } catch (err) {
+    console.error("MMKV load error:", err);
+    return { token: null, user: null, role: null };
+  }
 };
