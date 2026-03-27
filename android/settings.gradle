@@ -1,4 +1,5 @@
 pluginManagement {
+    // This makes the plugin available for the `plugins {}` block below
     includeBuild("../node_modules/@react-native/gradle-plugin")
     repositories {
         gradlePluginPortal()
@@ -25,4 +26,8 @@ project(":react-native-vector-icons").projectDir = new File(
         "../node_modules/react-native-vector-icons/android"
 )
 
+// This second includeBuild is required so that the react-native-gradle-plugin
+// artifacts (e.g. react-native-gradle-plugin) are available as buildscript
+// classpath dependencies in build.gradle. Both declarations serve different
+// purposes and Gradle deduplicates them internally.
 includeBuild("../node_modules/@react-native/gradle-plugin")

@@ -6,12 +6,15 @@ import {
     TouchableOpacity,
     Switch,
     ScrollView,
+    Alert,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
     addAddressThunk,
     updateAddressThunk,
+    getAddressesThunk,
 } from "../../redux/slice/addressSlice";
+import Toast from "react-native-toast-message";
 import styles from "./styles";
 
 const AddressModal = ({ close, address }) => {
@@ -34,24 +37,44 @@ const AddressModal = ({ close, address }) => {
 
     const handleSave = async () => {
        
+        const validLabels = ["home", "office"];
+        const normalizedLabel = form.label.trim().toLowerCase();
 
+        if (!validLabels.includes(normalizedLabel)) {
+            Alert.alert(
+                "Invalid Label",
+                "Label must be either 'Home' or 'Office'"
+            );
+            return;
+        }
+
+        const cleanPayload = {
+            ...form,
+            label: normalizedLabel === "home" ? "Home" : "Office"
+        };
+        
         try {
             if (address) {
                 await dispatch(
                     updateAddressThunk({
                         token,
                         addressId: address._id,
-                        payload: form,
+                        payload: cleanPayload,
                     })
                 ).unwrap();
             } else {
-                await dispatch(addAddressThunk({ token, payload: form })).unwrap();
+                await dispatch(addAddressThunk({ token, payload: cleanPayload })).unwrap();
             }
 
             console.log("Saved successfully");
+            await dispatch(getAddressesThunk(token)).unwrap();
             close();
         } catch (error) {
             console.log("Save error:", error);
+            Alert.alert(
+                "Failed to Save Address",
+                typeof error === 'string' ? error : error?.message || "Please check your inputs and try again."
+            );
         }
     };
 

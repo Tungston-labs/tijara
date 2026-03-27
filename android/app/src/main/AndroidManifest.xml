@@ -1,35 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Internet -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- Camera -->
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <!-- Camera (used for image capture only — no media library access needed) -->
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- Location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- Remove media permissions added by libraries -->
+   
     <uses-permission
         android:name="android.permission.READ_MEDIA_IMAGES"
-        tools:node="remove"/>
+        tools:node="remove" />
 
     <uses-permission
         android:name="android.permission.READ_MEDIA_VIDEO"
-        tools:node="remove"/>
+        tools:node="remove" />
+
+    <uses-permission
+        android:name="android.permission.READ_MEDIA_AUDIO"
+        tools:node="remove" />
 
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
-        tools:node="remove"/>
+        tools:node="remove" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:node="remove" />
 
     <application
         android:name=".MainApplication"
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:usesCleartextTraffic="true"
         android:allowBackup="false"
         android:theme="@style/AppTheme"
         android:supportsRtl="true">
@@ -41,10 +49,6 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
-
-            <meta-data
-                android:name="android.provider.PROPERTY_MEDIA_CAPABILITIES"
-                android:resource="@xml/media_capabilities" />
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

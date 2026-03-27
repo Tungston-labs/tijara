@@ -2,6 +2,7 @@ buildscript {
     ext {
         buildToolsVersion = "35.0.0"
         minSdkVersion = 24
+        compileSdk = 35
         compileSdkVersion = 35
         targetSdkVersion = 35
         ndkVersion = "27.1.12297006"
@@ -12,10 +13,32 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle")
+        // AGP 8.6.1 is compatible with Gradle 8.10.2 and Java 17
+        classpath("com.android.tools.build:gradle:8.6.1")
+        // react-native-gradle-plugin is resolved via includeBuild in settings.gradle
         classpath("com.facebook.react:react-native-gradle-plugin")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        // Must match kotlinVersion declared above
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21")
     }
 }
 
 apply plugin: "com.facebook.react.rootproject"
+
+// STRICT 16KB PAGE ALIGNMENT ENFORCEMENT - Google Play Android 15 Bypass
+allprojects {
+    plugins.withId("com.android.library") {
+        android {
+            defaultConfig {
+                externalNativeBuild {
+                    cmake {
+                        cppFlags "-Wl,-z,max-page-size=16384"
+                        arguments "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
+                    }
+                    ndkBuild {
+                        cppFlags "-Wl,-z,max-page-size=16384"
+                    }
+                }
+            }
+        }
+    }
+}

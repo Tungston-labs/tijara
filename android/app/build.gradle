@@ -88,8 +88,8 @@ android {
         applicationId "com.thijara"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 11
-        versionName "1.0.11"
+        versionCode 24
+        versionName "1.0.24"
     }
 
     signingConfigs {
@@ -115,12 +115,14 @@ android {
         }
         release {
             signingConfig signingConfigs.release
-            minifyEnabled enableProguardInReleaseBuilds
-            shrinkResources enableProguardInReleaseBuilds
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
-        packagingOptions {
+
+    // Required for 16 KB page size support on Android 15+
+    packagingOptions {
         jniLibs {
             useLegacyPackaging = false
         }

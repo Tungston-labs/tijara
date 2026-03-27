@@ -52,6 +52,7 @@ saveButtonText: {
 cancelButton: {
   backgroundColor: "#f2f2f2",
   padding: 15,
+  marginBottom:50,
   borderRadius: 8,
   alignItems: "center",
 },

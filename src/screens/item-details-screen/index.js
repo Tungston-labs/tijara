@@ -8,7 +8,7 @@ import {
   Modal,
   TextInput,
   AppState,
-    RefreshControl,
+  RefreshControl,
 } from "react-native";
 import styles from "./styles";
 import Header from "../../componets/Header";
@@ -21,7 +21,7 @@ import { useRoute } from "@react-navigation/native";
 import { getProductByIdThunk } from "../../redux/slice/productSlice";
 import { createOrderThunk } from "../../redux/slice/orderSlice";
 import Icon from "react-native-vector-icons/FontAwesome";
- import Toast from "react-native-toast-message";
+import Toast from "react-native-toast-message";
 import { Linking } from "react-native";
 import { getAddressesThunk } from "../../redux/slice/addressSlice";
 
@@ -33,22 +33,22 @@ const ItemDetailsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const route = useRoute();
   const { productId } = route.params;
-const { addresses } = useSelector((state) => state.addresses);
-const selectedAddress = addresses?.find(addr => addr.isDefault);
+  const { addresses } = useSelector((state) => state.addresses);
+  const selectedAddress = addresses?.find(addr => addr.isDefault) || addresses?.[0];
 
   const product = useSelector((state) => state.product.selectedProduct);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-const formatAddress = (address) => {
-  if (!address) return "No address provided";
+  const formatAddress = (address) => {
+    if (!address) return "No address provided";
 
-  return `
+    return `
 Name: ${address.fullName}
 Phone: ${address.phone}
 ${address.street}, ${address.area || ""}
 ${address.city}, ${address.state} - ${address.postalCode}
 ${address.country}
   `;
-};
+  };
 
   useEffect(() => {
     if (productId && token) {
@@ -64,18 +64,22 @@ ${address.country}
       return (num + 1).toString();
     });
   };
-const [refreshing, setRefreshing] = useState(false);
-
-const handleRefresh = async () => {
-  if (!token || !productId) return;
-  setRefreshing(true); // start spinner
-  try {
-    await dispatch(getProductByIdThunk({ token, productId })).unwrap();
-  } catch (err) {
-    console.error("Failed to refresh product:", err);
-  }
-  setRefreshing(false); 
-};
+  const [refreshing, setRefreshing] = useState(false);
+  useEffect(() => {
+    if (token) {
+      dispatch(getAddressesThunk(token));
+    }
+  }, [token]);
+  const handleRefresh = async () => {
+    if (!token || !productId) return;
+    setRefreshing(true); // start spinner
+    try {
+      await dispatch(getProductByIdThunk({ token, productId })).unwrap();
+    } catch (err) {
+      console.error("Failed to refresh product:", err);
+    }
+    setRefreshing(false);
+  };
   const decrease = () => {
     setQuantity((prev) => {
       const num = parseFloat(prev) || 0;
@@ -98,55 +102,55 @@ const handleRefresh = async () => {
 
 
 
-const handleOrderRequest = async () => {
-  try {
-    console.log("Dispatching createOrderThunk");
+  const handleOrderRequest = async () => {
+    try {
+      console.log("Dispatching createOrderThunk");
 
-    const res = await dispatch(
-      createOrderThunk({ token, productId, quantity })
-    ).unwrap();
+      const res = await dispatch(
+        createOrderThunk({ token, productId, quantity })
+      ).unwrap();
 
-    Toast.show({
-      type: "success",
-      text1: "Order Placed",
-      text2: "Your order has been placed successfully.",
-    });
+      Toast.show({
+        type: "success",
+        text1: "Order Placed",
+        text2: "Your order has been placed successfully.",
+      });
 
-    navigation.navigate("SuccessScreen", {
-      orderId: res.order._id,
-    });
-  } catch (err) {
-    console.error("Error placing order:", err);
-    Toast.show({
-      type: "error",
-      text1: "Error",
-      text2: err.message || "Failed to place order.",
-    });
-  }
-};
+      navigation.navigate("SuccessScreen", {
+        orderId: res.order._id,
+      });
+    } catch (err) {
+      console.error("Error placing order:", err);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: err.message || "Failed to place order.",
+      });
+    }
+  };
 
-const handleWhatsAppRequest = () => {
-  if (!selectedAddress) {
-    Toast.show({
-      type: "error",
-      text1: "Address Required",
-      text2: "Please add a delivery address first.",
-    });
-    return;
-  }
+  const handleWhatsAppRequest = () => {
+    if (!selectedAddress) {
+      Toast.show({
+        type: "error",
+        text1: "Address Required",
+        text2: "Please add a delivery address first.",
+      });
+      return;
+    }
 
-  const phoneNumber = product?.addedBy?.phone;
+    const phoneNumber = product?.addedBy?.phone;
 
-  if (!phoneNumber) {
-    Toast.show({
-      type: "error",
-      text1: "Error",
-      text2: "Seller phone number not available.",
-    });
-    return;
-  }
+    if (!phoneNumber) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Seller phone number not available.",
+      });
+      return;
+    }
 
-  const message = `
+    const message = `
 🛒 *New Order Request*
 
 Product: ${product?.itemName}
@@ -158,16 +162,16 @@ ${formatAddress(selectedAddress)}
 Please confirm availability.
   `;
 
-  const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
-  Linking.openURL(url).catch(() => {
-    Toast.show({
-      type: "error",
-      text1: "Error",
-      text2: "Could not open WhatsApp.",
+    Linking.openURL(url).catch(() => {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Could not open WhatsApp.",
+      });
     });
-  });
-};
+  };
 
 
 
@@ -188,7 +192,7 @@ Please confirm availability.
     }
   };
   return (
-     <ScrollView
+    <ScrollView
       style={{ flex: 1, backgroundColor: "#fff" }}
       contentContainerStyle={{
         alignItems: "center",
@@ -199,7 +203,7 @@ Please confirm availability.
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
-          onRefresh={handleRefresh} 
+          onRefresh={handleRefresh}
           tintColor="#B3DB48"
           colors={["#B3DB48"]}
         />
